@@ -3,8 +3,8 @@ import pandas as pd
 import pickle
 
 if __name__ == "__main__":
-    data_path = "./data/"
-    scraper = arxivscraper.Scraper(category='cs', date_from='2010-06-06', date_until='2019-06-07')
+    data_path = "/data4/dheeraj/metaguide/"
+    scraper = arxivscraper.Scraper(category='cs', date_from='1970-06-06', date_until='2019-06-07')
     output = scraper.scrape()
     filtered_output = []
     for o in output:
@@ -13,8 +13,9 @@ if __name__ == "__main__":
         filtered_output.append(o)
     cols = ('id', 'title', 'categories', 'abstract', 'doi', 'created', 'updated', 'authors')
     df = pd.DataFrame(filtered_output, columns=cols)
-    with open(data_path + "df_cs.pkl", "wb") as f:
+    print("Length of Dataframe", len(df))
+    with open(data_path + "df_cs_1970.pkl", "wb") as f:
         pickle.dump(df, f)
 
-    df.to_csv(data_path + "cs.csv")
+    df.to_csv(data_path + "cs_1970.csv")
     pass

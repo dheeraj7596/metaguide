@@ -29,4 +29,4 @@ if __name__ == "__main__":
                 label_top_10_auth_dict[l].append(ind)
                 count += 1
 
-    pickle.dump(label_top_10_auth_dict, open(data_path + "label_top_10_auth_dict.pkl"))
+    pickle.dump(label_top_10_auth_dict, open(data_path + "label_top_10_auth_dict.pkl", "wb"))

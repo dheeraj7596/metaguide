@@ -1,4 +1,5 @@
 import numpy as np
+import pickle
 from keras.preprocessing.text import Tokenizer
 
 
@@ -45,7 +46,7 @@ def create_vocabulary(corpus, num_words=50000):
 
 
 def update_vocab(label_auth_dict, vocabulary, word2idx, idx2word):
-    vocab_size = len(vocabulary)
+    vocab_size = max(list(idx2word.keys())) + 1
 
     auth_set = set()
     for l in label_auth_dict:
@@ -58,3 +59,11 @@ def update_vocab(label_auth_dict, vocabulary, word2idx, idx2word):
         vocabulary.append(aut)
         count += 1
     return vocabulary, word2idx, idx2word
+
+
+def create_label_auth_dict(auth_data_path, labels, top_k=10):
+    label_auth_dict = {}
+    for l in labels:
+        top_auths_list = pickle.load(open(auth_data_path + l + "_top_auths.pkl", "rb"))
+        label_auth_dict[l] = top_auths_list[:top_k]
+    return label_auth_dict

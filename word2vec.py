@@ -34,16 +34,16 @@ def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer):
     for l in graph_dict:
         temp_df = df[df.categories.isin([l])].reset_index(drop=True)
         graph = graph_dict[l]
-        # top_auth_pairs = label_auth_dict[l]
+        top_auth_pairs = label_auth_dict[l]
         for index in graph:
             tokenized_abstract_words = tokenizer.texts_to_sequences([temp_df.iloc[index]["abstract"]])[0]
             existing_auth_pairs = graph[index]
-            # auth_pairs = list(set(top_auth_pairs).intersection(set(existing_auth_pairs)))
+            auth_pairs = list(set(top_auth_pairs).intersection(set(existing_auth_pairs)))
             for i, word in enumerate(tokenized_abstract_words):
                 x.append(word)
                 target_words = get_target(tokenized_abstract_words, i)
-                # ids = [vocab_to_int[pair] for pair in auth_pairs]
-                # target_words.extend(ids)
+                ids = [vocab_to_int[pair] for pair in auth_pairs]
+                target_words.extend(ids)
                 y.append(target_words)
     return x, y
 
@@ -68,17 +68,19 @@ def get_batches(x, y, batch_size):
 
 if __name__ == "__main__":
     data_path = "/data4/dheeraj/metaguide/"
+    auth_data_path = data_path + "top_auths/"
     df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
-    # label_auth_dict = pickle.load(open(data_path + "label_top_10_auth_dict.pkl", "rb"))
+    labels = list(graph_dict.keys())
 
+    label_auth_dict = create_label_auth_dict(auth_data_path, labels, top_k=100)
     corpus = create_corpus(df)
     vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=50000)
     print("Size of vocabulary: ", len(vocabulary))
 
-    # vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
+    vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
 
-    current_words, context_words = get_idx_pairs(graph_dict, df, None, vocab_to_int, tokenizer)
+    current_words, context_words = get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer)
 
     # Graph
     train_graph = tf.Graph()

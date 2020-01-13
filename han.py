@@ -87,7 +87,8 @@ if __name__ == "__main__":
     print("****************** CLASSIFICATION REPORT ON TEST DATA ********************")
     pred = model.predict(X_test)
     pred_labels = get_from_one_hot(pred, index_to_label)
-    print(classification_report(y_test, pred_labels))
+    true_labels = get_from_one_hot(y_test, index_to_label)
+    print(classification_report(true_labels, pred_labels))
 
     print("Dumping the model...")
     model.save_weights(dump_dir + "model_weights_" + model_name + ".h5")

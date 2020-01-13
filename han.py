@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     glove_dir = basepath + "glove.6B"
 
-    model_name = "han_glove"
+    model_name = "han_word2vec_no_auth"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
     tmp_dir = basepath + "checkpoints/" + dataset + model_name + "/"
     os.makedirs(dump_dir, exist_ok=True)
@@ -63,11 +63,11 @@ if __name__ == "__main__":
 
     y_one_hot = make_one_hot(y, label_to_index)
 
-    print("Fitting tokenizer...")
-    tokenizer = fit_get_tokenizer(X, max_words)
+    # print("Fitting tokenizer...")
+    # tokenizer = fit_get_tokenizer(X, max_words)
 
-    # print("Getting tokenizer")
-    # tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
+    print("Getting tokenizer")
+    tokenizer = pickle.load(open(basepath + dataset + "tokenizer_no_auth.pkl", "rb"))
 
     print("Splitting into train, dev...")
     X_train, y_train, X_test, y_test, X_val, y_val = get_pickle_dumps(pkl_dump_dir)
@@ -76,11 +76,11 @@ if __name__ == "__main__":
     #                                                                   max_sentence_length=max_sentence_length,
     #                                                                   max_words=max_words)
 
-    print("Creating Embedding matrix...")
-    embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
+    # print("Creating Embedding matrix...")
+    # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
 
-    # print("Getting Embedding matrix...")
-    # embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix.pkl", "rb"))
+    print("Getting Embedding matrix...")
+    embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix_no_auth.pkl", "rb"))
 
     print("Initializing model...")
     model = HAN(max_words=max_sentence_length, max_sentences=max_sentences, output_size=len(y_train[0]),

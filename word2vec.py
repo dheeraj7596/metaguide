@@ -68,7 +68,10 @@ def get_batches(x, y, batch_size):
 
 
 if __name__ == "__main__":
-    data_path = "/data4/dheeraj/metaguide/"
+    base_path = "/data4/dheeraj/metaguide/"
+    dataset = "arxiv_cs/"
+
+    data_path = base_path + dataset
     auth_data_path = data_path + "top_auths/"
     df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))

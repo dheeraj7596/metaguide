@@ -20,7 +20,7 @@ if __name__ == "__main__":
             if len(ids) >= 2:
                 graph[i] = list(itertools.combinations(ids, 2))
             else:
-                graph[i] = (ids[0],)
+                graph[i] = [(ids[0],)]
 
         graph_dict[l] = graph
     pickle.dump(graph_dict, open(data_path + "graph_dict.pkl", "wb"))

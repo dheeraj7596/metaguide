@@ -1,48 +1,47 @@
 import numpy as np
+from keras.preprocessing.text import Tokenizer
 
 
-def tokenize_corpus(corpus, vocabulary):
-    tokenized_corpus = []
-    for x in corpus:
-        tokens = x.lower().strip().split()
-        trimmed_tokens = []
-        for tok in tokens:
-            try:
-                temp = vocabulary[tok]
-                trimmed_tokens.append(tok)
-            except:
-                continue
-        tokenized_corpus.append(trimmed_tokens)
+def tokenize_corpus(corpus, tokenizer):
+    tokenized_corpus = tokenizer.texts_to_sequences(corpus)
     return tokenized_corpus
 
 
-def create_vocabulary(corpus, min_count=5):
-    vocabulary = {}
-    for row in corpus:
-        tokens = row.lower().strip().split()
-        for tok in tokens:
-            try:
-                vocabulary[tok] += 1
-            except:
-                vocabulary[tok] = 1
-
-    delete_keys = []
-    for i in vocabulary:
-        if vocabulary[i] < min_count:
-            delete_keys.append(i)
-
-    for key in delete_keys:
-        del vocabulary[key]
-
-    word2idx = {}
+def create_vocabulary(corpus, num_words=50000):
+    tokenizer = Tokenizer(num_words=num_words)
+    tokenizer.fit_on_texts(corpus)
+    word2idx = tokenizer.word_index
     idx2word = {}
-    count = 0
-    for i in vocabulary:
-        word2idx[i] = count
-        idx2word[count] = i
-        count += 1
+    for w in word2idx:
+        idx2word[word2idx[w]] = w
 
-    return vocabulary, word2idx, idx2word
+    return list(word2idx.keys()), word2idx, idx2word, tokenizer
+    # vocabulary = {}
+    # for row in corpus:
+    #     tokens = row.lower().strip().split()
+    #     for tok in tokens:
+    #         try:
+    #             vocabulary[tok] += 1
+    #         except:
+    #             vocabulary[tok] = 1
+    #
+    # delete_keys = []
+    # for i in vocabulary:
+    #     if vocabulary[i] < min_count:
+    #         delete_keys.append(i)
+    #
+    # for key in delete_keys:
+    #     del vocabulary[key]
+    #
+    # word2idx = {}
+    # idx2word = {}
+    # count = 0
+    # for i in vocabulary:
+    #     word2idx[i] = count
+    #     idx2word[count] = i
+    #     count += 1
+
+    # return vocabulary, word2idx, idx2word
 
 
 def update_vocab(label_auth_dict, vocabulary, word2idx, idx2word):

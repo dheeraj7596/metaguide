@@ -22,7 +22,7 @@ def get_target(words, idx, window_size=5):
     return list(target_words)
 
 
-def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int):
+def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer):
     x = []
     y = []
     for l in graph_dict:
@@ -30,20 +30,12 @@ def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int):
         graph = graph_dict[l]
         # top_auth_pairs = label_auth_dict[l]
         for index in graph:
-            abstract_words = temp_df.iloc[index]["abstract"].lower().strip().split()
-            trimmed_abstract_words = []
-            for w in abstract_words:
-                try:
-                    temp_var = vocab_to_int[w]
-                    trimmed_abstract_words.append(w)
-                except:
-                    continue
+            tokenized_abstract_words = tokenizer.texts_to_sequences([temp_df.iloc[index]["abstract"]])[0]
             existing_auth_pairs = graph[index]
             # auth_pairs = list(set(top_auth_pairs).intersection(set(existing_auth_pairs)))
-            for i, word in enumerate(trimmed_abstract_words):
-                x.append(vocab_to_int[word])
-                target_words = get_target(trimmed_abstract_words, i)
-                target_words = [vocab_to_int[w] for w in target_words]
+            for i, word in enumerate(tokenized_abstract_words):
+                x.append(word)
+                target_words = get_target(tokenized_abstract_words, i)
                 # ids = [vocab_to_int[pair] for pair in auth_pairs]
                 # target_words.extend(ids)
                 y.append(target_words)
@@ -75,13 +67,12 @@ if __name__ == "__main__":
     # label_auth_dict = pickle.load(open(data_path + "label_top_10_auth_dict.pkl", "rb"))
 
     corpus = create_corpus(df)
-    vocabulary, vocab_to_int, int_to_vocab = create_vocabulary(corpus, min_count=5)
+    vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=50000)
     print("Size of vocabulary: ", len(vocabulary))
-    tokenized_corpus = tokenize_corpus(corpus, vocabulary)
 
     # vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
 
-    current_words, context_words = get_idx_pairs(graph_dict, df, None, vocab_to_int)
+    current_words, context_words = get_idx_pairs(graph_dict, df, None, vocab_to_int, tokenizer)
 
     # Graph
     train_graph = tf.Graph()
@@ -182,3 +173,5 @@ if __name__ == "__main__":
         pickle.dump(vocabulary, open(data_path + "vocabulary.pkl", "wb"))
         pickle.dump(vocab_to_int, open(data_path + "vocab_to_int.pkl", "wb"))
         pickle.dump(int_to_vocab, open(data_path + "int_to_vocab.pkl", "wb"))
+        pickle.dump(embed_mat, open(data_path + "embedding_matrix.pkl", "wb"))
+        pickle.dump(tokenizer, open(data_path + "tokenizer.pkl", "wb"))

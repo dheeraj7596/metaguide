@@ -3,6 +3,12 @@ from utils import *
 import time
 import random
 import tensorflow as tf
+import tensorflow.compat.v1 as tf
+
+tf.disable_v2_behavior()
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "4"
 
 
 def create_corpus(df):

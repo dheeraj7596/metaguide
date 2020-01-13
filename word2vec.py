@@ -131,7 +131,7 @@ if __name__ == "__main__":
         valid_embedding = tf.nn.embedding_lookup(normalized_embedding, valid_dataset)
         similarity = tf.matmul(valid_embedding, tf.transpose(normalized_embedding))
 
-    epochs = 100
+    epochs = 10
     batch_size = 1000
 
     with train_graph.as_default():
@@ -179,3 +179,6 @@ if __name__ == "__main__":
                 iteration += 1
         save_path = saver.save(sess, "checkpoints/arxiv.ckpt")
         embed_mat = sess.run(normalized_embedding)
+        pickle.dump(vocabulary, open(data_path + "vocabulary.pkl", "wb"))
+        pickle.dump(vocab_to_int, open(data_path + "vocab_to_int.pkl", "wb"))
+        pickle.dump(int_to_vocab, open(data_path + "int_to_vocab.pkl", "wb"))

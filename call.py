@@ -21,7 +21,7 @@ def make_auth_pair_map(graph):
 
 
 if __name__ == "__main__":
-    data_path = "./data/"
+    data_path = "/data4/dheeraj/metaguide/"
     df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
 
@@ -46,4 +46,4 @@ if __name__ == "__main__":
         top_auths = []
         for i in args:
             top_auths.append(num_auth_map[start + i])
-        pickle.dump(top_auths, open(data_path + l + "_top_auths.pkl", "wb"))
+        pickle.dump(top_auths, open(data_path + "top_auths/" + l + "_top_auths.pkl", "wb"))

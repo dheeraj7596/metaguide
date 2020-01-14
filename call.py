@@ -50,8 +50,8 @@ if __name__ == "__main__":
         plt.figure()
         plt.plot(range(len(sorted_temp_list)), sorted_temp_list)
         plt.ylabel('Pagerank score')
-        plt.xlabel('Rank')
-        plt.savefig('./pagerankscore_rank.png')
+        plt.xlabel('Rank for ' + l)
+        plt.savefig('./' + l + '_pagerankscore_rank.png')
 
         # args = np.argsort(temp_list)[::-1]
         # top_auths = []

@@ -3,6 +3,7 @@ import numpy as np
 from scipy import sparse
 from fast_pagerank import pagerank
 from fast_pagerank import pagerank_power
+import matplotlib.pyplot as plt
 
 
 def make_auth_pair_map(graph):
@@ -21,7 +22,10 @@ def make_auth_pair_map(graph):
 
 
 if __name__ == "__main__":
-    data_path = "/data4/dheeraj/metaguide/"
+    base_path = "/data4/dheeraj/metaguide/"
+    dataset = "arxiv_cs/"
+
+    data_path = base_path + dataset
     df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
 
@@ -42,8 +46,15 @@ if __name__ == "__main__":
         G = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])), shape=(count, count))
         pr = pagerank(G, p=0.85)
         temp_list = list(pr)[start:]
-        args = np.argsort(temp_list)[::-1]
-        top_auths = []
-        for i in args:
-            top_auths.append(num_auth_map[start + i])
-        pickle.dump(top_auths, open(data_path + "top_auths/" + l + "_top_auths.pkl", "wb"))
+        sorted_temp_list = sorted(temp_list, reverse=True)
+        plt.figure()
+        plt.plot(range(len(sorted_temp_list)), sorted_temp_list)
+        plt.ylabel('Pagerank score')
+        plt.xlabel('Rank')
+        plt.savefig('./pagerankscore_rank.png')
+
+        # args = np.argsort(temp_list)[::-1]
+        # top_auths = []
+        # for i in args:
+        #     top_auths.append(num_auth_map[start + i])
+        # pickle.dump(top_auths, open(data_path + "top_auths/" + l + "_top_auths.pkl", "wb"))

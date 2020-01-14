@@ -3,12 +3,15 @@ from utils import *
 import time
 import random
 import tensorflow as tf
-import tensorflow.compat.v1 as tf
-
-tf.disable_v2_behavior()
 import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+
+
+def get_json(path):
+    import json
+    dic = json.load(open(path, "r"))
+    return dic
 
 
 def create_corpus(df):
@@ -76,16 +79,17 @@ if __name__ == "__main__":
     df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
     labels = list(graph_dict.keys())
-    dump = False
+    dump = True
 
-    label_auth_dict = create_label_auth_dict(auth_data_path, labels, top_k=100)
+    label_topk_dict = get_json(data_path + "top_k.json")
+    label_auth_dict = create_label_auth_dict(auth_data_path, labels, label_topk_dict)
     corpus = create_corpus(df)
     vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=50000)
     print("Size of vocabulary: ", len(vocabulary))
 
     vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
 
-    current_words, context_words = get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer, auth=False)
+    current_words, context_words = get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer, auth=True)
 
     # Graph
     train_graph = tf.Graph()
@@ -189,5 +193,5 @@ if __name__ == "__main__":
             pickle.dump(vocab_to_int, open(data_path + "vocab_to_int.pkl", "wb"))
             pickle.dump(int_to_vocab, open(data_path + "int_to_vocab.pkl", "wb"))
 
-        pickle.dump(embed_mat, open(data_path + "embedding_matrix_no_auth.pkl", "wb"))
-        pickle.dump(tokenizer, open(data_path + "tokenizer_no_auth.pkl", "wb"))
+        pickle.dump(embed_mat, open(data_path + "embedding_matrix_topk_dict.pkl", "wb"))
+        pickle.dump(tokenizer, open(data_path + "tokenizer_topk_dict.pkl", "wb"))

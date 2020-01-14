@@ -61,9 +61,9 @@ def update_vocab(label_auth_dict, vocabulary, word2idx, idx2word):
     return vocabulary, word2idx, idx2word
 
 
-def create_label_auth_dict(auth_data_path, labels, top_k=10):
+def create_label_auth_dict(auth_data_path, labels, label_topk_dict):
     label_auth_dict = {}
     for l in labels:
         top_auths_list = pickle.load(open(auth_data_path + l + "_top_auths.pkl", "rb"))
-        label_auth_dict[l] = top_auths_list[:top_k]
+        label_auth_dict[l] = top_auths_list[:label_topk_dict[l]]
     return label_auth_dict

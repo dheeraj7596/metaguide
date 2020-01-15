@@ -49,6 +49,10 @@ def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer, auth
                     ids = [vocab_to_int[pair] for pair in auth_pairs]
                     target_words.extend(ids)
                 y.append(target_words)
+            if auth:
+                for pair in auth_pairs:
+                    x.append(vocab_to_int[pair])
+                    y.append(tokenized_abstract_words)
     return x, y
 
 

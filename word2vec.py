@@ -80,7 +80,7 @@ if __name__ == "__main__":
 
     data_path = base_path + dataset
     auth_data_path = data_path + "top_auths/"
-    df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_cs_2014_filtered_phrase.pkl", "rb"))
     graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
     labels = list(graph_dict.keys())
     dump = True
@@ -193,9 +193,9 @@ if __name__ == "__main__":
         embed_mat = sess.run(normalized_embedding)
 
         if dump:
-            pickle.dump(vocabulary, open(data_path + "vocabulary.pkl", "wb"))
-            pickle.dump(vocab_to_int, open(data_path + "vocab_to_int.pkl", "wb"))
-            pickle.dump(int_to_vocab, open(data_path + "int_to_vocab.pkl", "wb"))
+            pickle.dump(vocabulary, open(data_path + "vocabulary_phrase.pkl", "wb"))
+            pickle.dump(vocab_to_int, open(data_path + "vocab_to_int_phrase.pkl", "wb"))
+            pickle.dump(int_to_vocab, open(data_path + "int_to_vocab_phrase.pkl", "wb"))
 
-        pickle.dump(embed_mat, open(data_path + "embedding_matrix_topk_dict.pkl", "wb"))
-        pickle.dump(tokenizer, open(data_path + "tokenizer_topk_dict.pkl", "wb"))
+        pickle.dump(embed_mat, open(data_path + "embedding_matrix_phrase_topk_dict.pkl", "wb"))
+        pickle.dump(tokenizer, open(data_path + "tokenizer_phrase_topk_dict.pkl", "wb"))

@@ -4,7 +4,7 @@ import pickle
 
 
 def generate_name(id):
-    return "fnust$" + str(id)
+    return "fnust" + str(id)
 
 
 if __name__ == "__main__":

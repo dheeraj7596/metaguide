@@ -10,7 +10,7 @@ import tensorflow.compat.v1 as tf
 
 tf.disable_v2_behavior()
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 
 def get_distinct_labels(dataset):
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     glove_dir = basepath + "glove.6B"
 
-    model_name = "han_word2vec_topk_dict"
+    model_name = "han_word2vec_phrase_topk_dict"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
     tmp_dir = basepath + "checkpoints/" + dataset + model_name + "/"
     os.makedirs(dump_dir, exist_ok=True)
@@ -55,7 +55,7 @@ if __name__ == "__main__":
     embedding_dim = 100
     pkl_dump_dir = basepath + dataset
 
-    df = pickle.load(open(basepath + dataset + "df_cs_2014_filtered.pkl", "rb"))
+    df = pickle.load(open(basepath + dataset + "df_cs_2014_filtered_phrase.pkl", "rb"))
     df = create_df(df)
     labels, label_to_index, index_to_label = get_distinct_labels(dataset)
 
@@ -67,20 +67,20 @@ if __name__ == "__main__":
     # tokenizer = fit_get_tokenizer(X, max_words)
 
     print("Getting tokenizer")
-    tokenizer = pickle.load(open(basepath + dataset + "tokenizer_topk_dict.pkl", "rb"))
+    tokenizer = pickle.load(open(basepath + dataset + "tokenizer_phrase_topk_dict.pkl", "rb"))
 
     print("Splitting into train, dev...")
-    X_train, y_train, X_test, y_test, X_val, y_val = get_pickle_dumps(pkl_dump_dir)
-    # X_train, y_train, X_test, y_test, X_val, y_val = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
-    #                                                                   max_sentences=max_sentences,
-    #                                                                   max_sentence_length=max_sentence_length,
-    #                                                                   max_words=max_words)
+    # X_train, y_train, X_test, y_test, X_val, y_val = get_pickle_dumps(pkl_dump_dir)
+    X_train, y_train, X_test, y_test, X_val, y_val = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
+                                                                      max_sentences=max_sentences,
+                                                                      max_sentence_length=max_sentence_length,
+                                                                      max_words=max_words)
 
     # print("Creating Embedding matrix...")
     # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
 
     print("Getting Embedding matrix...")
-    embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix_topk_dict.pkl", "rb"))
+    embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix_phrase_topk_dict.pkl", "rb"))
 
     print("Initializing model...")
     model = HAN(max_words=max_sentence_length, max_sentences=max_sentences, output_size=len(y_train[0]),

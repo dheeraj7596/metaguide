@@ -31,28 +31,27 @@ def get_target(words, idx, window_size=5):
     return list(target_words)
 
 
-def get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer, auth=True):
+def get_idx_pairs(df, label_auth_dict, vocab_to_int, tokenizer, auth=True):
     x = []
     y = []
-    for l in graph_dict:
-        temp_df = df[df.categories.isin([l])].reset_index(drop=True)
-        graph = graph_dict[l]
-        top_auth_pairs = label_auth_dict[l]
-        for index in graph:
-            tokenized_abstract_words = tokenizer.texts_to_sequences([temp_df.iloc[index]["abstract"]])[0]
-            existing_auth_pairs = graph[index]
-            auth_pairs = list(set(top_auth_pairs).intersection(set(existing_auth_pairs)))
-            for i, word in enumerate(tokenized_abstract_words):
-                x.append(word)
-                target_words = get_target(tokenized_abstract_words, i)
-                if auth:
-                    ids = [vocab_to_int[pair] for pair in auth_pairs]
-                    target_words.extend(ids)
-                y.append(target_words)
+    for i, row in df.iterrows():
+        label = row["categories"]
+        top_auth_pairs = label_auth_dict[label]
+        existing_auth_pairs = row["author pairs"]
+        tokenized_abstract_words = tokenizer.texts_to_sequences([row["abstract"]])[0]
+        auth_pairs = list(set(top_auth_pairs).intersection(set(existing_auth_pairs)))
+        for i, word in enumerate(tokenized_abstract_words):
+            x.append(word)
+            target_words = get_target(tokenized_abstract_words, i)
             if auth:
-                for pair in auth_pairs:
-                    x.append(vocab_to_int[pair])
-                    y.append(tokenized_abstract_words)
+                ids = [vocab_to_int[pair] for pair in auth_pairs]
+                target_words.extend(ids)
+            y.append(target_words)
+        if auth:
+            for pair in auth_pairs:
+                x.append(vocab_to_int[pair])
+                y.append(tokenized_abstract_words)
+
     return x, y
 
 
@@ -80,9 +79,8 @@ if __name__ == "__main__":
 
     data_path = base_path + dataset
     auth_data_path = data_path + "top_auths/"
-    df = pickle.load(open(data_path + "df_cs_2014_filtered_phrase.pkl", "rb"))
-    graph_dict = pickle.load(open(data_path + "graph_dict.pkl", "rb"))
-    labels = list(graph_dict.keys())
+    df = pickle.load(open(data_path + "df_cs_2014_filtered_authorpairs.pkl", "rb"))
+    labels = list(set(df["categories"]))
     dump = True
 
     label_topk_dict = get_json(data_path + "top_k.json")
@@ -93,7 +91,7 @@ if __name__ == "__main__":
 
     vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
 
-    current_words, context_words = get_idx_pairs(graph_dict, df, label_auth_dict, vocab_to_int, tokenizer, auth=True)
+    current_words, context_words = get_idx_pairs(df, label_auth_dict, vocab_to_int, tokenizer, auth=True)
 
     # Graph
     train_graph = tf.Graph()
@@ -193,9 +191,9 @@ if __name__ == "__main__":
         embed_mat = sess.run(normalized_embedding)
 
         if dump:
-            pickle.dump(vocabulary, open(data_path + "vocabulary_phrase.pkl", "wb"))
-            pickle.dump(vocab_to_int, open(data_path + "vocab_to_int_phrase.pkl", "wb"))
-            pickle.dump(int_to_vocab, open(data_path + "int_to_vocab_phrase.pkl", "wb"))
+            pickle.dump(vocabulary, open(data_path + "vocabulary.pkl", "wb"))
+            pickle.dump(vocab_to_int, open(data_path + "vocab_to_int.pkl", "wb"))
+            pickle.dump(int_to_vocab, open(data_path + "int_to_vocab.pkl", "wb"))
 
-        pickle.dump(embed_mat, open(data_path + "embedding_matrix_phrase_topk_dict.pkl", "wb"))
-        pickle.dump(tokenizer, open(data_path + "tokenizer_phrase_topk_dict.pkl", "wb"))
+        pickle.dump(embed_mat, open(data_path + "embedding_matrix_topk_dict.pkl", "wb"))
+        pickle.dump(tokenizer, open(data_path + "tokenizer_topk_dict.pkl", "wb"))

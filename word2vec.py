@@ -87,9 +87,9 @@ if __name__ == "__main__":
     label_auth_dict = create_label_auth_dict(auth_data_path, labels, label_topk_dict)
     corpus = create_corpus(df)
     vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=50000)
-    print("Size of vocabulary: ", len(vocabulary))
 
     vocabulary, vocab_to_int, int_to_vocab = update_vocab(label_auth_dict, vocabulary, vocab_to_int, int_to_vocab)
+    print("Size of vocabulary: ", len(vocabulary))
 
     current_words, context_words = get_idx_pairs(df, label_auth_dict, vocab_to_int, tokenizer, auth=True)
 

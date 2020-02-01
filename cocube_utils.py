@@ -158,10 +158,10 @@ def train_classifier(df, labels, label_term_dict, label_to_index, index_to_label
     print("Fitting tokenizer...")
     tokenizer = fit_get_tokenizer(X, max_words)
     print("Splitting into train, dev...")
-    X_train, y_train, X_val, y_val = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
-                                                      max_sentences=max_sentences,
-                                                      max_sentence_length=max_sentence_length,
-                                                      max_words=max_words)
+    X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
+                                                            max_sentences=max_sentences,
+                                                            max_sentence_length=max_sentence_length,
+                                                            max_words=max_words, val=False)
     # print("Creating Embedding matrix...")
     # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
     print("Getting Embedding matrix...")

@@ -1,12 +1,25 @@
 import numpy as np
 from collections import defaultdict
 import matplotlib.pyplot as plt
+from parse_autophrase_output import generate_name
 
 
 def get_label_term_json(path):
     import json
     dic = json.load(open(path, "r"))
     return dic
+
+
+def modify_phrases(label_term_dict, phrase_id_map):
+    for l in label_term_dict:
+        temp_list = []
+        for term in label_term_dict[l]:
+            try:
+                temp_list.append(generate_name(phrase_id_map[term]))
+            except:
+                temp_list.append(term)
+        label_term_dict[l] = temp_list
+    return label_term_dict
 
 
 def create_index(tokenizer):
@@ -55,7 +68,7 @@ def get_doc_freq(df):
     docfreq = {}
     docfreq["UNK"] = len(df)
     for index, row in df.iterrows():
-        line = row["sentence"]
+        line = row["abstract"]
         words = line.strip().split()
         temp_set = set(words)
         for w in temp_set:

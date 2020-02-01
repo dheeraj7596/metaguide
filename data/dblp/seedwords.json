@@ -1,0 +1,80 @@
+{
+  "computer vision": [
+    "video",
+    "pixel",
+    "object detection",
+    "face detection",
+    "object tracking",
+    "image retrieval"
+  ],
+  "computational linguistics": [
+    "semantic",
+    "machine translation",
+    "speech recognition",
+    "word sense disambiguation",
+    "named entity recognition",
+    "morphological analysis",
+    "contextual information"
+  ],
+  "biomedical engineering": [
+    "protein",
+    "brain",
+    "medical",
+    "mri",
+    "proteins"
+  ],
+  "software engineering": [
+    "software engineering",
+    "software development",
+    "object-oriented",
+    "software architecture",
+    "register allocation",
+    "software design"
+  ],
+  "graphics": [
+    "user experience",
+    "user interface",
+    "benchmark circuits",
+    "interaction techniques",
+    "global routing"
+  ],
+  "data mining": [
+    "data mining",
+    "social network",
+    "association rules",
+    "recommender systems",
+    "subspace clustering",
+    "hierarchical clustering"
+  ],
+  "security and cryptography": [
+    "encryption",
+    "cryptographic",
+    "malware",
+    "cryptography",
+    "diffie-hellman",
+    "intrusion detection",
+    "signature scheme"
+  ],
+  "signal processing": [
+    "network coding",
+    "beamforming",
+    "wireless sensor networks",
+    "csi",
+    "transmitter"
+  ],
+  "robotics": [
+    "robot",
+    "robots",
+    "mobile robot",
+    "path planning",
+    "humanoid robot"
+  ],
+  "theory": [
+    "approximation algorithm",
+    "approximation algorithms",
+    "calculus",
+    "nondeterministic",
+    "polynomials",
+    "finite automata"
+  ]
+}

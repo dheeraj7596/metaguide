@@ -147,10 +147,12 @@ if __name__ == "__main__":
     pre_trained = 0
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase.pkl", "rb"))
+    phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)
     label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords.json")
+    label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
 
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)

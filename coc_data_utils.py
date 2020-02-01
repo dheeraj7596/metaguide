@@ -1,7 +1,7 @@
 import numpy as np
 from collections import defaultdict
 import matplotlib.pyplot as plt
-from parse_autophrase_output import generate_name
+from parse_autophrase_output import generate_name, decrypt
 
 
 def get_label_term_json(path):
@@ -30,13 +30,18 @@ def create_index(tokenizer):
     return word_to_index, index_to_word
 
 
-def print_label_term_dict(label_term_dict, components):
+def print_label_term_dict(label_term_dict, components, id_phrase_map):
     for label in label_term_dict:
         print(label)
         print("*" * 80)
         for val in label_term_dict[label]:
             try:
-                print(val, components[label][val])
+                id = decrypt(val)
+                if id is not None and id in id_phrase_map:
+                    phrase = id_phrase_map[id]
+                    print(phrase, components[label][val])
+                else:
+                    print(val, components[label][val])
             except Exception as e:
                 print("Exception occured: ", e, val)
 

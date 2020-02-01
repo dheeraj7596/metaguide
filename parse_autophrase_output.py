@@ -7,6 +7,14 @@ def generate_name(id):
     return "fnust" + str(id)
 
 
+def decrypt(val):
+    try:
+        if val[:5] == "fnust":
+            return int(val[5:])
+    except:
+        return None
+
+
 if __name__ == "__main__":
     base_path = "./data/"
     dataset = "dblp/"

@@ -148,6 +148,9 @@ if __name__ == "__main__":
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
+    id_phrase_map = {}
+    for ph in phrase_id_map:
+        id_phrase_map[phrase_id_map[ph]] = ph
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)
@@ -173,5 +176,5 @@ if __name__ == "__main__":
         label_term_dict, components = update_label_term_dict(df, label_term_dict, pred_labels, label_to_index,
                                                              index_to_label, word_to_index, index_to_word, inv_docfreq,
                                                              docfreq, i, n1=7, n2=7)
-        print_label_term_dict(label_term_dict, components)
+        print_label_term_dict(label_term_dict, components, id_phrase_map)
         print("#" * 80)

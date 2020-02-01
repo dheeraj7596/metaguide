@@ -9,10 +9,10 @@ def generate_name(id):
 
 if __name__ == "__main__":
     base_path = "./data/"
-    dataset = "arxiv_cs/"
+    dataset = "dblp/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "df_cs_2014_filtered.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_mapped_labels.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()
@@ -37,4 +37,5 @@ if __name__ == "__main__":
         data.append(temp_str)
 
     df["abstract"] = data
-    pickle.dump(df, open(data_path + "df_cs_2014_filtered_phrase.pkl", "wb"))
+    pickle.dump(df, open(data_path + "df_mapped_labels_phrase.pkl", "wb"))
+    pickle.dump(phrase_id_map, open(data_path + "phrase_id_map.pkl", "wb"))

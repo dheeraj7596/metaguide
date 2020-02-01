@@ -97,7 +97,7 @@ def get_label_docs_dict(df, label_term_dict, pred_labels):
     for l in label_term_dict:
         label_docs_dict[l] = []
     for index, row in df.iterrows():
-        line = row["sentence"]
+        line = row["abstract"]
         label_docs_dict[pred_labels[index]].append(line)
     return label_docs_dict
 

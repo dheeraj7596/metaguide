@@ -9,7 +9,7 @@ from data_utils import *
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 
 
 def create_training_df(X, y, y_true):
@@ -155,8 +155,11 @@ def train_classifier(df, labels, label_term_dict, label_to_index, index_to_label
     df_train.to_csv(basepath + dataset + "training_label.csv")
     y_one_hot = make_one_hot(y, label_to_index)
     # y = np.array(y)
-    print("Fitting tokenizer...")
-    tokenizer = fit_get_tokenizer(X, max_words)
+    # print("Fitting tokenizer...")
+    # tokenizer = fit_get_tokenizer(X, max_words)
+    print("Getting tokenizer")
+    tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
+
     print("Splitting into train, dev...")
     X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
                                                             max_sentences=max_sentences,

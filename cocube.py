@@ -146,7 +146,7 @@ if __name__ == "__main__":
 
     pre_trained = 0
 
-    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:

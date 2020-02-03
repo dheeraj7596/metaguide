@@ -1,29 +1,37 @@
 import numpy as np
-from page_rank import powerIteration
 from scipy import sparse
 from fast_pagerank import pagerank
-from fast_pagerank import pagerank_power
+import pickle
 
 if __name__ == "__main__":
-    data_path = "./data/"
+    basepath = "./data/"
+    dataset = "dblp/"
+    data_path = basepath + dataset
 
-    A = np.array([[0, 1], [0, 2], [3, 1]])
-    weights = [1, 1, 1]
-    G = sparse.csr_matrix((weights, (A[:, 0], A[:, 1])), shape=(4, 4))
-    pr = pagerank(G, p=0.85)
+    G_conf = sparse.load_npz(data_path + "G_conf.npz")
+    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
+    venue_id = pickle.load(open(data_path + "venue_id.pkl", "rb"))
+    id_venue = pickle.load(open(data_path + "id_venue.pkl", "rb"))
 
-    # edgeWeights = collections.defaultdict(lambda: collections.Counter())
-    # edgeWeights[1][2] = 1.0
-    # edgeWeights[1][3] = 1.0
-    # edgeWeights[4][2] = 1.0
-    # edgeWeights[5][2] = 1.0
+    count = len(venue_id) + len(df)
+    start = len(df)
+    labels = list(set(df.label))
+    categories = list(df.label)
 
-    # edgeWeights[2][1] = 1.0
-    # edgeWeights[3][1] = 1.0
-    # edgeWeights[2][4] = 1.0
-    # edgeWeights[2][5] = 1.0
+    top_conf_map = {}
+    for l in labels:
+        print("Pagerank running for: ", l)
+        personalized = np.zeros((count,))
+        for i, cat in enumerate(categories):
+            if cat == l:
+                personalized[i] = 1
+        pr = pagerank(G_conf, p=0.85, personalize=personalized)
+        temp_list = list(pr)[start:]
+        sorted_temp_list = sorted(temp_list, reverse=True)
+        args = np.argsort(temp_list)[::-1]
+        top_auths = []
+        for i in args:
+            top_auths.append(id_venue[start + i])
+        top_conf_map[l] = top_auths
 
-
-    # wordProbabilities = powerIteration(edgeWeights, rsp=0.15)
-    # sorted_wordprobs = wordProbabilities.sort_values(ascending=False)
     pass

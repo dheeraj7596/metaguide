@@ -102,14 +102,14 @@ def update_label_author_dict(label_author_dict, df, pred_labels, it, n1=7):
 
 
 def update_label_conf_dict(label_conf_dict, it):
-    n = min(it, 3)
+    n = min(it + 1, 3)
     for l in label_conf_dict:
         label_conf_dict[l] = label_conf_dict[l][:n]
     return label_conf_dict
 
 
 if __name__ == "__main__":
-    basepath = "./data/"
+    basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
 
@@ -136,12 +136,19 @@ if __name__ == "__main__":
     label_conf_dict = {}
 
     t = 10
+    pre_train = 0
 
     for i in range(t):
         print("ITERATION ", i)
         print("Going to train classifier..")
-        pred_labels, probs = train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict,
-                                              label_to_index, index_to_label, author_id, venue_id)
+
+        if i == 0 and pre_train:
+            pred_labels = pickle.load(open(pkl_dump_dir + "first_iteration_pred_labels.pkl", "rb"))
+            probs = pickle.load(open(pkl_dump_dir + "first_iteration_probs.pkl", "rb"))
+
+        else:
+            pred_labels, probs = train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict,
+                                                  label_to_index, index_to_label, author_id, venue_id)
         label_author_dict = run_author(probs, df, G_auth, author_id, id_author, label_to_index)
         label_conf_dict = run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index)
 

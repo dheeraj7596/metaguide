@@ -19,7 +19,7 @@ def run_author(probs, df, G_auth, author_id, id_author, label_to_index):
         args = np.argsort(temp_list)[::-1]
         top_auths = []
         for i in args:
-            top_auths.append(id_author[start + i])
+            top_auths.append(start + i)
         label_author_dict[l] = top_auths
     return label_author_dict
 
@@ -37,7 +37,7 @@ def run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index):
         args = np.argsort(temp_list)[::-1]
         top_venues = []
         for i in args:
-            top_venues.append(id_venue[start + i])
+            top_venues.append(start + i)
         label_venue_dict[l] = top_venues
     return label_venue_dict
 

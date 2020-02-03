@@ -174,7 +174,8 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     max_words = 20000
     embedding_dim = 100
 
-    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, author_id, venue_id)
+    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, author_id, venue_id,
+                                  author_weight=1, venue_weight=1)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
     df_train = create_training_df(X, y, y_true)

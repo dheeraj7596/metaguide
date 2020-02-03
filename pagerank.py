@@ -6,6 +6,42 @@ from fast_pagerank import pagerank_power
 import matplotlib.pyplot as plt
 
 
+def run_author(probs, df, G_auth, author_id, id_author, label_to_index):
+    label_author_dict = {}
+    start = len(df)
+    count = len(df) + len(author_id)
+    for l in label_to_index:
+        print("Pagerank running for: ", l)
+        personalized = np.zeros((count,))
+        personalized[:len(df)] = probs[:, label_to_index[l]]
+        pr = pagerank(G_auth, p=0.85, personalize=personalized)
+        temp_list = list(pr)[start:]
+        args = np.argsort(temp_list)[::-1]
+        top_auths = []
+        for i in args:
+            top_auths.append(id_author[start + i])
+        label_author_dict[l] = top_auths
+    return label_author_dict
+
+
+def run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index):
+    label_venue_dict = {}
+    start = len(df)
+    count = len(df) + len(venue_id)
+    for l in label_to_index:
+        print("Pagerank running for: ", l)
+        personalized = np.zeros((count,))
+        personalized[:len(df)] = probs[:, label_to_index[l]]
+        pr = pagerank(G_conf, p=0.85, personalize=personalized)
+        temp_list = list(pr)[start:]
+        args = np.argsort(temp_list)[::-1]
+        top_venues = []
+        for i in args:
+            top_venues.append(id_venue[start + i])
+        label_venue_dict[l] = top_venues
+    return label_venue_dict
+
+
 def make_auth_pair_map(df):
     start = len(df)
     auth_num_map = {}

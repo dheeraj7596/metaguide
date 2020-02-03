@@ -46,6 +46,22 @@ def print_label_term_dict(label_term_dict, components, id_phrase_map):
                 print("Exception occured: ", e, val)
 
 
+def print_label_author_dict(label_author_dict, id_author):
+    for label in label_author_dict:
+        print(label)
+        print("*" * 80)
+        for val in label_author_dict[label]:
+            print(id_author[val])
+
+
+def print_label_conf_dict(label_conf_dict, id_venue):
+    for label in label_conf_dict:
+        print(label)
+        print("*" * 80)
+        for val in label_conf_dict[label]:
+            print(id_venue[val])
+
+
 def get_term_freq(df):
     term_freq = defaultdict(int)
     for index, row in df.iterrows():

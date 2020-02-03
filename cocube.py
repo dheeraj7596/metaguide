@@ -140,7 +140,7 @@ def update_label_term_dict(df, label_term_dict, pred_labels, label_to_index, ind
 
 
 if __name__ == "__main__":
-    basepath = "/data4/dheeraj/metaguide/"
+    basepath = "./data/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
 

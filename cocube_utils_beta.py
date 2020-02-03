@@ -89,11 +89,23 @@ def post_process(count_dict, l, seed_phrases):
     return count_dict
 
 
-def get_train_data(df, labels, label_term_dict):
+def convert_to_authorids(auth_str, author_id):
+    authors = auth_str.split(",")
+    ids = set()
+    for auth in authors:
+        ids.add(author_id[auth])
+    return ids
+
+
+def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, author_id, venue_id,
+                   author_weight=2, venue_weight=3):
     y = []
     X = []
     y_true = []
     for index, row in df.iterrows():
+        auth_str = row["authors"]
+        authors_set = convert_to_authorids(auth_str, author_id)
+        conf = venue_id[row["conf"]]
         line = row["abstract"]
         label = row["label"]
         words = line.strip().split()
@@ -109,6 +121,10 @@ def get_train_data(df, labels, label_term_dict):
                 else:
                     seed_words.add(w)
             int_labels = list(set(words).intersection(seed_words))
+            if len(label_author_dict) > 0:
+                int_authors = authors_set.intersection(set(label_author_dict[l]))
+            else:
+                int_authors = []
             if len(int_labels) == 0:
                 continue
             for word in words:
@@ -122,6 +138,15 @@ def get_train_data(df, labels, label_term_dict):
                         count_dict[l][word] += 1
                     except:
                         count_dict[l][word] = 1
+
+            if flag:
+                for auth in int_authors:
+                    count_dict[l]["AUTH_" + str(auth)] = author_weight
+
+            if flag and len(label_conf_dict) > 0:
+                if conf in label_conf_dict[l]:
+                    count_dict[l]["CONF_" + str(conf)] = venue_weight
+
             count_dict = post_process(count_dict, l, seed_phrases)
         if flag:
             lbl = argmax_label(count_dict)
@@ -134,7 +159,8 @@ def get_train_data(df, labels, label_term_dict):
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label):
+def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label,
+                     author_id, venue_id):
     basepath = "./data/"
     dataset = "dblp/"
     # glove_dir = basepath + "glove.6B"
@@ -148,7 +174,7 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     max_words = 20000
     embedding_dim = 100
 
-    X, y, y_true = get_train_data(df, labels, label_term_dict)
+    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, author_id, venue_id)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
     df_train = create_training_df(X, y, y_true)
@@ -196,4 +222,4 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     print("Dumping the model...")
     model.save_weights(dump_dir + "model_weights_" + model_name + ".h5")
     model.save(dump_dir + "model_" + model_name + ".h5")
-    return pred_labels
+    return pred_labels, pred

@@ -6,6 +6,7 @@ from pagerank import run_author, run_conf
 import pickle
 import numpy as np
 import sys
+import os
 import math
 import copy
 from scipy import sparse
@@ -137,6 +138,7 @@ if __name__ == "__main__":
 
     t = 10
     pre_train = 0
+    plot = True
 
     for i in range(t):
         print("ITERATION ", i)
@@ -149,8 +151,15 @@ if __name__ == "__main__":
         else:
             pred_labels, probs = train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict,
                                                   label_to_index, index_to_label, author_id, venue_id)
-        label_author_dict = run_author(probs, df, G_auth, author_id, id_author, label_to_index)
-        label_conf_dict = run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index)
+
+        auth_plot_dump_dir = pkl_dump_dir + "images/author/" + str(i) + "/"
+        conf_plot_dump_dir = pkl_dump_dir + "images/conf/" + str(i) + "/"
+        if plot:
+            os.makedirs(auth_plot_dump_dir, exist_ok=True)
+            os.makedirs(conf_plot_dump_dir, exist_ok=True)
+
+        label_author_dict = run_author(probs, df, G_auth, author_id, label_to_index, auth_plot_dump_dir, plot=plot)
+        label_conf_dict = run_conf(probs, df, G_conf, venue_id, label_to_index, conf_plot_dump_dir, plot=plot)
 
         label_author_dict = update_label_author_dict(label_author_dict, df, pred_labels, i)
         label_conf_dict = update_label_conf_dict(label_conf_dict, i)

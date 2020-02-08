@@ -6,7 +6,13 @@ from fast_pagerank import pagerank_power
 import matplotlib.pyplot as plt
 
 
-def run_author(probs, df, G_auth, author_id, id_author, label_to_index):
+def plot_histogram(temp_list, dump_dir, label):
+    plt.figure()
+    plt.hist(temp_list, color='blue', edgecolor='black', bins=30)
+    plt.savefig(dump_dir + label + "_hist.png")
+
+
+def run_author(probs, df, G_auth, author_id, label_to_index, dump_dir, plot=False):
     label_author_dict = {}
     start = len(df)
     count = len(df) + len(author_id)
@@ -16,6 +22,8 @@ def run_author(probs, df, G_auth, author_id, id_author, label_to_index):
         personalized[:len(df)] = probs[:, label_to_index[l]]
         pr = pagerank(G_auth, p=0.85, personalize=personalized)
         temp_list = list(pr)[start:]
+        if plot:
+            plot_histogram(temp_list, dump_dir, l)
         args = np.argsort(temp_list)[::-1]
         top_auths = []
         for i in args:
@@ -24,7 +32,7 @@ def run_author(probs, df, G_auth, author_id, id_author, label_to_index):
     return label_author_dict
 
 
-def run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index):
+def run_conf(probs, df, G_conf, venue_id, label_to_index, dump_dir, plot=False):
     label_venue_dict = {}
     start = len(df)
     count = len(df) + len(venue_id)
@@ -34,6 +42,8 @@ def run_conf(probs, df, G_conf, venue_id, id_venue, label_to_index):
         personalized[:len(df)] = probs[:, label_to_index[l]]
         pr = pagerank(G_conf, p=0.85, personalize=personalized)
         temp_list = list(pr)[start:]
+        if plot:
+            plot_histogram(temp_list, dump_dir, l)
         args = np.argsort(temp_list)[::-1]
         top_venues = []
         for i in args:

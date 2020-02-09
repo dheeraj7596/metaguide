@@ -1,8 +1,5 @@
 {
   "computer vision": [
-    "image",
-    "images",
-    "3d",
     "video",
     "pixel",
     "object detection",
@@ -11,20 +8,21 @@
     "image retrieval"
   ],
   "computational linguistics": [
-    "syntactic",
     "semantic",
     "natural language",
-    "linguistic",
     "machine translation",
+    "linguistic",
     "speech recognition",
     "word sense disambiguation",
-    "named entity recognition"
+    "named entity recognition",
+    "morphological analysis",
+    "contextual information"
   ],
   "biomedical engineering": [
     "protein",
     "brain",
-    "clinical",
-    "gene",
+    "medical",
+    "mri",
     "proteins"
   ],
   "software engineering": [
@@ -34,20 +32,20 @@
     "software development",
     "object-oriented",
     "software architecture",
+    "register allocation",
     "software design"
   ],
   "graphics": [
     "design",
-    "users",
-    "clock",
     "user experience",
     "user interface",
-    "benchmark circuits"
+    "benchmark circuits",
+    "interaction techniques",
+    "global routing"
   ],
   "data mining": [
     "data mining",
     "social network",
-    "clustering",
     "association rules",
     "recommender systems",
     "subspace clustering",
@@ -63,12 +61,12 @@
     "signature scheme"
   ],
   "signal processing": [
-    "network",
     "channel",
     "wireless",
     "network coding",
     "beamforming",
     "wireless sensor networks",
+    "csi",
     "transmitter"
   ],
   "robotics": [
@@ -81,8 +79,6 @@
   ],
   "theory": [
     "polynomial",
-    "bound",
-    "bounds",
     "approximation algorithm",
     "approximation algorithms",
     "calculus",

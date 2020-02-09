@@ -1,5 +1,6 @@
 import pickle
 from scipy import sparse
+from parse_autophrase_output import decrypt
 from nltk import word_tokenize
 import numpy as np
 
@@ -20,23 +21,27 @@ def make_authors_map(df):
     return author_id, id_author, count
 
 
-def detect_phrase(sentence):
-    words = word_tokenize(sentence)
+def detect_phrase(sentence, tokenizer, index_word, id_phrase_map):
+    tokens = tokenizer.texts_to_sequences([sentence])
     temp = []
-    for word in words:
-        if word.startswith('fnust'):
-            temp.append(word)
+    for tok in tokens[0]:
+        try:
+            id = decrypt(index_word[tok])
+            if id is not None and id in id_phrase_map:
+                temp.append(index_word[tok])
+        except Exception as e:
+            pass
     return temp
 
 
-def make_phrases_map(df):
+def make_phrases_map(df, tokenizer, index_word, id_phrase_map):
     count = len(df)
     abstracts = list(df.abstract)
     fnust_id = {}
     id_fnust = {}
 
     for i, abstract in enumerate(abstracts):
-        phrases = detect_phrase(abstract)
+        phrases = detect_phrase(abstract, tokenizer, index_word, id_phrase_map)
         for ph in phrases:
             try:
                 temp = fnust_id[ph]
@@ -68,16 +73,24 @@ if __name__ == "__main__":
 
     data_path = base_path + dataset
     df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
+    tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
+    phrase_id_map = pickle.load(open(data_path + "phrase_id_map.pkl", "rb"))
+    id_phrase_map = {}
+    for ph in phrase_id_map:
+        id_phrase_map[phrase_id_map[ph]] = ph
+    index_word = {}
+    for w in tokenizer.word_index:
+        index_word[tokenizer.word_index[w]] = w
 
+    fnust_id, id_fnust, fnust_graph_node_count = make_phrases_map(df, tokenizer, index_word, id_phrase_map)
     author_id, id_author, auth_graph_node_count = make_authors_map(df)
     venue_id, id_venue, venue_graph_node_count = make_venues_map(df)
-    fnust_id, id_fnust, fnust_graph_node_count = make_phrases_map(df)
 
     edges = []
     weights = []
     for i, row in df.iterrows():
         abstract_str = row["abstract"]
-        phrases = detect_phrase(abstract_str)
+        phrases = detect_phrase(abstract_str, tokenizer, index_word, id_phrase_map)
         for ph in phrases:
             edges.append([i, fnust_id[ph]])
             weights.append(1)

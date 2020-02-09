@@ -12,44 +12,48 @@ def plot_histogram(temp_list, dump_dir, label):
     plt.savefig(dump_dir + label + "_hist.png")
 
 
-def run_author(probs, df, G_auth, author_id, label_to_index, dump_dir, plot=False):
-    label_author_dict = {}
+def get_scaling_factor(key, label_entity_dict):
+    total_sum = 0
+    for l in label_entity_dict:
+        total_sum += label_entity_dict[l][key]
+    return total_sum
+
+
+def scale(label_entity_dict):
+    scaling_factor = {}
+    for l in label_entity_dict:
+        for key in label_entity_dict[l]:
+            try:
+                factor = scaling_factor[key]
+            except:
+                factor = get_scaling_factor(key, label_entity_dict)
+                scaling_factor[key] = factor
+            label_entity_dict[l][key] = label_entity_dict[l][key] / factor
+
+    for l in label_entity_dict:
+        label_entity_dict[l] = {k: v for k, v in sorted(label_entity_dict[l].items(), key=lambda item: -item[1])}
+    return label_entity_dict
+
+
+def run_pagerank(probs, df, G, entity_id, id_entity, label_to_index, dump_dir, plot=False):
+    label_entity_dict = {}
     start = len(df)
-    count = len(df) + len(author_id)
+    count = len(df) + len(entity_id)
     for l in label_to_index:
         print("Pagerank running for: ", l)
         personalized = np.zeros((count,))
         personalized[:len(df)] = probs[:, label_to_index[l]]
-        pr = pagerank(G_auth, p=0.85, personalize=personalized)
+        pr = pagerank(G, p=0.85, personalize=personalized)
         temp_list = list(pr)[start:]
         if plot:
             plot_histogram(temp_list, dump_dir, l)
         args = np.argsort(temp_list)[::-1]
-        top_auths = []
+        top_auths = {}
         for i in args:
-            top_auths.append(start + i)
-        label_author_dict[l] = top_auths
-    return label_author_dict
-
-
-def run_conf(probs, df, G_conf, venue_id, label_to_index, dump_dir, plot=False):
-    label_venue_dict = {}
-    start = len(df)
-    count = len(df) + len(venue_id)
-    for l in label_to_index:
-        print("Pagerank running for: ", l)
-        personalized = np.zeros((count,))
-        personalized[:len(df)] = probs[:, label_to_index[l]]
-        pr = pagerank(G_conf, p=0.85, personalize=personalized)
-        temp_list = list(pr)[start:]
-        if plot:
-            plot_histogram(temp_list, dump_dir, l)
-        args = np.argsort(temp_list)[::-1]
-        top_venues = []
-        for i in args:
-            top_venues.append(start + i)
-        label_venue_dict[l] = top_venues
-    return label_venue_dict
+            top_auths[id_entity[start + i]] = temp_list[i]
+        label_entity_dict[l] = top_auths
+    label_entity_dict = scale(label_entity_dict)
+    return label_entity_dict
 
 
 def make_auth_pair_map(df):

@@ -2,7 +2,7 @@ from cocube_utils_beta import get_distinct_labels, train_classifier
 from coc_data_utils import *
 from sklearn.feature_extraction.text import CountVectorizer
 from collections import defaultdict
-from pagerank import run_author, run_conf
+from pagerank import run_pagerank
 import pickle
 import numpy as np
 import sys
@@ -94,25 +94,49 @@ def update_label_term_dict(df, label_term_dict, pred_labels, label_to_index, ind
     return label_term_dict, components
 
 
-def update_label_author_dict(label_author_dict, df, pred_labels, it, n1=7):
-    label_docs_dict = get_label_docs_dict(df, label_author_dict, pred_labels)
-    for l in label_author_dict:
+def update_label_entity_dict_with_iteration(label_entity_dict, df, pred_labels, it, n1=7):
+    label_docs_dict = get_label_docs_dict(df, label_entity_dict, pred_labels)
+    for l in label_entity_dict:
         n = min(n1 * (it + 1), int(math.log(len(label_docs_dict[l]), 1.5)))
-        label_author_dict[l] = label_author_dict[l][:n]
-    return label_author_dict
+        i = 0
+        top_k = {}
+        for tup in list(label_entity_dict[l].items()):
+            if i >= n:
+                break
+            top_k[tup[0]] = tup[1]
+            i += 1
+        label_entity_dict[l] = top_k
+    return label_entity_dict
 
 
 def update_label_conf_dict(label_conf_dict, it):
     n = min(it + 1, 3)
     for l in label_conf_dict:
-        label_conf_dict[l] = label_conf_dict[l][:n]
+        top_k = {}
+        i = 0
+        for tup in list(label_conf_dict[l].items()):
+            if i >= n:
+                break
+            top_k[tup[0]] = tup[1]
+            i += 1
+        label_conf_dict[l] = top_k
     return label_conf_dict
+
+
+def modify(label_term_dict):
+    for l in label_term_dict:
+        temp = {}
+        for t in label_term_dict[l]:
+            temp[t] = 1
+        label_term_dict[l] = temp
+    return label_term_dict
 
 
 if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
+    model_name = "phrase_graph"
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -132,7 +156,11 @@ if __name__ == "__main__":
     G_auth = sparse.load_npz(pkl_dump_dir + "G_auth.npz")
     author_id = pickle.load(open(pkl_dump_dir + "author_id.pkl", "rb"))
     id_author = pickle.load(open(pkl_dump_dir + "id_author.pkl", "rb"))
+    G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
+    fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
+    id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
 
+    label_phrase_dict = modify(label_term_dict)
     label_author_dict = {}
     label_conf_dict = {}
 
@@ -149,26 +177,35 @@ if __name__ == "__main__":
             probs = pickle.load(open(pkl_dump_dir + "first_iteration_probs.pkl", "rb"))
 
         else:
-            pred_labels, probs = train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict,
-                                                  label_to_index, index_to_label, author_id, venue_id)
+            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
+                                                  label_to_index, index_to_label)
 
-        auth_plot_dump_dir = pkl_dump_dir + "images/author/" + str(i) + "/"
-        conf_plot_dump_dir = pkl_dump_dir + "images/conf/" + str(i) + "/"
+        phrase_plot_dump_dir = pkl_dump_dir + model_name + "images/phrase/" + str(i) + "/"
+        auth_plot_dump_dir = pkl_dump_dir + model_name + "images/author/" + str(i) + "/"
+        conf_plot_dump_dir = pkl_dump_dir + model_name + "images/conf/" + str(i) + "/"
         if plot:
+            os.makedirs(phrase_plot_dump_dir, exist_ok=True)
             os.makedirs(auth_plot_dump_dir, exist_ok=True)
             os.makedirs(conf_plot_dump_dir, exist_ok=True)
 
-        label_author_dict = run_author(probs, df, G_auth, author_id, label_to_index, auth_plot_dump_dir, plot=plot)
-        label_conf_dict = run_conf(probs, df, G_conf, venue_id, label_to_index, conf_plot_dump_dir, plot=plot)
+        label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index, phrase_plot_dump_dir,
+                                         plot=plot)
+        label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
+                                         plot=plot)
+        label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
+                                       plot=plot)
 
-        label_author_dict = update_label_author_dict(label_author_dict, df, pred_labels, i)
+        # todo convert all these dicts into dict of dicts than dict of list.
+        label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
+        label_author_dict = update_label_entity_dict_with_iteration(label_author_dict, df, pred_labels, i)
         label_conf_dict = update_label_conf_dict(label_conf_dict, i)
 
-        print("Updating label term dict..")
-        label_term_dict, components = update_label_term_dict(df, label_term_dict, pred_labels, label_to_index,
-                                                             index_to_label, word_to_index, index_to_word, inv_docfreq,
-                                                             docfreq, i, n1=7, n2=7)
-        print_label_term_dict(label_term_dict, components, id_phrase_map)
-        print_label_author_dict(label_author_dict, id_author)
-        print_label_conf_dict(label_conf_dict, id_venue)
+        # print("Updating label term dict..")
+        # label_term_dict, components = update_label_term_dict(df, label_term_dict, pred_labels, label_to_index,
+        #                                                      index_to_label, word_to_index, index_to_word, inv_docfreq,
+        #                                                      docfreq, i, n1=7, n2=7)
+        # print_label_term_dict(label_term_dict, components, id_phrase_map)
+        print_label_phrase_dict(label_phrase_dict, id_phrase_map)
+        print_label_entity_dict(label_author_dict)
+        print_label_entity_dict(label_conf_dict)
         print("#" * 80)

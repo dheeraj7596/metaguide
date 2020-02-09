@@ -46,20 +46,21 @@ def print_label_term_dict(label_term_dict, components, id_phrase_map):
                 print("Exception occured: ", e, val)
 
 
-def print_label_author_dict(label_author_dict, id_author):
-    for label in label_author_dict:
+def print_label_phrase_dict(label_phrase_dict, id_phrase_map):
+    for label in label_phrase_dict:
         print(label)
         print("*" * 80)
-        for val in label_author_dict[label]:
-            print(id_author[val])
+        for key in label_phrase_dict[label]:
+            id = decrypt(key)
+            print(id_phrase_map[id])
 
 
-def print_label_conf_dict(label_conf_dict, id_venue):
-    for label in label_conf_dict:
+def print_label_entity_dict(label_entity_dict):
+    for label in label_entity_dict:
         print(label)
         print("*" * 80)
-        for val in label_conf_dict[label]:
-            print(id_venue[val])
+        for key in label_entity_dict[label]:
+            print(key)
 
 
 def get_term_freq(df):

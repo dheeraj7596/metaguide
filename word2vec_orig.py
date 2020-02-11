@@ -67,11 +67,11 @@ if __name__ == "__main__":
     dataset = "dblp/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_mapped_labels_phrase.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)
-    vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=50000)
+    vocabulary, vocab_to_int, int_to_vocab, tokenizer = create_vocabulary(corpus, num_words=87000)
 
     print("Size of vocabulary: ", len(vocabulary))
 

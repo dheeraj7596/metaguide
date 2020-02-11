@@ -20,7 +20,7 @@ if __name__ == "__main__":
     dataset = "dblp/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "df_mapped_labels.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()
@@ -40,10 +40,16 @@ if __name__ == "__main__":
                 phrase_id_map[phrase] = counter
                 counter += 1
             name = generate_name(phrase_id_map[phrase])
-            p.string.replace_with(name)
+            p.string.replace_with(" " + name + " ")
         temp_str = bleach.clean(str(soup), tags=[], strip=True)
         data.append(temp_str)
 
     df["abstract"] = data
-    pickle.dump(df, open(data_path + "df_mapped_labels_phrase.pkl", "wb"))
-    pickle.dump(phrase_id_map, open(data_path + "phrase_id_map.pkl", "wb"))
+    pickle.dump(df, open(data_path + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "wb"))
+
+    id_phrase_map = {}
+    for ph in phrase_id_map:
+        id_phrase_map[phrase_id_map[ph]] = ph
+
+    pickle.dump(phrase_id_map, open(data_path + "phrase_id_map_test.pkl", "wb"))
+    pickle.dump(id_phrase_map, open(data_path + "id_phrase_map_test.pkl", "wb"))

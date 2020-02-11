@@ -21,13 +21,30 @@ def make_authors_map(df):
     return author_id, id_author, count
 
 
-def detect_phrase(sentence, tokenizer, index_word, id_phrase_map):
+def detect_phrase(sentence, tokenizer, index_word, id_phrase_map, idx):
     tokens = tokenizer.texts_to_sequences([sentence])
     temp = []
     for tok in tokens[0]:
         try:
             id = decrypt(index_word[tok])
-            if id is not None and id in id_phrase_map:
+            if id == None or id not in id_phrase_map:
+                if index_word[tok].startswith("fnust"):
+                    num_str = index_word[tok][5:]
+                    flag = 0
+                    for index, char in enumerate(num_str):
+                        if index >= 5:
+                            break
+                        try:
+                            temp_int = int(char)
+                            flag = 1
+                        except:
+                            break
+                    if flag == 1:
+                        if int(num_str[:index]) in id_phrase_map:
+                            temp.append(index_word[tok])
+                    else:
+                        print(idx, index_word[tok])
+            else:
                 temp.append(index_word[tok])
         except Exception as e:
             pass
@@ -41,7 +58,7 @@ def make_phrases_map(df, tokenizer, index_word, id_phrase_map):
     id_fnust = {}
 
     for i, abstract in enumerate(abstracts):
-        phrases = detect_phrase(abstract, tokenizer, index_word, id_phrase_map)
+        phrases = detect_phrase(abstract, tokenizer, index_word, id_phrase_map, i)
         for ph in phrases:
             try:
                 temp = fnust_id[ph]
@@ -68,11 +85,11 @@ def make_venues_map(df):
 
 
 if __name__ == "__main__":
-    base_path = "./data/"
+    base_path = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
     phrase_id_map = pickle.load(open(data_path + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
@@ -82,7 +99,12 @@ if __name__ == "__main__":
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
 
+    existing_fnusts = set()
+    for id in id_phrase_map:
+        existing_fnusts.add("fnust" + str(id))
+
     fnust_id, id_fnust, fnust_graph_node_count = make_phrases_map(df, tokenizer, index_word, id_phrase_map)
+    print(len(existing_fnusts - set(fnust_id.keys())))
     author_id, id_author, auth_graph_node_count = make_authors_map(df)
     venue_id, id_venue, venue_graph_node_count = make_venues_map(df)
 
@@ -90,7 +112,7 @@ if __name__ == "__main__":
     weights = []
     for i, row in df.iterrows():
         abstract_str = row["abstract"]
-        phrases = detect_phrase(abstract_str, tokenizer, index_word, id_phrase_map)
+        phrases = detect_phrase(abstract_str, tokenizer, index_word, id_phrase_map, i)
         for ph in phrases:
             edges.append([i, fnust_id[ph]])
             weights.append(1)

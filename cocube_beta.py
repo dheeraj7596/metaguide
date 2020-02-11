@@ -138,7 +138,7 @@ if __name__ == "__main__":
     pkl_dump_dir = basepath + dataset
     model_name = "phrase_graph"
 
-    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:

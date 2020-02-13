@@ -221,8 +221,8 @@ if __name__ == "__main__":
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
-        # label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
-        label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
+        label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
+        # label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
         # label_author_dict = update_label_entity_dict_with_iteration(label_author_dict, df, pred_labels, i)
         # label_conf_dict = update_label_conf_dict(label_conf_dict, i)
 

@@ -123,6 +123,25 @@ def update_label_conf_dict(label_conf_dict, it):
     return label_conf_dict
 
 
+def update_by_percent_with_overlap(label_entity_dict, entity_docid_map, df, i):
+    filtered_dict = {}
+    for l in label_entity_dict:
+        filtered_dict[l] = {}
+
+    n = min((i + 1) * 0.1 * len(df), len(df) * 0.6)
+    doc_id_set = set()
+    i = 0
+    while len(doc_id_set) < n:
+        for l in label_entity_dict:
+            all_tups = list(label_entity_dict[l].items())
+            if i < len(all_tups):
+                tup = all_tups[i]
+                filtered_dict[l][tup[0]] = tup[1]
+                doc_id_set.update(entity_docid_map[tup[0]])
+        i += 1
+    return filtered_dict
+
+
 def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
     filtered_dict = {}
     for l in label_phrase_dict:
@@ -185,6 +204,7 @@ if __name__ == "__main__":
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
+    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     label_author_dict = {}
@@ -216,12 +236,13 @@ if __name__ == "__main__":
 
         label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index, phrase_plot_dump_dir,
                                          plot=plot)
-        # label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
-        #                                  plot=plot)
+        label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
+                                         plot=plot)
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
         label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
+        label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)
         # label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
         # label_author_dict = update_label_entity_dict_with_iteration(label_author_dict, df, pred_labels, i)
         # label_conf_dict = update_label_conf_dict(label_conf_dict, i)

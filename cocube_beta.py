@@ -128,7 +128,8 @@ def update_by_percent_with_overlap(label_entity_dict, entity_docid_map, df, i):
     for l in label_entity_dict:
         filtered_dict[l] = {}
 
-    n = min((i + 1) * 0.1 * len(df), len(df) * 0.6)
+    # n = min((i + 1) * 0.1 * len(df), len(df) * 0.6)
+    n = min((i + 1) * 0.1 * len(df), len(df))
     doc_id_set = set()
     i = 0
     while len(doc_id_set) < n:
@@ -147,7 +148,8 @@ def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
     for l in label_phrase_dict:
         filtered_dict[l] = {}
 
-    n = min((i + 1) * 0.1 * len(df), len(df) * 0.6)
+    # n = min((i + 1) * 0.1 * len(df), len(df) * 0.6)
+    n = min((i + 1) * 0.1 * len(df), len(df))
     checked_phrases = {}
     doc_id_set = set()
     i = 0

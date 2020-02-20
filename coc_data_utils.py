@@ -52,7 +52,7 @@ def print_label_phrase_dict(label_phrase_dict, id_phrase_map):
         print("*" * 80)
         for key in label_phrase_dict[label]:
             id = decrypt(key)
-            print(id_phrase_map[id])
+            print(id_phrase_map[id], label_phrase_dict[label][key])
 
 
 def print_label_entity_dict(label_entity_dict):
@@ -60,7 +60,7 @@ def print_label_entity_dict(label_entity_dict):
         print(label)
         print("*" * 80)
         for key in label_entity_dict[label]:
-            print(key)
+            print(key, label_entity_dict[label][key])
 
 
 def get_term_freq(df):

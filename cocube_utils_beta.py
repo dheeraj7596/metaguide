@@ -98,12 +98,20 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
 
             # if flag:
             for auth in int_authors:
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
                 count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
                 flag = 1
 
             if len(label_conf_dict) and len(label_conf_dict[l]) > 0:
                 seed_conf = set(label_conf_dict[l].keys())
                 if conf in seed_conf:
+                    try:
+                        temp = count_dict[l]
+                    except:
+                        count_dict[l] = {}
                     count_dict[l]["CONF_" + str(conf)] = label_conf_dict[l][conf]
                     flag = 1
 

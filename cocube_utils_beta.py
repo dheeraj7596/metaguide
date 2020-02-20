@@ -82,8 +82,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
                 int_authors = authors_set.intersection(seed_authors)
             else:
                 int_authors = []
-            if len(int_labels) == 0:
-                continue
+            # if len(int_labels) == 0:
+            #     continue
             for word in words:
                 if word in int_labels:
                     flag = 1

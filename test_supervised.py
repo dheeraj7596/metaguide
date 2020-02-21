@@ -20,8 +20,8 @@ def run(df):
     embedding_dim = 100
 
     X = df["abstract"]
-    y = df["conf"]
-    y_true = df["conf"]
+    y = df["label"]
+    y_true = df["label"]
 
     labels, label_to_index, index_to_label = get_distinct_labels(df)
     y_one_hot = make_one_hot(y, label_to_index)

@@ -80,7 +80,7 @@ def create_df(df):
 
 
 def get_distinct_labels(df):
-    labels = list(set(df["conf"]))
+    labels = list(set(df["label"]))
     label_to_index = {}
     index_to_label = {}
 

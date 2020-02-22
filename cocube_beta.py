@@ -217,7 +217,7 @@ if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
-    model_name = "phrase_graph"
+    model_name = "phrase_author_graph"
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -247,7 +247,7 @@ if __name__ == "__main__":
     label_author_dict = {}
     label_conf_dict = {}
 
-    t = 10
+    t = 15
     pre_train = 0
     plot = True
 

@@ -169,6 +169,41 @@ def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
     return filtered_dict
 
 
+def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i):
+    filtered_label_entity_dict_list = []
+    for label_entity_dict in label_entity_dict_list:
+        filtered_dict = {}
+        for l in label_entity_dict:
+            filtered_dict[l] = {}
+        filtered_label_entity_dict_list.append(filtered_dict)
+
+    n = min((i + 1) * 0.1 * len(df), len(df))
+    doc_id_set = set()
+
+    sorted_tups_dict = {}
+    for l in labels:
+        all_tups = []
+        for label_entity_dict in label_entity_dict_list:
+            all_tups += list(label_entity_dict[l].items())
+        sorted_tups_dict[l] = sorted(all_tups, key=lambda tup: -tup[1])
+
+    index = 0
+    while len(doc_id_set) < n:
+        for l in labels:
+            if index < len(sorted_tups_dict[l]):
+                tup = sorted_tups_dict[l][index]
+                for i, entity_docid in enumerate(entity_docid_map_list):
+                    try:
+                        temp = entity_docid[tup[0]]
+                        filtered_label_entity_dict_list[i][l][tup[0]] = tup[1]
+                        doc_id_set.update(entity_docid[tup[0]])
+                        break
+                    except:
+                        continue
+        index += 1
+    return filtered_label_entity_dict_list
+
+
 def modify(label_term_dict):
     for l in label_term_dict:
         temp = {}
@@ -243,8 +278,14 @@ if __name__ == "__main__":
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
-        label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
-        label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)
+        label_entity_dict_list = [label_phrase_dict, label_author_dict]
+        entity_docid_map_list = [phrase_docid_map, author_docid_map]
+        label_phrase_dict, label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list,
+                                                                          df, labels, i)
+
+        # label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
+        # label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)
+
         # label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
         # label_author_dict = update_label_entity_dict_with_iteration(label_author_dict, df, pred_labels, i)
         # label_conf_dict = update_label_conf_dict(label_conf_dict, i)

@@ -54,7 +54,7 @@ def softmax_label(count_dict, label_to_index):
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer):
+def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer, ignore_metadata=True):
     y = []
     X = []
     y_true = []
@@ -82,8 +82,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
                 int_authors = authors_set.intersection(seed_authors)
             else:
                 int_authors = []
-            # if len(int_labels) == 0:
-            #     continue
+            if ignore_metadata and len(int_labels) == 0:
+                continue
             for word in words:
                 if word in int_labels:
                     flag = 1
@@ -141,7 +141,8 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     embedding_dim = 100
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
-    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer)
+    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
+                                  ignore_metadata=False)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
     df_train = create_training_df(X, y, y_true)

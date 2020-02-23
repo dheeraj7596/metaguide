@@ -5,6 +5,7 @@ from keras_han.model import HAN
 from scipy.special import softmax
 from keras.losses import kullback_leibler_divergence
 from model import *
+import matplotlib.pyplot as plt
 from data_utils import *
 import pickle
 import os
@@ -30,6 +31,23 @@ def get_distinct_labels(df):
         label_to_index[label] = i
         index_to_label[i] = label
     return labels, label_to_index, index_to_label
+
+
+def get_entity_count(label_entity_dict, entity_count):
+    for l in label_entity_dict:
+        try:
+            entity_count[l].append(len(label_entity_dict[l]))
+        except:
+            entity_count[l] = [len(label_entity_dict[l])]
+    return entity_count
+
+
+def plot_entity_count(y_values, x_values, path, x_label, y_label):
+    plt.figure()
+    plt.plot(x_values, y_values)
+    plt.ylabel(y_label)
+    plt.xlabel(x_label)
+    plt.savefig(path)
 
 
 def argmax_label(count_dict):

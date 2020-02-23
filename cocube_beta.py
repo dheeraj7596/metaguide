@@ -1,4 +1,4 @@
-from cocube_utils_beta import get_distinct_labels, train_classifier
+from cocube_utils_beta import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count
 from coc_data_utils import *
 from sklearn.feature_extraction.text import CountVectorizer
 from collections import defaultdict
@@ -251,6 +251,8 @@ if __name__ == "__main__":
     pre_train = 0
     plot = True
 
+    phrase_count = {}
+    author_count = {}
     for i in range(t):
         print("ITERATION ", i)
         print("Going to train classifier..")
@@ -295,7 +297,27 @@ if __name__ == "__main__":
         #                                                      index_to_label, word_to_index, index_to_word, inv_docfreq,
         #                                                      docfreq, i, n1=7, n2=7)
         # print_label_term_dict(label_term_dict, components, id_phrase_map)
+
+        phrase_count = get_entity_count(label_phrase_dict, phrase_count)
+        author_count = get_entity_count(label_author_dict, author_count)
+
         print_label_phrase_dict(label_phrase_dict, id_phrase_map)
         print_label_entity_dict(label_author_dict)
         print_label_entity_dict(label_conf_dict)
         print("#" * 80)
+
+    for l in phrase_count:
+        y_values = phrase_count[l]
+        x_values = range(1, t + 1)
+        path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_count_iterations.png"
+        x_label = "Iteration"
+        y_label = "Number of Phrases"
+        plot_entity_count(y_values, x_values, path, x_label, y_label)
+
+    for l in author_count:
+        y_values = author_count[l]
+        x_values = range(1, t + 1)
+        path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_count_iterations.png"
+        x_label = "Iteration"
+        y_label = "Number of Authors"
+        plot_entity_count(y_values, x_values, path, x_label, y_label)

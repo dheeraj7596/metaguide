@@ -217,7 +217,7 @@ if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
-    model_name = "phrase_author_graph"
+    model_name = "phrase_author_rank_independent"
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -283,13 +283,15 @@ if __name__ == "__main__":
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
-        label_entity_dict_list = [label_phrase_dict, label_author_dict]
-        entity_docid_map_list = [phrase_docid_map, author_docid_map]
-        label_phrase_dict, label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list,
-                                                                          df, labels, i)
+        # RANKING TOGETHER
+        # label_entity_dict_list = [label_phrase_dict, label_author_dict]
+        # entity_docid_map_list = [phrase_docid_map, author_docid_map]
+        # label_phrase_dict, label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list,
+        #                                                                   df, labels, i)
 
-        # label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
-        # label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)
+        # RANKING INDEPENDENTLY
+        label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
+        label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)
 
         # label_phrase_dict = update_label_entity_dict_with_iteration(label_phrase_dict, df, pred_labels, i)
         # label_author_dict = update_label_entity_dict_with_iteration(label_author_dict, df, pred_labels, i)

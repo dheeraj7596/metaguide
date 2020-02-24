@@ -314,10 +314,15 @@ if __name__ == "__main__":
         print("#" * 80)
 
     if plot:
+        phrase_count_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/count_cutoff/"
+        auth_count_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/count_cutoff/"
+        os.makedirs(phrase_count_plot_dump_dir, exist_ok=True)
+        os.makedirs(auth_count_plot_dump_dir, exist_ok=True)
+
         for l in phrase_count:
             y_values = phrase_count[l]
             x_values = range(1, t + 1)
-            path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_count_iterations.png"
+            path = phrase_count_plot_dump_dir + l + "_phrase_count_iterations.png"
             x_label = "Iteration"
             y_label = "Number of Phrases"
             plot_entity_count(y_values, x_values, path, x_label, y_label)
@@ -325,7 +330,7 @@ if __name__ == "__main__":
         for l in author_count:
             y_values = author_count[l]
             x_values = range(1, t + 1)
-            path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_count_iterations.png"
+            path = auth_count_plot_dump_dir + l + "_author_count_iterations.png"
             x_label = "Iteration"
             y_label = "Number of Authors"
             plot_entity_count(y_values, x_values, path, x_label, y_label)
@@ -333,7 +338,7 @@ if __name__ == "__main__":
         for l in phrase_ppr_cutoff:
             y_values = phrase_ppr_cutoff[l]
             x_values = range(1, t + 1)
-            path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_ppr_cutoff_iterations.png"
+            path = phrase_count_plot_dump_dir + l + "_phrase_ppr_cutoff_iterations.png"
             x_label = "Iteration"
             y_label = "PPR Cutoff"
             plot_entity_count(y_values, x_values, path, x_label, y_label)
@@ -341,7 +346,7 @@ if __name__ == "__main__":
         for l in author_ppr_cutoff:
             y_values = author_ppr_cutoff[l]
             x_values = range(1, t + 1)
-            path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_ppr_cutoff_iterations.png"
+            path = auth_count_plot_dump_dir + l + "_author_ppr_cutoff_iterations.png"
             x_label = "Iteration"
             y_label = "PPR Cutoff"
             plot_entity_count(y_values, x_values, path, x_label, y_label)

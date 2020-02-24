@@ -42,6 +42,16 @@ def get_entity_count(label_entity_dict, entity_count):
     return entity_count
 
 
+def get_cut_off(label_entity_dict, entity_cut_off):
+    for l in label_entity_dict:
+        items_list = list(label_entity_dict[l].items())
+        try:
+            entity_cut_off[l].append(items_list[-1][1])
+        except:
+            entity_cut_off[l] = [items_list[-1][1]]
+    return entity_cut_off
+
+
 def plot_entity_count(y_values, x_values, path, x_label, y_label):
     plt.figure()
     plt.plot(x_values, y_values)

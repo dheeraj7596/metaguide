@@ -1,4 +1,4 @@
-from cocube_utils_beta import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count
+from cocube_utils_beta import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count, get_cut_off
 from coc_data_utils import *
 from sklearn.feature_extraction.text import CountVectorizer
 from collections import defaultdict
@@ -253,6 +253,9 @@ if __name__ == "__main__":
 
     phrase_count = {}
     author_count = {}
+    phrase_ppr_cutoff = {}
+    author_ppr_cutoff = {}
+
     for i in range(t):
         print("ITERATION ", i)
         print("Going to train classifier..")
@@ -300,24 +303,43 @@ if __name__ == "__main__":
 
         phrase_count = get_entity_count(label_phrase_dict, phrase_count)
         author_count = get_entity_count(label_author_dict, author_count)
+        phrase_ppr_cutoff = get_cut_off(label_phrase_dict, phrase_ppr_cutoff)
+        author_ppr_cutoff = get_cut_off(label_author_dict, author_ppr_cutoff)
 
         print_label_phrase_dict(label_phrase_dict, id_phrase_map)
         print_label_entity_dict(label_author_dict)
         print_label_entity_dict(label_conf_dict)
         print("#" * 80)
 
-    for l in phrase_count:
-        y_values = phrase_count[l]
-        x_values = range(1, t + 1)
-        path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_count_iterations.png"
-        x_label = "Iteration"
-        y_label = "Number of Phrases"
-        plot_entity_count(y_values, x_values, path, x_label, y_label)
+    if plot:
+        for l in phrase_count:
+            y_values = phrase_count[l]
+            x_values = range(1, t + 1)
+            path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_count_iterations.png"
+            x_label = "Iteration"
+            y_label = "Number of Phrases"
+            plot_entity_count(y_values, x_values, path, x_label, y_label)
 
-    for l in author_count:
-        y_values = author_count[l]
-        x_values = range(1, t + 1)
-        path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_count_iterations.png"
-        x_label = "Iteration"
-        y_label = "Number of Authors"
-        plot_entity_count(y_values, x_values, path, x_label, y_label)
+        for l in author_count:
+            y_values = author_count[l]
+            x_values = range(1, t + 1)
+            path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_count_iterations.png"
+            x_label = "Iteration"
+            y_label = "Number of Authors"
+            plot_entity_count(y_values, x_values, path, x_label, y_label)
+
+        for l in phrase_ppr_cutoff:
+            y_values = phrase_ppr_cutoff[l]
+            x_values = range(1, t + 1)
+            path = pkl_dump_dir + "images/" + model_name + "/phrase/" + "phrase_ppr_cutoff_iterations.png"
+            x_label = "Iteration"
+            y_label = "PPR Cutoff"
+            plot_entity_count(y_values, x_values, path, x_label, y_label)
+
+        for l in author_ppr_cutoff:
+            y_values = author_ppr_cutoff[l]
+            x_values = range(1, t + 1)
+            path = pkl_dump_dir + "images/" + model_name + "/author/" + "author_ppr_cutoff_iterations.png"
+            x_label = "Iteration"
+            y_label = "PPR Cutoff"
+            plot_entity_count(y_values, x_values, path, x_label, y_label)

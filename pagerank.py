@@ -10,6 +10,7 @@ def plot_histogram(temp_list, dump_dir, label):
     plt.figure()
     plt.hist(temp_list, color='blue', edgecolor='black', bins=30)
     plt.savefig(dump_dir + label + "_hist.png")
+    pickle.dump(temp_list, open(dump_dir + "ppr_values.pkl", "wb"))
 
 
 def get_scaling_factor(key, label_entity_dict):

@@ -177,7 +177,8 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
             filtered_dict[l] = {}
         filtered_label_entity_dict_list.append(filtered_dict)
 
-    n = min((i + 1) * 0.1 * len(df), len(df))
+    # n = min((i + 1) * 0.1 * len(df), len(df))
+    n = len(df)
     doc_id_set = set()
 
     sorted_tups_dict = {}
@@ -217,7 +218,7 @@ if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
-    model_name = "phrase_author_rank_together"
+    model_name = "phrase_author_100"
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -249,7 +250,7 @@ if __name__ == "__main__":
 
     t = 15
     pre_train = 0
-    plot = True
+    plot = False
 
     phrase_count = {}
     author_count = {}

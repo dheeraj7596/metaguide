@@ -289,9 +289,14 @@ if __name__ == "__main__":
         #                                plot=plot)
 
         # RANKING PHRASE ONLY
-        label_entity_dict_list = [label_phrase_dict]
-        entity_docid_map_list = [phrase_docid_map]
-        label_phrase_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i)
+        # label_entity_dict_list = [label_phrase_dict]
+        # entity_docid_map_list = [phrase_docid_map]
+        # label_phrase_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i)
+
+        # RANKING AUTHOR ONLY
+        label_entity_dict_list = [label_author_dict]
+        entity_docid_map_list = [author_docid_map]
+        label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i)
 
         # RANKING PHRASE, METADATA TOGETHER
         # label_entity_dict_list = [label_phrase_dict, label_author_dict]

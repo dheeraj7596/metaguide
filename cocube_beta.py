@@ -81,8 +81,8 @@ if __name__ == "__main__":
 
         label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index, phrase_plot_dump_dir,
                                          plot=plot)
-        label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
-                                         plot=plot)
+        # label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
+        #                                  plot=plot)
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 

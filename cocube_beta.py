@@ -190,6 +190,7 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
 
     index = 0
     while len(doc_id_set) < n:
+        flag = 0
         for l in labels:
             if index < len(sorted_tups_dict[l]):
                 tup = sorted_tups_dict[l][index]
@@ -198,9 +199,12 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
                         temp = entity_docid[tup[0]]
                         filtered_label_entity_dict_list[i][l][tup[0]] = tup[1]
                         doc_id_set.update(entity_docid[tup[0]])
+                        flag = 1
                         break
                     except:
                         continue
+        if flag == 0:
+            break
         index += 1
     return filtered_label_entity_dict_list
 

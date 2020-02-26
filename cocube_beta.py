@@ -288,11 +288,16 @@ if __name__ == "__main__":
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
-        # RANKING TOGETHER
-        label_entity_dict_list = [label_phrase_dict, label_author_dict]
-        entity_docid_map_list = [phrase_docid_map, author_docid_map]
-        label_phrase_dict, label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list,
-                                                                          df, labels, i)
+        # RANKING PHRASE ONLY
+        label_entity_dict_list = [label_phrase_dict]
+        entity_docid_map_list = [phrase_docid_map]
+        label_phrase_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i)
+
+        # RANKING PHRASE, METADATA TOGETHER
+        # label_entity_dict_list = [label_phrase_dict, label_author_dict]
+        # entity_docid_map_list = [phrase_docid_map, author_docid_map]
+        # label_phrase_dict, label_author_dict = update_by_percent_together(label_entity_dict_list, entity_docid_map_list,
+        #                                                                   df, labels, i)
 
         # RANKING INDEPENDENTLY
         # label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)

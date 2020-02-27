@@ -1,5 +1,6 @@
 import numpy as np
 from collections import defaultdict
+import random
 import matplotlib.pyplot as plt
 from parse_autophrase_output import generate_name, decrypt
 
@@ -10,7 +11,7 @@ def get_label_term_json(path):
     return dic
 
 
-def modify_phrases(label_term_dict, phrase_id_map):
+def modify_phrases(label_term_dict, phrase_id_map, random_k=0):
     for l in label_term_dict:
         temp_list = []
         for term in label_term_dict[l]:
@@ -18,7 +19,11 @@ def modify_phrases(label_term_dict, phrase_id_map):
                 temp_list.append(generate_name(phrase_id_map[term]))
             except:
                 temp_list.append(term)
-        label_term_dict[l] = temp_list
+        if random_k:
+            random.shuffle(temp_list)
+            label_term_dict[l] = temp_list[:random_k]
+        else:
+            label_term_dict[l] = temp_list
     return label_term_dict
 
 

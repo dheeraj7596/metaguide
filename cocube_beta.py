@@ -81,21 +81,21 @@ if __name__ == "__main__":
 
         label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index, phrase_plot_dump_dir,
                                          plot=plot)
-        label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
-                                         plot=plot)
+        # label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
+        #                                  plot=plot)
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
         # RANKING PHRASE ONLY
-        # label_phrase_dict = rank_phrase_only(label_phrase_dict, phrase_docid_map, df, labels, i)
+        label_phrase_dict = rank_phrase_only(label_phrase_dict, phrase_docid_map, df, labels, i)
 
         # RANKING AUTHOR ONLY
         # label_author_dict = rank_author_only(label_author_dict, author_docid_map, df, labels, i)
 
         # RANKING PHRASE, METADATA TOGETHER
-        label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
-                                                                           phrase_docid_map, author_docid_map, df,
-                                                                           labels, i)
+        # label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
+        #                                                                    phrase_docid_map, author_docid_map, df,
+        #                                                                    labels, i)
 
         # RANKING INDEPENDENTLY
         # label_phrase_dict, label_author_dict = rank_phrase_author_independently(label_phrase_dict, label_author_dict,

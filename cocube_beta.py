@@ -53,6 +53,7 @@ if __name__ == "__main__":
     t = 15
     pre_train = 0
     plot = False
+    should_print = False
 
     phrase_count = {}
     author_count = {}
@@ -112,9 +113,10 @@ if __name__ == "__main__":
             phrase_ppr_cutoff = get_cut_off(label_phrase_dict, phrase_ppr_cutoff)
             author_ppr_cutoff = get_cut_off(label_author_dict, author_ppr_cutoff)
 
-        print_label_phrase_dict(label_phrase_dict, id_phrase_map)
-        print_label_entity_dict(label_author_dict)
-        print_label_entity_dict(label_conf_dict)
+        if should_print:
+            print_label_phrase_dict(label_phrase_dict, id_phrase_map)
+            print_label_entity_dict(label_author_dict)
+            print_label_entity_dict(label_conf_dict)
         print("#" * 80)
 
     if plot:

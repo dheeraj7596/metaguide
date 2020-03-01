@@ -154,11 +154,11 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label):
+def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label,
+                     model_name):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     # glove_dir = basepath + "glove.6B"
-    model_name = "cocube_tok"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
     tmp_dir = basepath + "checkpoints/" + dataset + model_name + "/"
     os.makedirs(dump_dir, exist_ok=True)

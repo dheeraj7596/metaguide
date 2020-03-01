@@ -5,6 +5,7 @@ from pagerank import run_pagerank
 import pickle
 import os
 from scipy import sparse
+import sys
 
 
 def modify(label_term_dict):
@@ -20,7 +21,7 @@ if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
-    model_name = "phrase_author_100"
+    model_name = sys.argv[2]
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -54,6 +55,7 @@ if __name__ == "__main__":
     pre_train = 0
     plot = False
     should_print = False
+    algo = int(sys.argv[1])
 
     phrase_count = {}
     author_count = {}
@@ -70,7 +72,7 @@ if __name__ == "__main__":
 
         else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
-                                                  label_to_index, index_to_label)
+                                                  label_to_index, index_to_label, model_name)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"
@@ -80,23 +82,34 @@ if __name__ == "__main__":
             os.makedirs(auth_plot_dump_dir, exist_ok=True)
             os.makedirs(conf_plot_dump_dir, exist_ok=True)
 
-        label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index, phrase_plot_dump_dir,
-                                         plot=plot)
-        label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index, auth_plot_dump_dir,
-                                         plot=plot)
         # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
         #                                plot=plot)
 
         # RANKING PHRASE ONLY
-        # label_phrase_dict = rank_phrase_only(label_phrase_dict, phrase_docid_map, df, labels, i)
+        if algo == 1:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_phrase_dict = rank_phrase_only(label_phrase_dict, phrase_docid_map, df, labels, i)
 
         # RANKING AUTHOR ONLY
-        # label_author_dict = rank_author_only(label_author_dict, author_docid_map, df, labels, i)
+        elif algo == 2:
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = rank_author_only(label_author_dict, author_docid_map, df, labels, i)
 
         # RANKING PHRASE, METADATA TOGETHER
-        label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
-                                                                           phrase_docid_map, author_docid_map, df,
-                                                                           labels, i)
+        elif algo == 3:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
+                                                                               phrase_docid_map, author_docid_map, df,
+                                                                               labels, i)
 
         # RANKING INDEPENDENTLY
         # label_phrase_dict, label_author_dict = rank_phrase_author_independently(label_phrase_dict, label_author_dict,

@@ -202,12 +202,12 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     mc = ModelCheckpoint(filepath=tmp_dir + 'model.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_acc', mode='max',
                          verbose=1, save_weights_only=True, save_best_only=True)
     model.fit(X_train, y_train, validation_data=(X_val, y_val), nb_epoch=100, batch_size=256, callbacks=[es, mc])
-    print("****************** CLASSIFICATION REPORT FOR DOCUMENTS WITH LABEL WORDS ********************")
-    X_label_all = prep_data(texts=X, max_sentences=max_sentences, max_sentence_length=max_sentence_length,
-                            tokenizer=tokenizer)
-    pred = model.predict(X_label_all)
-    pred_labels = get_from_one_hot(pred, index_to_label)
-    print(classification_report(y_true, pred_labels))
+    # print("****************** CLASSIFICATION REPORT FOR DOCUMENTS WITH LABEL WORDS ********************")
+    # X_label_all = prep_data(texts=X, max_sentences=max_sentences, max_sentence_length=max_sentence_length,
+    #                         tokenizer=tokenizer)
+    # pred = model.predict(X_label_all)
+    # pred_labels = get_from_one_hot(pred, index_to_label)
+    # print(classification_report(y_true, pred_labels))
     print("****************** CLASSIFICATION REPORT FOR All DOCUMENTS ********************")
     X_all = prep_data(texts=df["abstract"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
                       tokenizer=tokenizer)

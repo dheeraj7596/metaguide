@@ -21,8 +21,8 @@ if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
-    model_name = sys.argv[2]
-    num_seedwords = int(sys.argv[3])
+    model_name = sys.argv[3]
+    num_seedwords = int(sys.argv[2])
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))

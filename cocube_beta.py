@@ -48,10 +48,11 @@ if __name__ == "__main__":
     author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
+    print_label_phrase_dict(label_phrase_dict, id_phrase_map)
     label_author_dict = {}
     label_conf_dict = {}
 
-    t = 15
+    t = 10
     pre_train = 0
     plot = False
     should_print = False

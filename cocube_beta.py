@@ -22,6 +22,7 @@ if __name__ == "__main__":
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
     model_name = sys.argv[2]
+    num_seedwords = int(sys.argv[3])
 
     df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -32,7 +33,7 @@ if __name__ == "__main__":
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)
     label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords.json")
-    label_term_dict = modify_phrases(label_term_dict, phrase_id_map, random_k=2)
+    label_term_dict = modify_phrases(label_term_dict, phrase_id_map, random_k=num_seedwords)
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)
     G_conf = sparse.load_npz(pkl_dump_dir + "G_conf.npz")

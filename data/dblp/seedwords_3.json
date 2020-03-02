@@ -1,0 +1,52 @@
+{
+  "computer vision": [
+    "object detection",
+    "face detection",
+    "object tracking"
+  ],
+  "computational linguistics": [
+    "linguistic",
+    "speech recognition",
+    "word sense disambiguation"
+  ],
+  "biomedical engineering": [
+    "brain",
+    "medical",
+    "mri"
+  ],
+  "software engineering": [
+    "object-oriented",
+    "register allocation",
+    "software design"
+  ],
+  "graphics": [
+    "design",
+    "user interface",
+    "benchmark circuits"
+  ],
+  "data mining": [
+    "data mining",
+    "association rules",
+    "recommender systems"
+  ],
+  "security and cryptography": [
+    "malware",
+    "cryptography",
+    "diffie-hellman"
+  ],
+  "signal processing": [
+    "channel",
+    "wireless",
+    "csi"
+  ],
+  "robotics": [
+    "robot",
+    "mobile robot",
+    "path planning"
+  ],
+  "theory": [
+    "nondeterministic",
+    "polynomials",
+    "finite automata"
+  ]
+}

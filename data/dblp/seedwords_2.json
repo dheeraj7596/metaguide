@@ -1,0 +1,42 @@
+{
+  "computer vision": [
+    "video",
+    "object detection"
+  ],
+  "computational linguistics": [
+    "word sense disambiguation",
+    "named entity recognition"
+  ],
+  "biomedical engineering": [
+    "brain",
+    "mri"
+  ],
+  "software engineering": [
+    "compiler",
+    "software engineering"
+  ],
+  "graphics": [
+    "interaction techniques",
+    "global routing"
+  ],
+  "data mining": [
+    "social network",
+    "hierarchical clustering"
+  ],
+  "security and cryptography": [
+    "malware",
+    "cryptography"
+  ],
+  "signal processing": [
+    "network coding",
+    "wireless sensor networks"
+  ],
+  "robotics": [
+    "robot",
+    "humanoid robot"
+  ],
+  "theory": [
+    "calculus",
+    "polynomials"
+  ]
+}

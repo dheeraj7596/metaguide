@@ -1,0 +1,32 @@
+{
+  "computer vision": [
+    "pixel"
+  ],
+  "computational linguistics": [
+    "natural language"
+  ],
+  "biomedical engineering": [
+    "mri"
+  ],
+  "software engineering": [
+    "software development"
+  ],
+  "graphics": [
+    "user interface"
+  ],
+  "data mining": [
+    "social network"
+  ],
+  "security and cryptography": [
+    "cryptographic"
+  ],
+  "signal processing": [
+    "transmitter"
+  ],
+  "robotics": [
+    "humanoid robot"
+  ],
+  "theory": [
+    "finite automata"
+  ]
+}

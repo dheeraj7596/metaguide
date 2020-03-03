@@ -126,9 +126,16 @@ if __name__ == "__main__":
                                                                                labels, i, cov="iterative")
 
         # RANKING INDEPENDENTLY
-        # label_phrase_dict, label_author_dict = rank_phrase_author_independently(label_phrase_dict, label_author_dict,
-        #                                                                         phrase_docid_map, author_docid_map, df,
-        #                                                                         i)
+        elif algo == 5:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_phrase_dict, label_author_dict = rank_phrase_author_independently(label_phrase_dict,
+                                                                                    label_author_dict, phrase_docid_map,
+                                                                                    author_docid_map, df, i)
 
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,

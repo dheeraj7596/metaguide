@@ -161,7 +161,7 @@ def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
     return filtered_dict
 
 
-def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i):
+def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full"):
     filtered_label_entity_dict_list = []
     for label_entity_dict in label_entity_dict_list:
         filtered_dict = {}
@@ -169,8 +169,10 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
             filtered_dict[l] = {}
         filtered_label_entity_dict_list.append(filtered_dict)
 
-    # n = min((i + 1) * 0.1 * len(df), len(df))
-    n = len(df)
+    if cov == "full":
+        n = len(df)
+    else:
+        n = min((i + 1) * 0.1 * len(df), len(df))
     doc_id_set = set()
 
     sorted_tups_dict = {}

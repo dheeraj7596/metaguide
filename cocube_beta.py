@@ -45,13 +45,18 @@ if __name__ == "__main__":
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
+    G_year = sparse.load_npz(pkl_dump_dir + "G_year.npz")
+    year_id = pickle.load(open(pkl_dump_dir + "year_id.pkl", "rb"))
+    id_year = pickle.load(open(pkl_dump_dir + "id_year.pkl", "rb"))
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
     author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
+    year_docid_map = pickle.load(open(pkl_dump_dir + "year_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
     label_author_dict = {}
     label_conf_dict = {}
+    label_year_dict = {}
 
     t = 15
     pre_train = 0
@@ -78,6 +83,7 @@ if __name__ == "__main__":
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"
+        year_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/year/" + str(i) + "/"
         conf_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/conf/" + str(i) + "/"
         if plot:
             os.makedirs(phrase_plot_dump_dir, exist_ok=True)
@@ -137,6 +143,24 @@ if __name__ == "__main__":
                                                                                     label_author_dict, phrase_docid_map,
                                                                                     author_docid_map, df, i)
 
+        # RANKING PHRASE, AUTHOR, YEAR TOGETHER
+        elif algo == 6:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_year_dict = run_pagerank(probs, df, G_year, year_id, id_year, label_to_index,
+                                           year_plot_dump_dir,
+                                           plot=plot)
+            label_phrase_dict, label_author_dict, label_year_dict = rank_phrase_author_year_together(label_phrase_dict,
+                                                                                                     label_author_dict,
+                                                                                                     label_year_dict,
+                                                                                                     phrase_docid_map,
+                                                                                                     author_docid_map,
+                                                                                                     year_docid_map, df,
+                                                                                                     labels, i)
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)

@@ -21,6 +21,20 @@ def make_authors_map(df):
     return author_id, id_author, count
 
 
+def make_years_map(df):
+    count = len(df)
+    year_id = {}
+    id_year = {}
+
+    years_set = set(df.year)
+
+    for i, year in enumerate(years_set):
+        year_id[year] = count
+        id_year[count] = year
+        count += 1
+    return year_id, id_year, count
+
+
 def detect_phrase(sentence, tokenizer, index_word, id_phrase_map, idx):
     tokens = tokenizer.texts_to_sequences([sentence])
     temp = []
@@ -107,6 +121,7 @@ if __name__ == "__main__":
     print(len(existing_fnusts - set(fnust_id.keys())))
     author_id, id_author, auth_graph_node_count = make_authors_map(df)
     venue_id, id_venue, venue_graph_node_count = make_venues_map(df)
+    year_id, id_year, year_graph_node_count = make_years_map(df)
 
     edges = []
     weights = []
@@ -142,6 +157,17 @@ if __name__ == "__main__":
     G_conf = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
                                shape=(venue_graph_node_count, venue_graph_node_count))
 
+    edges = []
+    weights = []
+    for i, row in df.iterrows():
+        year = row["year"]
+        edges.append([i, year_id[year]])
+        weights.append(1)
+    edges = np.array(edges)
+    G_year = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
+                               shape=(year_graph_node_count, year_graph_node_count))
+
+    sparse.save_npz(data_path + "G_year.npz", G_year)
     sparse.save_npz(data_path + "G_phrase.npz", G_phrase)
     sparse.save_npz(data_path + "G_auth.npz", G_auth)
     sparse.save_npz(data_path + "G_conf.npz", G_conf)
@@ -154,3 +180,6 @@ if __name__ == "__main__":
 
     pickle.dump(author_id, open(data_path + "author_id.pkl", "wb"))
     pickle.dump(id_author, open(data_path + "id_author.pkl", "wb"))
+
+    pickle.dump(year_id, open(data_path + "year_id.pkl", "wb"))
+    pickle.dump(id_year, open(data_path + "id_year.pkl", "wb"))

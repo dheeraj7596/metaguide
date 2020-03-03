@@ -161,6 +161,8 @@ if __name__ == "__main__":
                                                                                                      author_docid_map,
                                                                                                      year_docid_map, df,
                                                                                                      labels, i)
+            for l in labels:
+                print("Number of years in " + l + " : ", len(label_year_dict[l]))
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)

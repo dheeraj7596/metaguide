@@ -51,6 +51,7 @@ if __name__ == "__main__":
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
     author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
     year_docid_map = pickle.load(open(pkl_dump_dir + "year_docid_map.pkl", "rb"))
+    venue_docid_map = pickle.load(open(pkl_dump_dir + "venue_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
@@ -91,9 +92,6 @@ if __name__ == "__main__":
             os.makedirs(phrase_plot_dump_dir, exist_ok=True)
             os.makedirs(auth_plot_dump_dir, exist_ok=True)
             os.makedirs(conf_plot_dump_dir, exist_ok=True)
-
-        # label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index, conf_plot_dump_dir,
-        #                                plot=plot)
 
         # RANKING PHRASE ONLY
         if algo == 1:
@@ -165,6 +163,27 @@ if __name__ == "__main__":
                                                                                                      labels, i)
             for l in labels:
                 print("Number of years in " + l + " : ", len(label_year_dict[l]))
+
+        # RANKING PHRASE, AUTHOR, CONF TOGETHER
+        elif algo == 7:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index,
+                                           conf_plot_dump_dir,
+                                           plot=plot)
+            label_phrase_dict, label_author_dict, label_conf_dict = rank_phrase_author_conf_together(label_phrase_dict,
+                                                                                                     label_author_dict,
+                                                                                                     label_conf_dict,
+                                                                                                     phrase_docid_map,
+                                                                                                     author_docid_map,
+                                                                                                     venue_docid_map,
+                                                                                                     df, labels, i)
+            for l in labels:
+                print("Number of confs in " + l + " : ", len(label_conf_dict[l]))
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)

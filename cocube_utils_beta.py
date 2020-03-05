@@ -154,8 +154,94 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
     return X, y, y_true
 
 
+def get_phrase_label(words, label_term_dict, labels):
+    count_dict = {}
+    flag = 0
+    for l in labels:
+        seed_words = set(label_term_dict[l].keys())
+        int_labels = list(set(words).intersection(seed_words))
+        for word in words:
+            if word in int_labels:
+                flag = 1
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
+                try:
+                    count_dict[l][word] += label_term_dict[l][word]
+                except:
+                    count_dict[l][word] = label_term_dict[l][word]
+    lbl = None
+    if flag:
+        lbl = argmax_label(count_dict)
+    return lbl
+
+
+def get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, labels):
+    count_dict = {}
+    flag = 0
+    for l in labels:
+        if len(label_author_dict) > 0:
+            seed_authors = set(label_author_dict[l].keys())
+            int_authors = authors_set.intersection(seed_authors)
+        else:
+            int_authors = []
+
+        for auth in int_authors:
+            flag = 1
+            try:
+                temp = count_dict[l]
+            except:
+                count_dict[l] = {}
+            count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
+
+        if len(label_conf_dict) and len(label_conf_dict[l]) > 0:
+            seed_conf = set(label_conf_dict[l].keys())
+            if conf in seed_conf:
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
+                count_dict[l]["CONF_" + str(conf)] = label_conf_dict[l][conf]
+                flag = 1
+
+    lbl = None
+    if flag:
+        lbl = argmax_label(count_dict)
+    return lbl
+
+
+def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
+                             ignore_metadata=True):
+    y = []
+    X = []
+    y_true = []
+    index_word = {}
+    for w in tokenizer.word_index:
+        index_word[tokenizer.word_index[w]] = w
+    for index, row in df.iterrows():
+        auth_str = row["authors"]
+        authors_set = set(auth_str.split(","))
+        conf = row["conf"]
+        line = row["abstract"]
+        label = row["label"]
+        tokens = tokenizer.texts_to_sequences([line])[0]
+        words = []
+        for tok in tokens:
+            words.append(index_word[tok])
+
+        l_phrase = get_phrase_label(words, label_term_dict, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, labels)
+
+        if l_phrase == l_metadata:
+            y.append(l_phrase)
+            X.append(line)
+            y_true.append(label)
+    return X, y, y_true
+
+
 def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label,
-                     model_name):
+                     model_name, old=True):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     # glove_dir = basepath + "glove.6B"
@@ -169,8 +255,12 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     embedding_dim = 100
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
-    X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
-                                  ignore_metadata=False)
+    if old:
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
+                                      ignore_metadata=False)
+    else:
+        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict,
+                                                tokenizer, ignore_metadata=False)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
     df_train = create_training_df(X, y, y_true)

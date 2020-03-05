@@ -76,10 +76,12 @@ if __name__ == "__main__":
         if i == 0 and pre_train:
             pred_labels = pickle.load(open(pkl_dump_dir + "first_iteration_pred_labels.pkl", "rb"))
             probs = pickle.load(open(pkl_dump_dir + "first_iteration_probs.pkl", "rb"))
-
+        elif i == 0:
+            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
+                                                  label_to_index, index_to_label, model_name, old=True)
         else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
-                                                  label_to_index, index_to_label, model_name)
+                                                  label_to_index, index_to_label, model_name, old=False)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

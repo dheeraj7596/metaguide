@@ -218,6 +218,8 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
     y_metadata = []
     X = []
     y_true = []
+    y_true_phrase = []
+    y_true_metadata = []
     index_word = {}
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
@@ -240,14 +242,18 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
             X.append(line)
             y_true.append(label)
 
-        y_phrase.append(l_phrase)
-        y_metadata.append(l_metadata)
+        if l_phrase is not None:
+            y_phrase.append(l_phrase)
+            y_true_phrase.append(label)
+        if l_metadata is not None:
+            y_metadata.append(l_metadata)
+            y_true_metadata.append(label)
 
     print("****************** CLASSIFICATION REPORT FOR PHRASE LABELS ********************")
-    print(classification_report(list(df.label), y_phrase))
+    print(classification_report(y_true_phrase, y_phrase))
 
     print("****************** CLASSIFICATION REPORT FOR METADATA LABELS ********************")
-    print(classification_report(list(df.label), y_metadata))
+    print(classification_report(y_true_metadata, y_metadata))
     return X, y, y_true
 
 

@@ -214,6 +214,8 @@ def get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, la
 def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
                              ignore_metadata=True):
     y = []
+    y_phrase = []
+    y_metadata = []
     X = []
     y_true = []
     index_word = {}
@@ -237,6 +239,15 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
             y.append(l_phrase)
             X.append(line)
             y_true.append(label)
+
+        y_phrase.append(l_phrase)
+        y_metadata.append(l_metadata)
+
+    print("****************** CLASSIFICATION REPORT FOR PHRASE LABELS ********************")
+    print(classification_report(list(df.label), y_phrase))
+
+    print("****************** CLASSIFICATION REPORT FOR METADATA LABELS ********************")
+    print(classification_report(list(df.label), y_metadata))
     return X, y, y_true
 
 

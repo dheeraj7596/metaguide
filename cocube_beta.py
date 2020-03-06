@@ -184,6 +184,21 @@ if __name__ == "__main__":
                                                                                                      df, labels, i)
             for l in labels:
                 print("Number of confs in " + l + " : ", len(label_conf_dict[l]))
+
+        # RANKING PHRASE, CONF TOGETHER
+        elif algo == 8:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_conf_dict = run_pagerank(probs, df, G_conf, venue_id, id_venue, label_to_index,
+                                           conf_plot_dump_dir,
+                                           plot=plot)
+            label_phrase_dict, label_conf_dict = rank_phrase_conf_together(label_phrase_dict, label_conf_dict,
+                                                                           phrase_docid_map, venue_docid_map, df,
+                                                                           labels, i)
+            for l in labels:
+                print("Number of confs in " + l + " : ", len(label_conf_dict[l]))
+
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)

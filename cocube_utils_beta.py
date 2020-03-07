@@ -241,6 +241,14 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
             y.append(l_phrase)
             X.append(line)
             y_true.append(label)
+        elif l_phrase is None:
+            y.append(l_metadata)
+            X.append(line)
+            y_true.append(label)
+        elif l_metadata is None:
+            y.append(l_phrase)
+            X.append(line)
+            y_true.append(label)
 
         if l_phrase is not None:
             y_phrase.append(l_phrase)

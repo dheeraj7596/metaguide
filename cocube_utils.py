@@ -94,7 +94,7 @@ def get_train_data(df, labels, label_term_dict):
     X = []
     y_true = []
     for index, row in df.iterrows():
-        line = row["abstract"]
+        line = row["Review"]
         label = row["label"]
         words = line.strip().split()
         count_dict = {}
@@ -135,8 +135,8 @@ def get_train_data(df, labels, label_term_dict):
 
 
 def train_classifier(df, labels, label_term_dict, label_to_index, index_to_label):
-    basepath = "./data/"
-    dataset = "dblp/"
+    basepath = "/data4/dheeraj/metaguide/"
+    dataset = "yelp/"
     # glove_dir = basepath + "glove.6B"
     model_name = "cocube_tok"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
@@ -151,8 +151,8 @@ def train_classifier(df, labels, label_term_dict, label_to_index, index_to_label
     X, y, y_true = get_train_data(df, labels, label_term_dict)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
-    df_train = create_training_df(X, y, y_true)
-    df_train.to_csv(basepath + dataset + "training_label.csv")
+    # df_train = create_training_df(X, y, y_true)
+    # df_train.to_csv(basepath + dataset + "training_label.csv")
     y_one_hot = make_one_hot(y, label_to_index)
     # y = np.array(y)
     # print("Fitting tokenizer...")
@@ -187,7 +187,7 @@ def train_classifier(df, labels, label_term_dict, label_to_index, index_to_label
     pred_labels = get_from_one_hot(pred, index_to_label)
     print(classification_report(y_true, pred_labels))
     print("****************** CLASSIFICATION REPORT FOR All DOCUMENTS ********************")
-    X_all = prep_data(texts=df["abstract"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
+    X_all = prep_data(texts=df["Review"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
                       tokenizer=tokenizer)
     y_true_all = df["label"]
     pred = model.predict(X_all)

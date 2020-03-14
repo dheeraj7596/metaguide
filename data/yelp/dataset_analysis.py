@@ -1,5 +1,6 @@
 import pickle
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
@@ -11,8 +12,8 @@ if __name__ == "__main__":
     for r in reviews_list:
         length_list.append(len(r))
 
+    print(np.mean(length_list))
     plt.figure()
     n = plt.hist(length_list, color='blue', edgecolor='black', bins=50)
-    print(n)
     plt.show()
     pass

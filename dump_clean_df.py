@@ -3,14 +3,14 @@ from nltk.corpus import stopwords
 
 if __name__ == "__main__":
     basepath = "./data/"
-    dataset = "dblp/"
+    dataset = "yelp/"
     pkl_dump_dir = basepath + dataset
 
-    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews.pkl", "rb"))
     stop_words = set(stopwords.words('english'))
     stop_words.add('would')
 
-    abstracts = list(df["abstract"])
+    abstracts = list(df["Review"])
 
     clean_abstracts = []
     for abs in abstracts:
@@ -18,6 +18,6 @@ if __name__ == "__main__":
         filtered_words = [word for word in word_list if word not in stop_words]
         clean_abstracts.append(" ".join(filtered_words))
 
-    df["abstract"] = clean_abstracts
+    df["Review"] = clean_abstracts
 
-    pickle.dump(df, open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "wb"))
+    pickle.dump(df, open(pkl_dump_dir + "business_reviews_removed_stopwords.pkl", "wb"))

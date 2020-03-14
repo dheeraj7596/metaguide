@@ -17,7 +17,7 @@ def get_json(path):
 def create_corpus(df):
     corpus = []
     for i, row in df.iterrows():
-        corpus.append(row["abstract"])
+        corpus.append(row["Review"])
     return corpus
 
 
@@ -35,7 +35,7 @@ def get_idx_pairs(df, tokenizer):
     x = []
     y = []
     for i, row in df.iterrows():
-        tokenized_abstract_words = tokenizer.texts_to_sequences([row["abstract"]])[0]
+        tokenized_abstract_words = tokenizer.texts_to_sequences([row["Review"]])[0]
         for i, word in enumerate(tokenized_abstract_words):
             x.append(word)
             target_words = get_target(tokenized_abstract_words, i)
@@ -64,10 +64,10 @@ def get_batches(x, y, batch_size):
 
 if __name__ == "__main__":
     base_path = "/data4/dheeraj/metaguide/"
-    dataset = "dblp/"
+    dataset = "yelp/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
+    df = pickle.load(open(data_path + "business_reviews_removed_stopwords.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)

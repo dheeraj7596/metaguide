@@ -67,6 +67,7 @@ if __name__ == "__main__":
     fine_grained_categories = top_categories(k)
 
     bus_df = bus_df[bus_df.apply(fine_filter, axis=1)]
+    bus_df = bus_df.reset_index(drop=True)
     print(len(bus_df))
 
     labels = []

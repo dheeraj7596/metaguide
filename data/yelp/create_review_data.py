@@ -43,6 +43,7 @@ def filter_selected_reviews(reviews, business_id_to_review_index):
     for b in business_id_to_review_index:
         indices.update(set(business_id_to_review_index[b]))
     filtered_reviews = reviews.ix[list(indices)]
+    filtered_reviews = filtered_reviews.reset_index(drop=True)
     return filtered_reviews
 
 
@@ -79,4 +80,4 @@ if __name__ == "__main__":
 
     bus_df.to_csv(base_path + "business_reviews.csv")
     pickle.dump(bus_df, open(base_path + "business_reviews.pkl", "wb"))
-    pickle.dump(bus_df, open(base_path + "selected_reviews.pkl", "wb"))
+    pickle.dump(selected_reviews, open(base_path + "selected_reviews.pkl", "wb"))

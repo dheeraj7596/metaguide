@@ -6,7 +6,7 @@ if __name__ == "__main__":
     dataset = "yelp/"
     pkl_dump_dir = basepath + dataset
 
-    df = pickle.load(open(pkl_dump_dir + "business_reviews.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase.pkl", "rb"))
     stop_words = set(stopwords.words('english'))
     stop_words.add('would')
 
@@ -20,4 +20,4 @@ if __name__ == "__main__":
 
     df["Review"] = clean_abstracts
 
-    pickle.dump(df, open(pkl_dump_dir + "business_reviews_removed_stopwords.pkl", "wb"))
+    pickle.dump(df, open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords.pkl", "wb"))

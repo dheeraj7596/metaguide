@@ -82,7 +82,7 @@ def softmax_label(count_dict, label_to_index):
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer, ignore_metadata=True):
+def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, ignore_metadata=True):
     y = []
     X = []
     y_true = []
@@ -90,10 +90,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
     for index, row in df.iterrows():
-        auth_str = row["authors"]
-        authors_set = set(auth_str.split(","))
-        conf = row["conf"]
-        line = row["abstract"]
+        authors_set = set(row["Users"])
+        line = row["Review"]
         label = row["label"]
         tokens = tokenizer.texts_to_sequences([line])[0]
         words = []
@@ -133,16 +131,6 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
                 count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
                 flag = 1
 
-            if len(label_conf_dict) and len(label_conf_dict[l]) > 0:
-                seed_conf = set(label_conf_dict[l].keys())
-                if conf in seed_conf:
-                    try:
-                        temp = count_dict[l]
-                    except:
-                        count_dict[l] = {}
-                    count_dict[l]["CONF_" + str(conf)] = label_conf_dict[l][conf]
-                    flag = 1
-
         if flag:
             lbl = argmax_label(count_dict)
             if not lbl:
@@ -177,7 +165,7 @@ def get_phrase_label(words, label_term_dict, labels):
     return lbl
 
 
-def get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, labels):
+def get_metadata_label(authors_set, label_author_dict, labels):
     count_dict = {}
     flag = 0
     for l in labels:
@@ -195,23 +183,13 @@ def get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, la
                 count_dict[l] = {}
             count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
 
-        if len(label_conf_dict) and len(label_conf_dict[l]) > 0:
-            seed_conf = set(label_conf_dict[l].keys())
-            if conf in seed_conf:
-                try:
-                    temp = count_dict[l]
-                except:
-                    count_dict[l] = {}
-                count_dict[l]["CONF_" + str(conf)] = label_conf_dict[l][conf]
-                flag = 1
-
     lbl = None
     if flag:
         lbl = argmax_label(count_dict)
     return lbl
 
 
-def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer):
+def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tokenizer):
     y = []
     y_phrase = []
     y_metadata = []
@@ -223,10 +201,8 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
     for index, row in df.iterrows():
-        auth_str = row["authors"]
-        authors_set = set(auth_str.split(","))
-        conf = row["conf"]
-        line = row["abstract"]
+        authors_set = set(row["Users"])
+        line = row["Review"]
         label = row["label"]
         tokens = tokenizer.texts_to_sequences([line])[0]
         words = []
@@ -234,7 +210,7 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
             words.append(index_word[tok])
 
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, labels)
 
         if l_phrase == l_metadata:
             y.append(l_phrase)
@@ -264,7 +240,7 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label,
+def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_index, index_to_label,
                      model_name, old=True):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
@@ -280,11 +256,9 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     if old:
-        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
-                                      ignore_metadata=False)
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, ignore_metadata=False)
     else:
-        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict,
-                                                tokenizer)
+        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, tokenizer)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     print(classification_report(y_true, y))
     df_train = create_training_df(X, y, y_true)
@@ -323,7 +297,7 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     # pred_labels = get_from_one_hot(pred, index_to_label)
     # print(classification_report(y_true, pred_labels))
     print("****************** CLASSIFICATION REPORT FOR All DOCUMENTS ********************")
-    X_all = prep_data(texts=df["abstract"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
+    X_all = prep_data(texts=df["Review"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
                       tokenizer=tokenizer)
     y_true_all = df["label"]
     pred = model.predict(X_all)

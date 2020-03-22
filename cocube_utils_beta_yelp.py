@@ -243,7 +243,7 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tok
 def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_index, index_to_label,
                      model_name, old=True):
     basepath = "/data4/dheeraj/metaguide/"
-    dataset = "dblp/"
+    dataset = "yelp/"
     # glove_dir = basepath + "glove.6B"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
     tmp_dir = basepath + "checkpoints/" + dataset + model_name + "/"

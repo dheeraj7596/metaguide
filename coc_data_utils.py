@@ -106,7 +106,7 @@ def get_doc_freq(df):
     docfreq = {}
     docfreq["UNK"] = len(df)
     for index, row in df.iterrows():
-        line = row["Review"]
+        line = row["text"]
         words = line.strip().split()
         temp_set = set(words)
         for w in temp_set:

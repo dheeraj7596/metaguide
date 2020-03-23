@@ -77,12 +77,15 @@ def argmax_label(count_dict):
 def softmax_label(count_dict, label_to_index):
     temp = [0] * len(label_to_index)
     for l in count_dict:
-        min_freq = min(list(count_dict[l].values()))
-        temp[label_to_index[l]] = min_freq
+        count = 0
+        for t in count_dict[l]:
+            count += count_dict[l][t]
+        temp[label_to_index[l]] = count
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, ignore_metadata=True):
+def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, label_to_index, ignore_metadata=True,
+                   soft=False):
     y = []
     X = []
     y_true = []
@@ -132,10 +135,12 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, ig
                 flag = 1
 
         if flag:
-            lbl = argmax_label(count_dict)
-            if not lbl:
-                continue
-            # lbl = softmax_label(count_dict, label_to_index)
+            if not soft:
+                lbl = argmax_label(count_dict)
+                if not lbl:
+                    continue
+            else:
+                lbl = softmax_label(count_dict, label_to_index)
             y.append(lbl)
             X.append(line)
             y_true.append(label)
@@ -241,7 +246,7 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tok
 
 
 def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_index, index_to_label,
-                     model_name, old=True):
+                     model_name, old=True, soft=False):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "yelp/"
     # glove_dir = basepath + "glove.6B"
@@ -256,22 +261,30 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_in
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     if old:
-        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, ignore_metadata=False)
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, label_to_index,
+                                      ignore_metadata=False, soft=soft)
     else:
         X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, tokenizer)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
-    print(classification_report(y_true, y))
-    df_train = create_training_df(X, y, y_true)
-    df_train.to_csv(basepath + dataset + "training_label.csv")
-    y_one_hot = make_one_hot(y, label_to_index)
-    # y = np.array(y)
+    # df_train = create_training_df(X, y, y_true)
+    # df_train.to_csv(basepath + dataset + "training_label.csv")
+    if not soft:
+        y_vec = make_one_hot(y, label_to_index)
+        print(classification_report(y_true, y))
+    else:
+        y_vec = np.array(y)
+        y_argmax = np.argmax(y, axis=-1)
+        y_str = []
+        for i in y_argmax:
+            y_str.append(index_to_label[i])
+        print(classification_report(y_true, y_str))
     # print("Fitting tokenizer...")
     # tokenizer = fit_get_tokenizer(X, max_words)
     print("Getting tokenizer")
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     print("Splitting into train, dev...")
-    X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_one_hot, tokenizer=tokenizer,
+    X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_vec, tokenizer=tokenizer,
                                                             max_sentences=max_sentences,
                                                             max_sentence_length=max_sentence_length,
                                                             max_words=max_words, val=False)
@@ -284,7 +297,10 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_in
                 embedding_matrix=embedding_matrix)
     print("Compiling model...")
     model.summary()
-    model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
+    if not soft:
+        model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
+    else:
+        model.compile(loss=kullback_leibler_divergence, optimizer='adam', metrics=['acc'])
     print("model fitting - Hierachical attention network...")
     es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
     mc = ModelCheckpoint(filepath=tmp_dir + 'model.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_acc', mode='max',

@@ -1,19 +1,19 @@
 {
   "computer vision": [
-    "video",
+    "image processing",
     "object detection"
   ],
   "computational linguistics": [
-    "word sense disambiguation",
+    "morphological analysis",
     "named entity recognition"
   ],
   "biomedical engineering": [
-    "brain",
+    "genome",
     "mri"
   ],
   "software engineering": [
-    "compiler",
-    "software engineering"
+    "debugging",
+    "source code"
   ],
   "graphics": [
     "interaction techniques",

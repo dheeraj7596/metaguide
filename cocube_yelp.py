@@ -73,7 +73,7 @@ if __name__ == "__main__":
         #                                           label_to_index, index_to_label, model_name, old=True)
         else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_to_index,
-                                                  index_to_label, model_name, old=True)
+                                                  index_to_label, model_name, old=True, soft=True)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

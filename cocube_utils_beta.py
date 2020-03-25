@@ -346,7 +346,7 @@ def get_weighted_train_data(df, labels, label_term_dict, label_author_dict, labe
 
 
 def train_weight_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index,
-                            index_to_label, model_name):
+                            index_to_label, model_name, AND=True):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     # glove_dir = basepath + "glove.6B"
@@ -361,7 +361,7 @@ def train_weight_classifier(df, labels, label_term_dict, label_author_dict, labe
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     X, y, y_true, weights = get_weighted_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict,
-                                                    tokenizer, label_to_index, AND=True)
+                                                    tokenizer, label_to_index, AND=AND)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     # df_train = create_training_df(X, y, y_true)
     # df_train.to_csv(basepath + dataset + "training_label.csv")

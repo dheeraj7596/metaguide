@@ -1,4 +1,5 @@
-from cocube_utils_beta import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count, get_cut_off
+from cocube_utils_beta import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count, get_cut_off, \
+    train_weight_classifier
 from coc_data_utils import *
 from cocube_variations import *
 from pagerank import run_pagerank
@@ -81,8 +82,11 @@ if __name__ == "__main__":
         #     pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
         #                                           label_to_index, index_to_label, model_name, old=True, soft=True)
         else:
-            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
-                                                  label_to_index, index_to_label, model_name, old=True, soft=False)
+            # pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
+            #                                       label_to_index, index_to_label, model_name, old=True, soft=False)
+            pred_labels, probs = train_weight_classifier(df, labels, label_phrase_dict, label_author_dict,
+                                                         label_conf_dict, label_to_index, index_to_label, model_name,
+                                                         AND=True)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

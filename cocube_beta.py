@@ -80,7 +80,7 @@ if __name__ == "__main__":
             probs = pickle.load(open(pkl_dump_dir + "first_iteration_probs.pkl", "rb"))
         elif i == 0:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
-                                                  label_to_index, index_to_label, model_name, old=True, soft=True)
+                                                  label_to_index, index_to_label, model_name, old=True, soft=False)
         else:
             # pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
             #                                       label_to_index, index_to_label, model_name, old=True, soft=False)

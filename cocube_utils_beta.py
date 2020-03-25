@@ -234,8 +234,16 @@ def merge(count_dict_phrase, count_dict_metadata, labels):
     flag = 0
     for l in labels:
         count_dict[l] = {}
-        count_dict[l].update(count_dict_phrase[l])
-        count_dict[l].update(count_dict_metadata[l])
+        try:
+            temp = count_dict_phrase[l]
+            count_dict[l].update(count_dict_phrase[l])
+        except:
+            pass
+        try:
+            temp = count_dict_metadata[l]
+            count_dict[l].update(count_dict_metadata[l])
+        except:
+            pass
         if len(count_dict[l]) > 0:
             flag = 1
 

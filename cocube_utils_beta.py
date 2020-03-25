@@ -352,7 +352,7 @@ def get_weighted_train_data(df, labels, label_term_dict, label_author_dict, labe
         if l_all is None:
             continue
         weight = calculate_weight(l_phrase, l_metadata, label_to_index[l_all], AND=AND)
-        y.append(l_phrase)
+        y.append(l_all)
         X.append(line)
         y_true.append(label)
         weights.append(weight)

@@ -409,7 +409,7 @@ def train_weight_classifier(df, labels, label_term_dict, label_author_dict, labe
     mc = ModelCheckpoint(filepath=tmp_dir + 'model.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_acc', mode='max',
                          verbose=1, save_weights_only=True, save_best_only=True)
     model.fit(X_train, y_train, validation_data=(X_val, y_val), nb_epoch=100, batch_size=256, callbacks=[es, mc],
-              sample_weight=weights_train)
+              sample_weight=np.array(weights_train))
     # print("****************** CLASSIFICATION REPORT FOR DOCUMENTS WITH LABEL WORDS ********************")
     # X_label_all = prep_data(texts=X, max_sentences=max_sentences, max_sentence_length=max_sentence_length,
     #                         tokenizer=tokenizer)

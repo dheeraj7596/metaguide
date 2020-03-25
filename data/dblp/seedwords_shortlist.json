@@ -1,0 +1,72 @@
+{
+  "computer vision": [
+    "video",
+    "face recognition",
+    "object recognition",
+    "object detection",
+    "image processing"
+  ],
+  "computational linguistics": [
+    "semantic",
+    "speech recognition",
+    "machine translation",
+    "morphological analysis",
+    "named entity recognition"
+  ],
+  "biomedical engineering": [
+    "protein",
+    "genome",
+    "mri",
+    "voxel",
+    "proteins"
+  ],
+  "software engineering": [
+    "compiler",
+    "debugging",
+    "source code",
+    "object-oriented",
+    "c++"
+  ],
+  "graphics": [
+    "design",
+    "interaction techniques",
+    "global routing",
+    "user experience",
+    "user interface"
+  ],
+  "data mining": [
+    "social network",
+    "hierarchical clustering",
+    "data mining",
+    "text mining",
+    "recommender systems"
+  ],
+  "security and cryptography": [
+    "malware",
+    "cryptography",
+    "encryption",
+    "diffie-hellman",
+    "intrusion detection"
+  ],
+  "signal processing": [
+    "network coding",
+    "wireless sensor networks",
+    "channel",
+    "network coding",
+    "wireless sensor networks"
+  ],
+  "robotics": [
+    "robot",
+    "robots",
+    "kinematic",
+    "mobile robot",
+    "path planning"
+  ],
+  "theory": [
+    "calculus",
+    "polynomials",
+    "polynomial",
+    "linear programming",
+    "constraint satisfaction"
+  ]
+}

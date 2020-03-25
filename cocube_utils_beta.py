@@ -251,8 +251,14 @@ def merge(count_dict_phrase, count_dict_metadata, labels):
 
 
 def calculate_weight(l_phrase, l_metadata, label_index, AND=True):
-    prob_phrase = l_phrase[label_index]
-    prob_metadata = l_metadata[label_index]
+    try:
+        prob_phrase = l_phrase[label_index]
+    except:
+        prob_phrase = 0
+    try:
+        prob_metadata = l_metadata[label_index]
+    except:
+        prob_metadata = 0
     if AND:
         return prob_phrase * prob_metadata
     else:

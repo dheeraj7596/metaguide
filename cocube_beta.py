@@ -33,8 +33,11 @@ if __name__ == "__main__":
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_" + str(num_seedwords) + ".json")
-    label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
+
+    # label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_" + str(num_seedwords) + ".json")
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_shortlist.json")
+    label_term_dict = modify_phrases(label_term_dict, phrase_id_map, random_k=2)
+
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)
     G_conf = sparse.load_npz(pkl_dump_dir + "G_conf.npz")
@@ -78,15 +81,15 @@ if __name__ == "__main__":
         if i == 0 and pre_train:
             pred_labels = pickle.load(open(pkl_dump_dir + "first_iteration_pred_labels.pkl", "rb"))
             probs = pickle.load(open(pkl_dump_dir + "first_iteration_probs.pkl", "rb"))
-        elif i == 0:
+        # elif i == 0:
+        #     pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
+        #                                           label_to_index, index_to_label, model_name, old=True, soft=False)
+        else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
                                                   label_to_index, index_to_label, model_name, old=True, soft=False)
-        else:
-            # pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
-            #                                       label_to_index, index_to_label, model_name, old=True, soft=False)
-            pred_labels, probs = train_weight_classifier(df, labels, label_phrase_dict, label_author_dict,
-                                                         label_conf_dict, label_to_index, index_to_label, model_name,
-                                                         AND=True)
+            # pred_labels, probs = train_weight_classifier(df, labels, label_phrase_dict, label_author_dict,
+            #                                              label_conf_dict, label_to_index, index_to_label, model_name,
+            #                                              AND=True)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

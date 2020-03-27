@@ -1,0 +1,43 @@
+{
+  "computer vision": [
+    "face recognition",
+    "object detection"
+  ],
+  "computational linguistics": [
+    "semantic",
+    "machine translation"
+  ],
+  "biomedical engineering": [
+    "protein",
+    "voxel"
+  ],
+  "software engineering": [
+    "compiler",
+    "debugging"
+  ],
+  "graphics": [
+    "interaction techniques",
+    "user interface"
+  ],
+  "data mining": [
+    "data mining",
+    "recommender systems"
+  ],
+  "security and cryptography": [
+    "malware",
+    "intrusion detection"
+  ],
+  "signal processing": [
+    "network coding",
+    "wireless sensor networks"
+  ],
+  "robotics": [
+    "robots",
+    "kinematic"
+  ],
+  "theory": [
+    "polynomials",
+    "polynomial"
+  ]
+}
+

@@ -1,0 +1,42 @@
+{
+  "computer vision": [
+    "object detection",
+    "image processing"
+  ],
+  "computational linguistics": [
+    "speech recognition",
+    "named entity recognition"
+  ],
+  "biomedical engineering": [
+    "mri",
+    "voxel"
+  ],
+  "software engineering": [
+    "compiler",
+    "c++"
+  ],
+  "graphics": [
+    "design",
+    "interaction techniques"
+  ],
+  "data mining": [
+    "hierarchical clustering",
+    "recommender systems"
+  ],
+  "security and cryptography": [
+    "malware",
+    "encryption"
+  ],
+  "signal processing": [
+    "wireless sensor networks",
+    "channel"
+  ],
+  "robotics": [
+    "robots",
+    "path planning"
+  ],
+  "theory": [
+    "calculus",
+    "constraint satisfaction"
+  ]
+}

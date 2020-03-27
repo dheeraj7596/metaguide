@@ -35,8 +35,9 @@ if __name__ == "__main__":
     labels, label_to_index, index_to_label = get_distinct_labels(df)
 
     # label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_" + str(num_seedwords) + ".json")
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_shortlist.json")
-    label_term_dict = modify_phrases(label_term_dict, phrase_id_map, random_k=2)
+    # label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_shortlist.json")
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_run" + str(num_seedwords) + ".json")
+    label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
 
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)

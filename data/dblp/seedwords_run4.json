@@ -1,0 +1,42 @@
+{
+  "computer vision": [
+    "video",
+    "object recognition"
+  ],
+  "computational linguistics": [
+    "machine translation",
+    "morphological analysis"
+  ],
+  "biomedical engineering": [
+    "genome",
+    "voxel"
+  ],
+  "software engineering": [
+    "debugging",
+    "object-oriented"
+  ],
+  "graphics": [
+    "design",
+    "user interface"
+  ],
+  "data mining": [
+    "data mining",
+    "recommender systems"
+  ],
+  "security and cryptography": [
+    "cryptography",
+    "intrusion detection"
+  ],
+  "signal processing": [
+    "network coding",
+    "wireless sensor networks"
+  ],
+  "robotics": [
+    "robots",
+    "path planning"
+  ],
+  "theory": [
+    "calculus",
+    "polynomials"
+  ]
+}

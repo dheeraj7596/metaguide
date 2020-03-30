@@ -10,10 +10,11 @@ import sys
 
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
+
 config = tf.ConfigProto()
 config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
 config.log_device_placement = True  # to log device placement (on which device the operation ran)
-                                    # (nothing gets printed in Jupyter, only if you run it standalone)
+# (nothing gets printed in Jupyter, only if you run it standalone)
 sess = tf.Session(config=config)
 set_session(sess)
 
@@ -34,7 +35,7 @@ if __name__ == "__main__":
     model_name = sys.argv[3]
     num_seedwords = int(sys.argv[2])
 
-    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test_thresh_5.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:
@@ -53,9 +54,9 @@ if __name__ == "__main__":
     G_conf = sparse.load_npz(pkl_dump_dir + "G_conf.npz")
     venue_id = pickle.load(open(pkl_dump_dir + "venue_id.pkl", "rb"))
     id_venue = pickle.load(open(pkl_dump_dir + "id_venue.pkl", "rb"))
-    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth.npz")
-    author_id = pickle.load(open(pkl_dump_dir + "author_id.pkl", "rb"))
-    id_author = pickle.load(open(pkl_dump_dir + "id_author.pkl", "rb"))
+    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_5.npz")
+    author_id = pickle.load(open(pkl_dump_dir + "author_id_5.pkl", "rb"))
+    id_author = pickle.load(open(pkl_dump_dir + "author_id_5.pkl", "rb"))
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))

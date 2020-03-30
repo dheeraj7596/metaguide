@@ -56,7 +56,7 @@ if __name__ == "__main__":
     id_venue = pickle.load(open(pkl_dump_dir + "id_venue.pkl", "rb"))
     G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_5.npz")
     author_id = pickle.load(open(pkl_dump_dir + "author_id_5.pkl", "rb"))
-    id_author = pickle.load(open(pkl_dump_dir + "author_id_5.pkl", "rb"))
+    id_author = pickle.load(open(pkl_dump_dir + "id_author_5.pkl", "rb"))
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))

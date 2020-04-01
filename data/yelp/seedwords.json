@@ -1,9 +1,7 @@
 {
-  "american (traditional)": [
+  "american": [
+    "american",
     "mac and cheese"
-  ],
-  "american (new)": [
-    "vegan"
   ],
   "mexican": [
     "mexican"
@@ -18,8 +16,7 @@
     "japanese"
   ],
   "asian fusion": [
-    "asian",
-    "fusion"
+    "captain's boil"
   ],
   "canadian (new)": [
     "canadian",

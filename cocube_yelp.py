@@ -30,6 +30,7 @@ if __name__ == "__main__":
     dataset = "yelp/"
     pkl_dump_dir = basepath + dataset
     model_name = sys.argv[2]
+    is_soft = int(sys.argv[3])
 
     df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -81,7 +82,7 @@ if __name__ == "__main__":
         #                                           label_to_index, index_to_label, model_name, old=True)
         else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_to_index,
-                                                  index_to_label, model_name, old=True, soft=True)
+                                                  index_to_label, model_name, old=True, soft=is_soft)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

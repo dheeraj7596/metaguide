@@ -7,6 +7,14 @@ import os
 from scipy import sparse
 import sys
 
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+sess = tf.Session(config=config)
+set_session(sess)
+
 
 def modify(label_term_dict):
     for l in label_term_dict:
@@ -23,7 +31,7 @@ if __name__ == "__main__":
     pkl_dump_dir = basepath + dataset
     model_name = sys.argv[2]
 
-    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:
@@ -50,7 +58,7 @@ if __name__ == "__main__":
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
     label_author_dict = {}
 
-    t = 15
+    t = 9
     pre_train = 0
     plot = False
     should_print = False

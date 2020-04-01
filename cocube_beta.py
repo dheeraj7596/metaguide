@@ -17,6 +17,7 @@ config.log_device_placement = True  # to log device placement (on which device t
 # (nothing gets printed in Jupyter, only if you run it standalone)
 sess = tf.Session(config=config)
 set_session(sess)
+tf.logging.set_verbosity(tf.logging.ERROR)
 
 
 def modify(label_term_dict):
@@ -74,7 +75,7 @@ if __name__ == "__main__":
     label_conf_dict = {}
     label_year_dict = {}
 
-    t = 15
+    t = 9
     pre_train = 0
     plot = False
     should_print = False

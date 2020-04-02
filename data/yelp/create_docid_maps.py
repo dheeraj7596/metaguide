@@ -40,12 +40,13 @@ def create_author_doc_id_map(df):
 if __name__ == "__main__":
     data_path = "./"
 
-    df = pickle.load(open(data_path + "business_reviews_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(
+        open(data_path + "business_reviews_phrase_removed_stopwords_labeled_shortlisted_thresh_3.pkl", "rb"))
     tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
     phrase_id_map = pickle.load(open(data_path + "phrase_id_map.pkl", "rb"))
 
     phrase_docid = create_phrase_doc_id_map(df, tokenizer, phrase_id_map)
     author_docid_map = create_author_doc_id_map(df)
 
-    pickle.dump(phrase_docid, open(data_path + "phrase_docid_map.pkl", "wb"))
-    pickle.dump(author_docid_map, open(data_path + "author_docid_map.pkl", "wb"))
+    pickle.dump(phrase_docid, open(data_path + "phrase_docid_map_shortlisted_thresh_3.pkl", "wb"))
+    pickle.dump(author_docid_map, open(data_path + "author_docid_map_shortlisted_thresh_3.pkl", "wb"))

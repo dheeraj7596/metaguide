@@ -103,7 +103,8 @@ if __name__ == "__main__":
     dataset = "yelp/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "business_reviews_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(
+        open(data_path + "business_reviews_phrase_removed_stopwords_labeled_shortlisted_thresh_3.pkl", "rb"))
     tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
     phrase_id_map = pickle.load(open(data_path + "phrase_id_map.pkl", "rb"))
     id_phrase_map = pickle.load(open(data_path + "id_phrase_map.pkl", "rb"))
@@ -143,11 +144,11 @@ if __name__ == "__main__":
     G_auth = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
                                shape=(auth_graph_node_count, auth_graph_node_count))
 
-    sparse.save_npz(data_path + "G_phrase.npz", G_phrase)
-    sparse.save_npz(data_path + "G_auth.npz", G_auth)
+    sparse.save_npz(data_path + "G_phrase_shortlisted_thresh_3.npz", G_phrase)
+    sparse.save_npz(data_path + "G_auth_shortlisted_thresh_3.npz", G_auth)
 
-    pickle.dump(fnust_id, open(data_path + "fnust_id.pkl", "wb"))
-    pickle.dump(id_fnust, open(data_path + "id_fnust.pkl", "wb"))
+    pickle.dump(fnust_id, open(data_path + "fnust_id_shortlisted_thresh_3.pkl", "wb"))
+    pickle.dump(id_fnust, open(data_path + "id_fnust_shortlisted_thresh_3.pkl", "wb"))
 
-    pickle.dump(author_id, open(data_path + "author_id.pkl", "wb"))
-    pickle.dump(id_author, open(data_path + "id_author.pkl", "wb"))
+    pickle.dump(author_id, open(data_path + "author_id_shortlisted_thresh_3.pkl", "wb"))
+    pickle.dump(id_author, open(data_path + "id_author_shortlisted_thresh_3.pkl", "wb"))

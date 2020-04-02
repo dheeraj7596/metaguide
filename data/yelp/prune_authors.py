@@ -40,7 +40,7 @@ def filter_authors(authors_list, auth_count_dict, threshold=3):
 
 if __name__ == "__main__":
     pkl_dump_dir = "./"
-    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled_shortlisted.pkl", "rb"))
     print("Length of dataframe: ", len(df))
     authors_list = list(df.Users)
     diff_authors = set()
@@ -51,7 +51,8 @@ if __name__ == "__main__":
     count_dict = create_count_dict(auth_count_dict)
     print(dict(sorted(count_dict.items(), key=lambda x: x[0])))
 
-    filtered_authors = filter_authors(authors_list, auth_count_dict, threshold=5)
+    filtered_authors = filter_authors(authors_list, auth_count_dict, threshold=3)
     df["Users"] = filtered_authors
-    pickle.dump(df, open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled_thresh_5.pkl", "wb"))
+    pickle.dump(df,
+                open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled_shortlisted_thresh_3.pkl", "wb"))
     pass

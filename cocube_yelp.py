@@ -32,7 +32,7 @@ if __name__ == "__main__":
     model_name = sys.argv[2]
     is_soft = int(sys.argv[3])
 
-    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled_shortlisted_thresh_3.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:
@@ -40,20 +40,20 @@ if __name__ == "__main__":
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords.json")
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_shortlisted.json")
     label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)
 
-    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth.npz")
-    author_id = pickle.load(open(pkl_dump_dir + "author_id.pkl", "rb"))
-    id_author = pickle.load(open(pkl_dump_dir + "id_author.pkl", "rb"))
-    G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
-    fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
-    id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
+    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_shortlisted_thresh_3.npz")
+    author_id = pickle.load(open(pkl_dump_dir + "author_id_shortlisted_thresh_3.pkl", "rb"))
+    id_author = pickle.load(open(pkl_dump_dir + "id_author_shortlisted_thresh_3.pkl", "rb"))
+    G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase_shortlisted_thresh_3.npz")
+    fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id_shortlisted_thresh_3.pkl", "rb"))
+    id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust_shortlisted_thresh_3.pkl", "rb"))
 
-    phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
-    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
+    phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map_shortlisted_thresh_3.pkl", "rb"))
+    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map_shortlisted_thresh_3.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)

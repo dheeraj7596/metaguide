@@ -1,0 +1,29 @@
+{
+  "american": [
+    "mac and cheese"
+  ],
+  "mexican": [
+    "carne asada"
+  ],
+  "italian": [
+    "ravioli"
+  ],
+  "chinese": [
+    "dumplings"
+  ],
+  "japanese": [
+    "sashimi"
+  ],
+  "thai": [
+    "pad thai"
+  ],
+  "indian": [
+    "curry"
+  ],
+  "vietnamese": [
+    "banh mi"
+  ],
+  "korean": [
+    "kimchi"
+  ]
+}

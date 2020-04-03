@@ -20,7 +20,7 @@ if __name__ == "__main__":
     dataset = "yelp/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "business_reviews.pkl", "rb"))
+    df = pickle.load(open(data_path + "business_reviews_cut.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()

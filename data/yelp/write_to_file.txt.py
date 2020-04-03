@@ -2,7 +2,7 @@ import pickle
 
 if __name__ == "__main__":
     base_path = "./"
-    df = pickle.load(open(base_path + "business_reviews.pkl", "rb"))
+    df = pickle.load(open(base_path + "business_reviews_cut.pkl", "rb"))
 
     reviews = list(df["Review"])
 

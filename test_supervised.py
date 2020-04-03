@@ -61,8 +61,24 @@ if __name__ == "__main__":
     pkl_dump_dir = basepath + dataset
 
     # df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
-    df = pickle.load(open(pkl_dump_dir + "business_reviews.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_reviews_cut.pkl", "rb"))
+    modified_labels = []
+    for i, row in df.iterrows():
+        if row["label"] in ["american (traditional)", "american (new)"]:
+            modified_labels.append("american")
+        else:
+            modified_labels.append(row["label"])
+
+    df["label"] = modified_labels
+
     print("*" * 80)
-    print("RUNNING DBLP")
+    print("RUNNING YELP")
     run(df)
+    print("*" * 80)
+
+    print("RUNNING YELP SHORTLISTED")
+    labels = ["american", "chinese", "indian", "italian", "japanese", "korean", "mexican", "thai", "vietnamese"]
+    temp = df[df.label.isin(labels)]
+    temp = temp.reset_index(drop=True)
+    run(temp)
     print("*" * 80)

@@ -163,6 +163,7 @@ def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
 
 def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full"):
     filtered_label_entity_dict_list = []
+    thresh = 1 / len(labels)
     for label_entity_dict in label_entity_dict_list:
         filtered_dict = {}
         for l in label_entity_dict:
@@ -180,19 +181,37 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
         all_tups = []
         for label_entity_dict in label_entity_dict_list:
             all_tups += list(label_entity_dict[l].items())
-        sorted_tups_dict[l] = sorted(all_tups, key=lambda tup: -tup[1])
+        sorted_tups_dict[l] = list(filter(lambda a: a[1] < thresh, sorted(all_tups, key=lambda tup: -tup[1])))
+
+    ticked_entities_map_list = []
+    for entity_docid in entity_docid_map_list:
+        ticked_entities_map_list.append({})
+
+    flagged = []
 
     index = 0
     while len(doc_id_set) < n:
+        if len(flagged) == len(entity_docid_map_list):
+            break
+
         flag = 0
         for l in labels:
             if index < len(sorted_tups_dict[l]):
                 tup = sorted_tups_dict[l][index]
                 for i, entity_docid in enumerate(entity_docid_map_list):
+                    if i in flagged:
+                        continue
+                    try:
+                        temp = ticked_entities_map_list[i][tup[0]]
+                        flagged.append(i)
+                        continue
+                    except:
+                        pass
                     try:
                         temp = entity_docid[tup[0]]
                         filtered_label_entity_dict_list[i][l][tup[0]] = tup[1]
                         doc_id_set.update(entity_docid[tup[0]])
+                        ticked_entities_map_list[i][tup[0]] = 1
                         flag = 1
                         break
                     except:

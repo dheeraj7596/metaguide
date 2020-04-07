@@ -65,9 +65,13 @@ def analyze(y_pseudo, y_phrase, y_metadata, y_true):
     print("****************** ANALYSIS ******************")
     if len(y_metadata) == 0 or len(y_phrase) == 0:
         return
+    none_phrase = count_none(y_phrase)
+    none_metadata = count_none(y_metadata)
+    print("Number of NONE in y_phrase: ", none_phrase)
+    print("Number of NONE in y_metadata: ", none_metadata)
+    if none_phrase == len(y_phrase) or none_metadata == len(y_metadata):
+        return
 
-    print("Number of NONE in y_phrase: ", count_none(y_phrase))
-    print("Number of NONE in y_metadata: ", count_none(y_metadata))
     print("Case-1: l_phrase = l_metadata and l_phrase ≠ NONE and l_metadata ≠ NONE")
     y_pred, y_true_sub = get_same(y_phrase, y_metadata, y_true)
     if len(y_pred) > 0:

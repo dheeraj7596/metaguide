@@ -11,7 +11,7 @@ from analyze_utils import analyze
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "7"
+os.environ["CUDA_VISIBLE_DEVICES"] = "1"
 
 
 def create_training_df(X, y, y_true):

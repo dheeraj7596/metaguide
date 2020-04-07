@@ -153,6 +153,7 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
             y.append(lbl)
             X.append(line)
             y_true.append(label)
+            y_pseudo_all.append(lbl)
             y_true_all.append(label)
         else:
             y_pseudo_all.append(None)

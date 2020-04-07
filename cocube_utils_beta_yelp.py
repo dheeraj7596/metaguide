@@ -7,6 +7,7 @@ from keras.losses import kullback_leibler_divergence
 from model import *
 import matplotlib.pyplot as plt
 from data_utils import *
+from analyze_utils import analyze
 import pickle
 import os
 
@@ -89,6 +90,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
     y = []
     X = []
     y_true = []
+    y_phrase = []
+    y_metadata = []
     index_word = {}
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
@@ -102,6 +105,10 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
             words.append(index_word[tok])
         count_dict = {}
         flag = 0
+        l_phrase = get_phrase_label(words, label_term_dict, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, labels)
+        y_phrase.append(l_phrase)
+        y_metadata.append(l_metadata)
         for l in labels:
             seed_words = set(label_term_dict[l].keys())
             int_labels = list(set(words).intersection(seed_words))
@@ -144,6 +151,7 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
             y.append(lbl)
             X.append(line)
             y_true.append(label)
+    analyze(y, y_phrase, y_metadata, y_true)
     return X, y, y_true
 
 

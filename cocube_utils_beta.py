@@ -7,10 +7,11 @@ from keras.losses import kullback_leibler_divergence
 from model import *
 import matplotlib.pyplot as plt
 from data_utils import *
+from analyze_utils import analyze
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 
 def create_training_df(X, y, y_true):
@@ -89,6 +90,10 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
     y = []
     X = []
     y_true = []
+    y_phrase = []
+    y_metadata = []
+    y_true_all = []
+    y_pseudo_all = []
     index_word = {}
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
@@ -104,6 +109,11 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
             words.append(index_word[tok])
         count_dict = {}
         flag = 0
+        l_phrase = get_phrase_label(words, label_term_dict, labels, label_to_index, soft=soft)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, conf, label_conf_dict, labels, label_to_index,
+                                        soft=soft)
+        y_phrase.append(l_phrase)
+        y_metadata.append(l_metadata)
         for l in labels:
             seed_words = set(label_term_dict[l].keys())
             int_labels = list(set(words).intersection(seed_words))
@@ -156,6 +166,12 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
             y.append(lbl)
             X.append(line)
             y_true.append(label)
+            y_pseudo_all.append(lbl)
+            y_true_all.append(label)
+        else:
+            y_pseudo_all.append(None)
+            y_true_all.append(label)
+    analyze(y_pseudo_all, y_phrase, y_metadata, y_true_all)
     return X, y, y_true
 
 

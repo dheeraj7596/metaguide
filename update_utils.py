@@ -181,7 +181,7 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
         all_tups = []
         for label_entity_dict in label_entity_dict_list:
             all_tups += list(label_entity_dict[l].items())
-        sorted_tups_dict[l] = list(filter(lambda a: a[1] < thresh, sorted(all_tups, key=lambda tup: -tup[1])))
+        sorted_tups_dict[l] = list(filter(lambda a: a[1] > thresh, sorted(all_tups, key=lambda tup: -tup[1])))
 
     ticked_entities_map_list = []
     for entity_docid in entity_docid_map_list:
@@ -197,6 +197,7 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
         flag = 0
         for l in labels:
             if index < len(sorted_tups_dict[l]):
+                flag = 1
                 tup = sorted_tups_dict[l][index]
                 for i, entity_docid in enumerate(entity_docid_map_list):
                     if i in flagged:
@@ -212,7 +213,6 @@ def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df
                         filtered_label_entity_dict_list[i][l][tup[0]] = tup[1]
                         doc_id_set.update(entity_docid[tup[0]])
                         ticked_entities_map_list[i][tup[0]] = 1
-                        flag = 1
                         break
                     except:
                         continue

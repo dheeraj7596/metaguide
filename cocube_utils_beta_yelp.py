@@ -8,6 +8,7 @@ from model import *
 import matplotlib.pyplot as plt
 from data_utils import *
 from analyze_utils import analyze
+from data.yelp.attribute_utils import *
 import pickle
 import os
 
@@ -85,8 +86,8 @@ def softmax_label(count_dict, label_to_index):
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, label_to_index, ignore_metadata=True,
-                   soft=False):
+def get_train_data(df, labels, label_term_dict, label_author_dict, label_attr_dict, label_author_attr_dict,
+                   tokenizer, label_to_index, ignore_metadata=True, soft=False):
     y = []
     X = []
     y_true = []
@@ -108,7 +109,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
         count_dict = {}
         flag = 0
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, label_attr_dict, label_author_attr_dict, row,
+                                        labels)
         y_phrase.append(l_phrase)
         y_metadata.append(l_metadata)
         for l in labels:
@@ -120,6 +122,25 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
                 int_authors = authors_set.intersection(seed_authors)
             else:
                 int_authors = []
+
+            if len(label_attr_dict) > 0:
+                seed_attrs = set(label_attr_dict[l].keys())
+                row_attrs = get_all_keys(row)
+                int_attrs = row_attrs.intersection(seed_attrs)
+            else:
+                int_attrs = []
+
+            if len(label_author_attr_dict) > 0:
+                seed_author_attrs = set(label_author_attr_dict[l].keys())
+                row_attrs = get_all_keys(row)
+                row_auth_attrs = set()
+                for aut in authors_set:
+                    for attr in row_attrs:
+                        row_auth_attrs.add((aut, attr))
+                int_auth_attrs = row_auth_attrs.intersection(seed_author_attrs)
+            else:
+                int_auth_attrs = []
+
             if ignore_metadata and len(int_labels) == 0:
                 continue
             for word in words:
@@ -141,6 +162,22 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, la
                 except:
                     count_dict[l] = {}
                 count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
+                flag = 1
+
+            for attr in int_attrs:
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
+                count_dict[l]["ATTR_" + str(attr)] = label_attr_dict[l][attr]
+                flag = 1
+
+            for auth_attr in int_auth_attrs:
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
+                count_dict[l]["AUTH_ATTR_" + str(auth_attr)] = label_author_attr_dict[l][auth_attr]
                 flag = 1
 
         if flag:
@@ -185,7 +222,7 @@ def get_phrase_label(words, label_term_dict, labels):
     return lbl
 
 
-def get_metadata_label(authors_set, label_author_dict, labels):
+def get_metadata_label(authors_set, label_author_dict, label_attr_dict, label_author_attr_dict, row, labels):
     count_dict = {}
     flag = 0
     for l in labels:
@@ -195,6 +232,24 @@ def get_metadata_label(authors_set, label_author_dict, labels):
         else:
             int_authors = []
 
+        if len(label_attr_dict) > 0:
+            seed_attrs = set(label_attr_dict[l].keys())
+            row_attrs = get_all_keys(row)
+            int_attrs = row_attrs.intersection(seed_attrs)
+        else:
+            int_attrs = []
+
+        if len(label_author_attr_dict) > 0:
+            seed_author_attrs = set(label_author_attr_dict[l].keys())
+            row_attrs = get_all_keys(row)
+            row_auth_attrs = set()
+            for aut in authors_set:
+                for attr in row_attrs:
+                    row_auth_attrs.add((aut, attr))
+            int_auth_attrs = row_auth_attrs.intersection(seed_author_attrs)
+        else:
+            int_auth_attrs = []
+
         for auth in int_authors:
             flag = 1
             try:
@@ -203,13 +258,30 @@ def get_metadata_label(authors_set, label_author_dict, labels):
                 count_dict[l] = {}
             count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
 
+        for attr in int_attrs:
+            try:
+                temp = count_dict[l]
+            except:
+                count_dict[l] = {}
+            count_dict[l]["ATTR_" + str(attr)] = label_attr_dict[l][attr]
+            flag = 1
+
+        for auth_attr in int_auth_attrs:
+            try:
+                temp = count_dict[l]
+            except:
+                count_dict[l] = {}
+            count_dict[l]["AUTH_ATTR_" + str(auth_attr)] = label_author_attr_dict[l][auth_attr]
+            flag = 1
+
     lbl = None
     if flag:
         lbl = argmax_label(count_dict)
     return lbl
 
 
-def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tokenizer):
+def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_attr_dict, label_author_attr_dict,
+                             tokenizer):
     y = []
     y_phrase = []
     y_metadata = []
@@ -230,7 +302,8 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tok
             words.append(index_word[tok])
 
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, label_attr_dict, label_author_attr_dict, row,
+                                        labels)
 
         if l_phrase == l_metadata:
             y.append(l_phrase)
@@ -260,7 +333,8 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, tok
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_index, index_to_label,
+def train_classifier(df, labels, label_term_dict, label_author_dict, label_attr_dict, label_author_attr_dict,
+                     label_to_index, index_to_label,
                      model_name, old=True, soft=False):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "yelp/"
@@ -276,10 +350,12 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_to_in
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     if old:
-        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, tokenizer, label_to_index,
-                                      ignore_metadata=False, soft=soft)
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_attr_dict,
+                                      label_author_attr_dict, tokenizer, label_to_index, ignore_metadata=False,
+                                      soft=soft)
     else:
-        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, tokenizer)
+        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_attr_dict,
+                                                label_author_attr_dict, tokenizer)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     # df_train = create_training_df(X, y, y_true)
     # df_train.to_csv(basepath + dataset + "training_label.csv")

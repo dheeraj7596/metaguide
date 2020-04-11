@@ -32,7 +32,7 @@ if __name__ == "__main__":
     model_name = sys.argv[2]
     is_soft = int(sys.argv[3])
 
-    df = pickle.load(open(pkl_dump_dir + "business_reviews_phrase_removed_stopwords_labeled_shortlisted_thresh_3.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3_phrase_removed_stopwords.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = {}
     for ph in phrase_id_map:
@@ -45,19 +45,31 @@ if __name__ == "__main__":
     docfreq = get_doc_freq(df)
     inv_docfreq = get_inv_doc_freq(df, docfreq)
 
-    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_shortlisted_thresh_3.npz")
-    author_id = pickle.load(open(pkl_dump_dir + "author_id_shortlisted_thresh_3.pkl", "rb"))
-    id_author = pickle.load(open(pkl_dump_dir + "id_author_shortlisted_thresh_3.pkl", "rb"))
-    G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase_shortlisted_thresh_3.npz")
-    fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id_shortlisted_thresh_3.pkl", "rb"))
-    id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust_shortlisted_thresh_3.pkl", "rb"))
+    G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase_1review_shortlisted_thresh_3.npz")
+    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_1review_shortlisted_thresh_3.npz")
+    G_attr = sparse.load_npz(pkl_dump_dir + "G_attr_1review_shortlisted_thresh_3.npz")
+    G_auth_attr = sparse.load_npz(pkl_dump_dir + "G_auth_attr_1review_shortlisted_thresh_3.npz")
 
-    phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map_shortlisted_thresh_3.pkl", "rb"))
-    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map_shortlisted_thresh_3.pkl", "rb"))
+    fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust_1review_shortlisted_thresh_3.pkl", "rb"))
+    author_id = pickle.load(open(pkl_dump_dir + "author_id_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_author = pickle.load(open(pkl_dump_dir + "id_author_1review_shortlisted_thresh_3.pkl", "rb"))
+    attr_id = pickle.load(open(pkl_dump_dir + "attr_id_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_attr = pickle.load(open(pkl_dump_dir + "id_attr_1review_shortlisted_thresh_3.pkl", "rb"))
+    author_attr_id = pickle.load(open(pkl_dump_dir + "author_attr_id_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_author_attr = pickle.load(open(pkl_dump_dir + "id_author_attr_1review_shortlisted_thresh_3.pkl", "rb"))
+
+    phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
+    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
+    attr_docid_map = pickle.load(open(pkl_dump_dir + "attr_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
+    author_attr_docid_map = pickle.load(
+        open(pkl_dump_dir + "author_attr_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
     label_author_dict = {}
+    label_attr_dict = {}
+    label_author_attr_dict = {}
 
     t = 9
     pre_train = 0
@@ -81,7 +93,8 @@ if __name__ == "__main__":
         #     pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
         #                                           label_to_index, index_to_label, model_name, old=True)
         else:
-            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_to_index,
+            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_attr_dict,
+                                                  label_author_attr_dict, label_to_index,
                                                   index_to_label, model_name, old=True, soft=is_soft)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
@@ -141,6 +154,53 @@ if __name__ == "__main__":
                                                                                     label_author_dict, phrase_docid_map,
                                                                                     author_docid_map, df, i)
 
+
+        # RANKING PHRASE, AUTHOR, ATTRIBUTE TOGETHER
+        elif algo == 6:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_attr_dict = run_pagerank(probs, df, G_attr, attr_id, id_attr, label_to_index,
+                                           auth_plot_dump_dir,
+                                           plot=plot)
+            label_phrase_dict, label_author_dict, label_attr_dict = rank_phrase_author_attr_together(label_phrase_dict,
+                                                                                                     label_author_dict,
+                                                                                                     label_attr_dict,
+                                                                                                     phrase_docid_map,
+                                                                                                     author_docid_map,
+                                                                                                     attr_docid_map, df,
+                                                                                                     labels, i)
+
+        # RANKING PHRASE, AUTHOR, ATTRIBUTE, AUTHOR_ATTRIBUTE TOGETHER
+        elif algo == 7:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_attr_dict = run_pagerank(probs, df, G_attr, attr_id, id_attr, label_to_index,
+                                           auth_plot_dump_dir,
+                                           plot=plot)
+            label_author_attr_dict = run_pagerank(probs, df, G_auth_attr, author_attr_id, id_author_attr,
+                                                  label_to_index,
+                                                  auth_plot_dump_dir,
+                                                  plot=plot)
+            label_phrase_dict, label_author_dict, label_attr_dict, label_author_attr_dict = rank_phrase_author_attr_author_attr_together(
+                label_phrase_dict,
+                label_author_dict,
+                label_attr_dict,
+                label_author_attr_dict,
+                phrase_docid_map,
+                author_docid_map,
+                attr_docid_map,
+                author_attr_docid_map,
+                df,
+                labels, i)
+
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)
@@ -154,6 +214,8 @@ if __name__ == "__main__":
         if should_print:
             print_label_phrase_dict(label_phrase_dict, id_phrase_map)
             print_label_entity_dict(label_author_dict)
+            print_label_entity_dict(label_attr_dict)
+            print_label_entity_dict(label_author_attr_dict)
         print("#" * 80)
 
     if plot:

@@ -5,7 +5,7 @@ import random
 import tensorflow as tf
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "4"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
 
 def get_json(path):
@@ -67,7 +67,7 @@ if __name__ == "__main__":
     dataset = "yelp/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "business_reviews_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "business_1review_shortlisted_thresh_3_phrase_removed_stopwords.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)

@@ -20,7 +20,7 @@ if __name__ == "__main__":
     dataset = "yelp/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "business_reviews_cut.pkl", "rb"))
+    df = pickle.load(open(data_path + "business_1review_shortlisted_thresh_3.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()
@@ -45,7 +45,8 @@ if __name__ == "__main__":
         data.append(temp_str)
 
     df["Review"] = data
-    pickle.dump(df, open(data_path + "business_reviews_phrase.pkl", "wb"))
+    df["text"] = data
+    pickle.dump(df, open(data_path + "business_1review_shortlisted_thresh_3_phrase.pkl", "wb"))
 
     id_phrase_map = {}
     for ph in phrase_id_map:

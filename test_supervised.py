@@ -8,7 +8,15 @@ from data_utils import *
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "6"
+
+import tensorflow as tf
+from keras.backend.tensorflow_backend import set_session
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+sess = tf.Session(config=config)
+set_session(sess)
 
 
 def run(df):
@@ -61,7 +69,7 @@ if __name__ == "__main__":
     pkl_dump_dir = basepath + dataset
 
     # df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
-    df = pickle.load(open(pkl_dump_dir + "business_reviews_cut.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3.pkl", "rb"))
     modified_labels = []
     for i, row in df.iterrows():
         if row["label"] in ["american (traditional)", "american (new)"]:

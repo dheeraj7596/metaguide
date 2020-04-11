@@ -7,7 +7,7 @@ if __name__ == "__main__":
     lines = f.readlines()
     f.close()
 
-    df = pickle.load(open("business_reviews_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open("business_1review_shortlisted_thresh_3.pkl", "rb"))
     label_phrases = {}
     labels = list(df["label"])
 

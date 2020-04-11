@@ -66,6 +66,7 @@ def print_label_phrase_dict(label_phrase_dict, id_phrase_map):
     for label in label_phrase_dict:
         print(label)
         print("*" * 80)
+        print("Number of phrases: ", len(label_phrase_dict[label]))
         for key in label_phrase_dict[label]:
             id = decrypt(key)
             print(id_phrase_map[id], label_phrase_dict[label][key])
@@ -75,6 +76,7 @@ def print_label_entity_dict(label_entity_dict):
     for label in label_entity_dict:
         print(label)
         print("*" * 80)
+        print("Number of entities: ", len(label_entity_dict[label]))
         for key in label_entity_dict[label]:
             print(key, label_entity_dict[label][key])
 

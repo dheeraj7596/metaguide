@@ -47,23 +47,23 @@ if __name__ == "__main__":
 
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase_1review_shortlisted_thresh_3.npz")
     G_auth = sparse.load_npz(pkl_dump_dir + "G_auth_1review_shortlisted_thresh_3.npz")
-    G_attr = sparse.load_npz(pkl_dump_dir + "G_attr_1review_shortlisted_thresh_3.npz")
-    G_auth_attr = sparse.load_npz(pkl_dump_dir + "G_auth_attr_1review_shortlisted_thresh_3.npz")
+    G_attr = sparse.load_npz(pkl_dump_dir + "G_attr_pos_1review_shortlisted_thresh_3.npz")
+    G_auth_attr = sparse.load_npz(pkl_dump_dir + "G_auth_attr_pos_1review_shortlisted_thresh_3.npz")
 
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id_1review_shortlisted_thresh_3.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust_1review_shortlisted_thresh_3.pkl", "rb"))
     author_id = pickle.load(open(pkl_dump_dir + "author_id_1review_shortlisted_thresh_3.pkl", "rb"))
     id_author = pickle.load(open(pkl_dump_dir + "id_author_1review_shortlisted_thresh_3.pkl", "rb"))
-    attr_id = pickle.load(open(pkl_dump_dir + "attr_id_1review_shortlisted_thresh_3.pkl", "rb"))
-    id_attr = pickle.load(open(pkl_dump_dir + "id_attr_1review_shortlisted_thresh_3.pkl", "rb"))
-    author_attr_id = pickle.load(open(pkl_dump_dir + "author_attr_id_1review_shortlisted_thresh_3.pkl", "rb"))
-    id_author_attr = pickle.load(open(pkl_dump_dir + "id_author_attr_1review_shortlisted_thresh_3.pkl", "rb"))
+    attr_id = pickle.load(open(pkl_dump_dir + "attr_id_pos_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_attr = pickle.load(open(pkl_dump_dir + "id_attr_pos_1review_shortlisted_thresh_3.pkl", "rb"))
+    author_attr_id = pickle.load(open(pkl_dump_dir + "author_attr_id_pos_1review_shortlisted_thresh_3.pkl", "rb"))
+    id_author_attr = pickle.load(open(pkl_dump_dir + "id_author_attr_pos_1review_shortlisted_thresh_3.pkl", "rb"))
 
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
     author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
-    attr_docid_map = pickle.load(open(pkl_dump_dir + "attr_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
+    attr_docid_map = pickle.load(open(pkl_dump_dir + "attr_docid_map_pos_1review_shortlisted_thresh_3.pkl", "rb"))
     author_attr_docid_map = pickle.load(
-        open(pkl_dump_dir + "author_attr_docid_map_1review_shortlisted_thresh_3.pkl", "rb"))
+        open(pkl_dump_dir + "author_attr_docid_map_pos_1review_shortlisted_thresh_3.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)

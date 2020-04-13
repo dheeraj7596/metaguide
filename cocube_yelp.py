@@ -74,7 +74,7 @@ if __name__ == "__main__":
     t = 9
     pre_train = 0
     plot = False
-    should_print = False
+    should_print = True
     algo = int(sys.argv[1])
 
     phrase_count = {}

@@ -1,30 +1,51 @@
 {
   "american": [
     "american",
-    "mac and cheese"
+    "mac and cheese",
+    "fries"
   ],
   "mexican": [
-    "mexican"
+    "mexican",
+    "carne asada",
+    "taco",
+    "salsa"
   ],
   "italian": [
-    "italian"
+    "italian",
+    "ravioli",
+    "pasta"
   ],
   "chinese": [
-    "chinese"
+    "chinese",
+    "chinese food",
+    "dumplings",
+    "dim sum"
   ],
   "japanese": [
-    "japanese"
+    "japanese",
+    "sashimi",
+    "ramen",
+    "tempura"
   ],
   "thai": [
-    "thai"
+    "thai",
+    "pad thai",
+    "peanut sauce"
   ],
   "indian": [
-    "indian"
+    "indian",
+    "curry",
+    "naan",
+    "biryani"
   ],
   "vietnamese": [
-    "vietnamese"
+    "vietnamese",
+    "banh mi",
+    "vermicelli"
   ],
   "korean": [
-    "korean"
+    "korean",
+    "kimchi",
+    "bulgogi"
   ]
 }

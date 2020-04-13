@@ -21,9 +21,9 @@ def get_ambience(row):
     for key in json:
         if json[key]:
             ret_key = prefix + "_" + key + "_" + "True"
-        else:
-            ret_key = prefix + "_" + key + "_" + "False"
-        keys.append(ret_key)
+        # else:
+        #     ret_key = prefix + "_" + key + "_" + "False"
+            keys.append(ret_key)
     return keys
 
 
@@ -32,7 +32,7 @@ def get_True_False_key(row, prefix, attr):
     if pd.isna(str) or pd.isnull(str):
         return ""
     str = remove_b_prefix(str)
-    if str in ["True", "False"]:
+    if str in ["True"]:
         return prefix + "_" + str
     else:
         return ""
@@ -84,9 +84,9 @@ def get_good_for_meal(row):
     for key in json:
         if json[key]:
             ret_key = prefix + "_" + key + "_" + "True"
-        else:
-            ret_key = prefix + "_" + key + "_" + "False"
-        keys.append(ret_key)
+        # else:
+        #     ret_key = prefix + "_" + key + "_" + "False"
+            keys.append(ret_key)
     return keys
 
 
@@ -104,9 +104,9 @@ def get_dietary_restrictions(row):
     for key in json:
         if json[key]:
             ret_key = prefix + "_" + key + "_" + "True"
-        else:
-            ret_key = prefix + "_" + key + "_" + "False"
-        keys.append(ret_key)
+        # else:
+        #     ret_key = prefix + "_" + key + "_" + "False"
+            keys.append(ret_key)
     return keys
 
 

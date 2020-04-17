@@ -7,6 +7,13 @@ import os
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "6"
 
+from keras.backend.tensorflow_backend import set_session
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+sess = tf.Session(config=config)
+set_session(sess)
+
 
 def get_json(path):
     import json

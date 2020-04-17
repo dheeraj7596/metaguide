@@ -7,6 +7,7 @@ import pickle
 def load_data(file_name, keys=None, head=500):
     count = 0
     data = []
+    title_dict = {}
     with gzip.open(file_name) as fin:
         for l in fin:
             d = json.loads(l)
@@ -22,6 +23,13 @@ def load_data(file_name, keys=None, head=500):
                         break
 
             if flag == 0:
+                try:
+                    temp = title_dict[d["title"].lower()]
+                    continue
+                except:
+                    pass
+
+                title_dict[d["title"].lower()] = 1
                 count += 1
                 data.append(d)
 
@@ -48,6 +56,8 @@ def shortlist(books, auth_bookids, thresh=5000):
     doc_id_set = set()
     selected_authors = []
     while len(doc_id_set) <= thresh:
+        if len(items) == 0:
+            break
         popped = items.pop(random.randrange(len(items)))
         selected_authors.append(popped[0])
         doc_id_set.update(set(popped[1]))
@@ -60,11 +70,15 @@ def shortlist(books, auth_bookids, thresh=5000):
 
 def remove_intersection(filtered_books, categories):
     book_id_sets = []
+    title_sets = []
     for cat in categories:
         temp_set = set()
+        temp_title_set = set()
         for book in filtered_books[cat]:
             temp_set.add(book["book_id"])
+            temp_title_set.add(book["title"].lower())
         book_id_sets.append(temp_set)
+        title_sets.append(temp_title_set)
 
     intersection_ids = set()
     for i, book_ids in enumerate(book_id_sets):
@@ -72,6 +86,13 @@ def remove_intersection(filtered_books, categories):
             if i == j:
                 continue
             intersection_ids.update(book_ids.intersection(book_ids_in))
+
+    intersection_titles = set()
+    for i, titles in enumerate(title_sets):
+        for j, titles_in in enumerate(title_sets):
+            if i == j:
+                continue
+            intersection_titles.update(titles.intersection(titles_in))
 
     for id in intersection_ids:
         for cat in categories:
@@ -83,6 +104,18 @@ def remove_intersection(filtered_books, categories):
             id_list.reverse()
             for i in id_list:
                 del filtered_books[cat][i]
+
+    for title in intersection_titles:
+        for cat in categories:
+            id_list = []
+            for i, book in enumerate(filtered_books[cat]):
+                if book["title"].lower() == title:
+                    id_list.append(i)
+
+            id_list.reverse()
+            for i in id_list:
+                del filtered_books[cat][i]
+
     return filtered_books
 
 
@@ -113,11 +146,11 @@ if __name__ == "__main__":
 
     del books
 
+    filtered_books = remove_intersection(filtered_books, categories)
+
     print("*" * 80)
     for cat in categories:
         print(len(filtered_books[cat]))
-
-    filtered_books = remove_intersection(filtered_books, categories)
 
     pickle.dump(filtered_books, open(base_path + "filtered_books.pkl", "wb"))
     pass

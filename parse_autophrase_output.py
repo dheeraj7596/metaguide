@@ -17,10 +17,10 @@ def decrypt(val):
 
 if __name__ == "__main__":
     base_path = "./data/"
-    dataset = "yelp/"
+    dataset = "books/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "business_1review_shortlisted_thresh_3.pkl", "rb"))
+    df = pickle.load(open(data_path + "df.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()
@@ -34,6 +34,8 @@ if __name__ == "__main__":
         soup = BeautifulSoup(line)
         for p in soup.findAll("phrase"):
             phrase = p.string
+            if phrase is None:
+                continue
             try:
                 temp = phrase_id_map[phrase]
             except:
@@ -44,13 +46,14 @@ if __name__ == "__main__":
         temp_str = bleach.clean(str(soup), tags=[], strip=True)
         data.append(temp_str)
 
-    df["Review"] = data
+    # df["Review"] = data
     df["text"] = data
-    pickle.dump(df, open(data_path + "business_1review_shortlisted_thresh_3_phrase.pkl", "wb"))
+    pickle.dump(df, open(data_path + "df_phrase.pkl", "wb"))
 
     id_phrase_map = {}
     for ph in phrase_id_map:
         id_phrase_map[phrase_id_map[ph]] = ph
 
+    print("Number of phrases: ", len(phrase_id_map))
     pickle.dump(phrase_id_map, open(data_path + "phrase_id_map.pkl", "wb"))
     pickle.dump(id_phrase_map, open(data_path + "id_phrase_map.pkl", "wb"))

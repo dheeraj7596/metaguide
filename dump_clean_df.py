@@ -1,24 +1,27 @@
 import pickle
 from nltk.corpus import stopwords
+import string
 
 if __name__ == "__main__":
     basepath = "./data/"
-    dataset = "yelp/"
+    dataset = "books/"
     pkl_dump_dir = basepath + dataset
 
-    df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3_phrase.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_phrase.pkl", "rb"))
     stop_words = set(stopwords.words('english'))
     stop_words.add('would')
 
-    abstracts = list(df["Review"])
+    abstracts = list(df["text"])
 
     clean_abstracts = []
     for abs in abstracts:
         word_list = abs.strip().split()
         filtered_words = [word for word in word_list if word not in stop_words]
-        clean_abstracts.append(" ".join(filtered_words))
+        temp = " ".join(filtered_words)
+        temp2 = temp.translate(str.maketrans('', '', string.punctuation))
+        clean_abstracts.append(temp2)
 
-    df["Review"] = clean_abstracts
+    # df["Review"] = clean_abstracts
     df["text"] = clean_abstracts
 
-    pickle.dump(df, open(pkl_dump_dir + "business_1review_shortlisted_thresh_3_phrase_removed_stopwords.pkl", "wb"))
+    pickle.dump(df, open(pkl_dump_dir + "df_phrase_removed_stopwords.pkl", "wb"))

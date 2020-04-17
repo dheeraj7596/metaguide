@@ -21,13 +21,13 @@ set_session(sess)
 
 def run(df):
     glove_dir = basepath + "glove.6B"
-    model_name = "cocube_tok"
+    model_name = "books_sup"
     max_sentence_length = 100
     max_sentences = 15
     max_words = 20000
     embedding_dim = 100
 
-    X = df["Review"]
+    X = df["text"]
     y = df["label"]
     y_true = df["label"]
 
@@ -65,28 +65,12 @@ def run(df):
 
 if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
-    dataset = "yelp/"
+    dataset = "books/"
     pkl_dump_dir = basepath + dataset
 
     # df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
-    df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3.pkl", "rb"))
-    modified_labels = []
-    for i, row in df.iterrows():
-        if row["label"] in ["american (traditional)", "american (new)"]:
-            modified_labels.append("american")
-        else:
-            modified_labels.append(row["label"])
-
-    df["label"] = modified_labels
-
-    print("*" * 80)
-    print("RUNNING YELP")
+    # df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df.pkl", "rb"))
+    print("RUNNING BOOKS")
     run(df)
-    print("*" * 80)
-
-    print("RUNNING YELP SHORTLISTED")
-    labels = ["american", "chinese", "indian", "italian", "japanese", "korean", "mexican", "thai", "vietnamese"]
-    temp = df[df.label.isin(labels)]
-    temp = temp.reset_index(drop=True)
-    run(temp)
     print("*" * 80)

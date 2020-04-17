@@ -64,10 +64,10 @@ def get_batches(x, y, batch_size):
 
 if __name__ == "__main__":
     base_path = "/data4/dheeraj/metaguide/"
-    dataset = "yelp/"
+    dataset = "books/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "business_1review_shortlisted_thresh_3_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_phrase_removed_stopwords.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)

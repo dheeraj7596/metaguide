@@ -36,7 +36,7 @@ if __name__ == "__main__":
             final_dic["num_pages"].append(book["num_pages"])
             final_dic["publication_year"].append(book["publication_year"])
 
-            text = book["title"].lower() + " " + book["description"].lower()
+            text = book["title"].lower() + " . " + book["description"].lower()
             arr = text.splitlines()
             final_dic["text"].append(" ".join(arr))
 

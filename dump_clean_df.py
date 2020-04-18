@@ -18,8 +18,8 @@ if __name__ == "__main__":
         word_list = abs.strip().split()
         filtered_words = [word for word in word_list if word not in stop_words]
         temp = " ".join(filtered_words)
-        temp2 = temp.translate(str.maketrans('', '', string.punctuation))
-        clean_abstracts.append(temp2)
+        # temp2 = temp.translate(str.maketrans('', '', string.punctuation))
+        clean_abstracts.append(temp)
 
     # df["Review"] = clean_abstracts
     df["text"] = clean_abstracts

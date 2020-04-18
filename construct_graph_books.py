@@ -112,6 +112,25 @@ def make_pub_map(df):
     return pub_id, id_pub, count
 
 
+def make_pub_year_map(df):
+    count = len(df)
+    pub_year_id = {}
+    id_pub_year = {}
+
+    total_keys = set()
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        pub = row["publisher"]
+        total_keys.add((pub, year))
+
+    for i, key in enumerate(total_keys):
+        pub_year_id[key] = count
+        id_pub_year[count] = key
+        count += 1
+
+    return pub_year_id, id_pub_year, count
+
+
 def make_author_pub_map(df):
     count = len(df)
     author_pub_id = {}
@@ -159,6 +178,8 @@ if __name__ == "__main__":
 
     author_pub_id, id_author_pub, author_pub_graph_node_count = make_author_pub_map(df)
 
+    pub_year_id, id_pub_year, pub_year_graph_node_count = make_pub_year_map(df)
+
     edges = []
     weights = []
     for i, row in df.iterrows():
@@ -204,6 +225,18 @@ if __name__ == "__main__":
     G_auth_pub = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
                                    shape=(author_pub_graph_node_count, author_pub_graph_node_count))
 
+    edges = []
+    weights = []
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        pub = row["publisher"]
+        edges.append([i, pub_year_id[(pub, year)]])
+        weights.append(1)
+    edges = np.array(edges)
+    G_pub_year = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
+                                   shape=(pub_year_graph_node_count, pub_year_graph_node_count))
+
+    sparse.save_npz(data_path + "G_pub_year.npz", G_pub_year)
     sparse.save_npz(data_path + "G_phrase.npz", G_phrase)
     sparse.save_npz(data_path + "G_auth.npz", G_auth)
     sparse.save_npz(data_path + "G_pub.npz", G_pub)
@@ -220,3 +253,6 @@ if __name__ == "__main__":
 
     pickle.dump(author_pub_id, open(data_path + "author_pub_id.pkl", "wb"))
     pickle.dump(id_author_pub, open(data_path + "id_author_pub.pkl", "wb"))
+
+    pickle.dump(pub_year_id, open(data_path + "pub_year_id.pkl", "wb"))
+    pickle.dump(id_pub_year, open(data_path + "id_pub_year.pkl", "wb"))

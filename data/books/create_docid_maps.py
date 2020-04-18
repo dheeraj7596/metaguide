@@ -61,6 +61,18 @@ def create_author_pub_doc_id_map(df):
     return author_pub_docid_map
 
 
+def create_pub_year_doc_id_map(df):
+    pub_year_docid_map = {}
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        pub = row["publisher"]
+        try:
+            pub_year_docid_map[(pub, year)].add(i)
+        except:
+            pub_year_docid_map[(pub, year)] = {i}
+    return pub_year_docid_map
+
+
 if __name__ == "__main__":
     data_path = "./"
 
@@ -72,8 +84,10 @@ if __name__ == "__main__":
     author_docid_map = create_author_doc_id_map(df)
     pub_docid_map = create_pub_doc_id_map(df)
     author_pub_docid_map = create_author_pub_doc_id_map(df)
+    pub_year_docid_map = create_pub_year_doc_id_map(df)
 
     pickle.dump(phrase_docid, open(data_path + "phrase_docid_map.pkl", "wb"))
     pickle.dump(author_docid_map, open(data_path + "author_docid_map.pkl", "wb"))
     pickle.dump(pub_docid_map, open(data_path + "pub_docid_map.pkl", "wb"))
     pickle.dump(author_pub_docid_map, open(data_path + "author_pub_docid_map.pkl", "wb"))
+    pickle.dump(pub_year_docid_map, open(data_path + "pub_year_docid_map.pkl", "wb"))

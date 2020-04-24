@@ -40,7 +40,7 @@ def imd_movie_picker():
 
 
 if __name__ == '__main__':
-    base_path = "./"
+    base_path = "/data4/dheeraj/metaguide/imdb/"
     df = pickle.load(open(base_path + "df.pkl", "rb"))
     base_url = 'http://www.imdb.com/title/'
     summaries = []

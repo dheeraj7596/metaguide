@@ -15,8 +15,10 @@ def get_imd_movies(url):
 def get_imd_summary(url):
     movie_page = requests.get(url)
     soup = BeautifulSoup(movie_page.text, 'html.parser')
-    return soup.find("ul", id="plot-summaries-content").find("li").find("p").contents[0].strip()
-    # return soup.find("div", class_="ipl-zebra-list__item").contents[0].strip()
+    try:
+        return soup.find("ul", id="plot-summaries-content").find("li").find("p").contents[0].strip()
+    except:
+        return soup.find("div", class_="summary_text").contents[0].strip()
 
 
 def get_imd_movie_info(movie):

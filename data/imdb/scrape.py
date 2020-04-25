@@ -15,7 +15,8 @@ def get_imd_movies(url):
 def get_imd_summary(url):
     movie_page = requests.get(url)
     soup = BeautifulSoup(movie_page.text, 'html.parser')
-    return soup.find("div", class_="summary_text").contents[0].strip()
+    return soup.find("ul", id="plot-summaries-content").find("li").find("p").contents[0].strip()
+    # return soup.find("div", class_="ipl-zebra-list__item").contents[0].strip()
 
 
 def get_imd_movie_info(movie):
@@ -48,8 +49,10 @@ if __name__ == '__main__':
         if i % 100 == 0:
             print("Finished: ", i)
         titleId = row["tconst"]
-        movie_url = base_url + str(titleId) + "/"
+        movie_url = base_url + str(titleId) + "/plotsummary?ref_=tt_ov_pl#summaries"
         movie_summary = get_imd_summary(movie_url).lower()
+        if len(movie_summary) == 0:
+            print("Null summary: ", i, movie_url)
         summaries.append(movie_summary)
 
     df["summary"] = summaries

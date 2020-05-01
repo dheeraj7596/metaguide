@@ -17,10 +17,10 @@ def decrypt(val):
 
 if __name__ == "__main__":
     base_path = "./data/"
-    dataset = "books/"
+    dataset = "imdb/"
     data_path = base_path + dataset
     out_path = data_path + "segmentation.txt"
-    df = pickle.load(open(data_path + "df.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_summary_top6.pkl", "rb"))
     f = open(out_path, "r")
     lines = f.readlines()
     f.close()
@@ -48,7 +48,7 @@ if __name__ == "__main__":
 
     # df["Review"] = data
     df["text"] = data
-    pickle.dump(df, open(data_path + "df_phrase.pkl", "wb"))
+    pickle.dump(df, open(data_path + "df_summary_top6_phrase.pkl", "wb"))
 
     id_phrase_map = {}
     for ph in phrase_id_map:

@@ -65,12 +65,13 @@ def run(df):
 
 if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
-    dataset = "books/"
+    dataset = "imdb/"
     pkl_dump_dir = basepath + dataset
 
     # df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     # df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3.pkl", "rb"))
     df = pickle.load(open(pkl_dump_dir + "df.pkl", "rb"))
-    print("RUNNING BOOKS")
+    df["text"] = df["summary"]
+    print("RUNNING MOVIES")
     run(df)
     print("*" * 80)

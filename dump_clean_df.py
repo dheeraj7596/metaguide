@@ -4,10 +4,10 @@ import string
 
 if __name__ == "__main__":
     basepath = "./data/"
-    dataset = "books/"
+    dataset = "imdb/"
     pkl_dump_dir = basepath + dataset
 
-    df = pickle.load(open(pkl_dump_dir + "df_phrase.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_summary_top6_phrase.pkl", "rb"))
     stop_words = set(stopwords.words('english'))
     stop_words.add('would')
 
@@ -24,4 +24,4 @@ if __name__ == "__main__":
     # df["Review"] = clean_abstracts
     df["text"] = clean_abstracts
 
-    pickle.dump(df, open(pkl_dump_dir + "df_phrase_removed_stopwords.pkl", "wb"))
+    pickle.dump(df, open(pkl_dump_dir + "df_summary_top6_phrase_removed_stopwords.pkl", "wb"))

@@ -71,10 +71,10 @@ def get_batches(x, y, batch_size):
 
 if __name__ == "__main__":
     base_path = "/data4/dheeraj/metaguide/"
-    dataset = "books/"
+    dataset = "imdb/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_summary_top6_phrase_removed_stopwords_metadata.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)
@@ -132,7 +132,7 @@ if __name__ == "__main__":
         valid_embedding = tf.nn.embedding_lookup(normalized_embedding, valid_dataset)
         similarity = tf.matmul(valid_embedding, tf.transpose(normalized_embedding))
 
-    epochs = 10
+    epochs = 100
     batch_size = 1000
 
     with train_graph.as_default():

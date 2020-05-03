@@ -75,6 +75,12 @@ def rank_phrase_author_attr_author_attr_together(label_phrase_dict, label_author
     return label_phrase_dict, label_author_dict, label_attr_dict, label_author_attr_dict
 
 
+def rank_phrase_metadata_together(label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full"):
+    filtered_label_entity_dict_list = update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df,
+                                                                 labels, i, cov)
+    return filtered_label_entity_dict_list
+
+
 def rank_phrase_author_independently(label_phrase_dict, label_author_dict, phrase_docid_map, author_docid_map, df, i):
     label_phrase_dict = update_by_percent(label_phrase_dict, phrase_docid_map, df, i)
     label_author_dict = update_by_percent_with_overlap(label_author_dict, author_docid_map, df, i)

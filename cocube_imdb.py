@@ -1,5 +1,4 @@
-from cocube_utils_beta_books import get_distinct_labels, train_classifier, get_entity_count, plot_entity_count, \
-    get_cut_off
+from cocube_utils_beta_imdb import get_distinct_labels, train_classifier
 from cocube_variations import *
 from pagerank import run_pagerank
 import pickle
@@ -44,45 +43,142 @@ if __name__ == "__main__":
     inv_docfreq = get_inv_doc_freq(df, docfreq)
 
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
-    G_auth = sparse.load_npz(pkl_dump_dir + "G_auth.npz")
-    G_pub = sparse.load_npz(pkl_dump_dir + "G_pub.npz")
-    G_auth_pub = sparse.load_npz(pkl_dump_dir + "G_auth_pub.npz")
-    G_pub_year = sparse.load_npz(pkl_dump_dir + "G_pub_year.npz")
+    G_adult = sparse.load_npz(pkl_dump_dir + "G_adult.npz")
+    G_actor = sparse.load_npz(pkl_dump_dir + "G_actor.npz")
+    G_actress = sparse.load_npz(pkl_dump_dir + "G_actress.npz")
+    G_producer = sparse.load_npz(pkl_dump_dir + "G_producer.npz")
+    G_writer = sparse.load_npz(pkl_dump_dir + "G_writer.npz")
+    G_director = sparse.load_npz(pkl_dump_dir + "G_director.npz")
+    G_composer = sparse.load_npz(pkl_dump_dir + "G_composer.npz")
+    G_cinematographer = sparse.load_npz(pkl_dump_dir + "G_cinematographer.npz")
+    G_editor = sparse.load_npz(pkl_dump_dir + "G_editor.npz")
+    G_prod_designer = sparse.load_npz(pkl_dump_dir + "G_prod_designer.npz")
+
+    G_dir_adult = sparse.load_npz(pkl_dump_dir + "G_dir_adult.npz")
+    G_dir_actor = sparse.load_npz(pkl_dump_dir + "G_dir_actor.npz")
+    G_dir_actress = sparse.load_npz(pkl_dump_dir + "G_dir_actress.npz")
+    G_dir_producer = sparse.load_npz(pkl_dump_dir + "G_dir_producer.npz")
+    G_dir_writer = sparse.load_npz(pkl_dump_dir + "G_dir_writer.npz")
+    G_dir_composer = sparse.load_npz(pkl_dump_dir + "G_dir_composer.npz")
+    G_dir_cinematographer = sparse.load_npz(pkl_dump_dir + "G_dir_cinematographer.npz")
+    G_dir_editor = sparse.load_npz(pkl_dump_dir + "G_dir_editor.npz")
+    G_dir_prod_designer = sparse.load_npz(pkl_dump_dir + "G_dir_prod_designer.npz")
+    G_actor_actress = sparse.load_npz(pkl_dump_dir + "G_actor_actress.npz")
 
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
-    author_id = pickle.load(open(pkl_dump_dir + "author_id.pkl", "rb"))
-    id_author = pickle.load(open(pkl_dump_dir + "id_author.pkl", "rb"))
-    pub_id = pickle.load(open(pkl_dump_dir + "pub_id.pkl", "rb"))
-    id_pub = pickle.load(open(pkl_dump_dir + "id_pub.pkl", "rb"))
-    author_pub_id = pickle.load(open(pkl_dump_dir + "author_pub_id.pkl", "rb"))
-    id_author_pub = pickle.load(open(pkl_dump_dir + "id_author_pub.pkl", "rb"))
-    pub_year_id = pickle.load(open(pkl_dump_dir + "pub_year_id.pkl", "rb"))
-    id_pub_year = pickle.load(open(pkl_dump_dir + "id_pub_year.pkl", "rb"))
 
+    adult_id = pickle.load(open(pkl_dump_dir + "adult_id.pkl", "rb"))
+    id_adult = pickle.load(open(pkl_dump_dir + "id_adult.pkl", "rb"))
+
+    actor_id = pickle.load(open(pkl_dump_dir + "actor_id.pkl", "rb"))
+    id_actor = pickle.load(open(pkl_dump_dir + "id_actor.pkl", "rb"))
+
+    actress_id = pickle.load(open(pkl_dump_dir + "actress_id.pkl", "rb"))
+    id_actress = pickle.load(open(pkl_dump_dir + "id_actress.pkl", "rb"))
+
+    producer_id = pickle.load(open(pkl_dump_dir + "producer_id.pkl", "rb"))
+    id_producer = pickle.load(open(pkl_dump_dir + "id_producer.pkl", "rb"))
+
+    writer_id = pickle.load(open(pkl_dump_dir + "writer_id.pkl", "rb"))
+    id_writer = pickle.load(open(pkl_dump_dir + "id_writer.pkl", "rb"))
+
+    director_id = pickle.load(open(pkl_dump_dir + "director_id.pkl", "rb"))
+    id_director = pickle.load(open(pkl_dump_dir + "id_director.pkl", "rb"))
+
+    composer_id = pickle.load(open(pkl_dump_dir + "composer_id.pkl", "rb"))
+    id_composer = pickle.load(open(pkl_dump_dir + "id_composer.pkl", "rb"))
+
+    cinematographer_id = pickle.load(open(pkl_dump_dir + "cinematographer_id.pkl", "rb"))
+    id_cinematographer = pickle.load(open(pkl_dump_dir + "id_cinematographer.pkl", "rb"))
+
+    editor_id = pickle.load(open(pkl_dump_dir + "editor_id.pkl", "rb"))
+    id_editor = pickle.load(open(pkl_dump_dir + "id_editor.pkl", "rb"))
+
+    prod_designer_id = pickle.load(open(pkl_dump_dir + "prod_designer_id.pkl", "rb"))
+    id_prod_designer = pickle.load(open(pkl_dump_dir + "id_prod_designer.pkl", "rb"))
+
+    dir_adult_id = pickle.load(open(pkl_dump_dir + "dir_adult_id.pkl", "rb"))
+    id_dir_adult = pickle.load(open(pkl_dump_dir + "id_dir_adult.pkl", "rb"))
+
+    dir_actor_id = pickle.load(open(pkl_dump_dir + "dir_actor_id.pkl", "rb"))
+    id_dir_actor = pickle.load(open(pkl_dump_dir + "id_dir_actor.pkl", "rb"))
+
+    dir_actress_id = pickle.load(open(pkl_dump_dir + "dir_actress_id.pkl", "rb"))
+    id_dir_actress = pickle.load(open(pkl_dump_dir + "id_dir_actress.pkl", "rb"))
+
+    dir_producer_id = pickle.load(open(pkl_dump_dir + "dir_producer_id.pkl", "rb"))
+    id_dir_producer = pickle.load(open(pkl_dump_dir + "id_dir_producer.pkl", "rb"))
+
+    dir_writer_id = pickle.load(open(pkl_dump_dir + "dir_writer_id.pkl", "rb"))
+    id_dir_writer = pickle.load(open(pkl_dump_dir + "id_dir_writer.pkl", "rb"))
+
+    dir_composer_id = pickle.load(open(pkl_dump_dir + "dir_composer_id.pkl", "rb"))
+    id_dir_composer = pickle.load(open(pkl_dump_dir + "id_dir_composer.pkl", "rb"))
+
+    dir_cinematographer_id = pickle.load(open(pkl_dump_dir + "dir_cinematographer_id.pkl", "rb"))
+    id_dir_cinematographer = pickle.load(open(pkl_dump_dir + "id_dir_cinematographer.pkl", "rb"))
+
+    dir_editor_id = pickle.load(open(pkl_dump_dir + "dir_editor_id.pkl", "rb"))
+    id_dir_editor = pickle.load(open(pkl_dump_dir + "id_dir_editor.pkl", "rb"))
+
+    dir_prod_designer_id = pickle.load(open(pkl_dump_dir + "dir_prod_designer_id.pkl", "rb"))
+    id_dir_prod_designer = pickle.load(open(pkl_dump_dir + "id_dir_prod_designer.pkl", "rb"))
+
+    actor_actress_id = pickle.load(open(pkl_dump_dir + "actor_actress_id.pkl", "rb"))
+    id_actor_actress = pickle.load(open(pkl_dump_dir + "id_actor_actress.pkl", "rb"))
+
+    # Loading Docid maps
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
-    author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
-    pub_docid_map = pickle.load(open(pkl_dump_dir + "pub_docid_map.pkl", "rb"))
-    author_pub_docid_map = pickle.load(open(pkl_dump_dir + "author_pub_docid_map.pkl", "rb"))
-    pub_year_docid_map = pickle.load(open(pkl_dump_dir + "pub_year_docid_map.pkl", "rb"))
+    adult_docid_map = pickle.load(open(pkl_dump_dir + "adult_docid_map.pkl", "rb"))
+    actor_docid_map = pickle.load(open(pkl_dump_dir + "actor_docid_map.pkl", "rb"))
+    actress_docid_map = pickle.load(open(pkl_dump_dir + "actress_docid_map.pkl", "rb"))
+    producer_docid_map = pickle.load(open(pkl_dump_dir + "producer_docid_map.pkl", "rb"))
+    writer_docid_map = pickle.load(open(pkl_dump_dir + "writer_docid_map.pkl", "rb"))
+    director_docid_map = pickle.load(open(pkl_dump_dir + "director_docid_map.pkl", "rb"))
+    composer_docid_map = pickle.load(open(pkl_dump_dir + "composer_docid_map.pkl", "rb"))
+    cinematographer_docid_map = pickle.load(open(pkl_dump_dir + "cinematographer_docid_map.pkl", "rb"))
+    editor_docid_map = pickle.load(open(pkl_dump_dir + "editor_docid_map.pkl", "rb"))
+    prod_designer_docid_map = pickle.load(open(pkl_dump_dir + "prod_designer_docid_map.pkl", "rb"))
+    dir_adult_docid_map = pickle.load(open(pkl_dump_dir + "dir_adult_docid_map.pkl", "rb"))
+    dir_actor_docid_map = pickle.load(open(pkl_dump_dir + "dir_actor_docid_map.pkl", "rb"))
+    dir_actress_docid_map = pickle.load(open(pkl_dump_dir + "dir_actress_docid_map.pkl", "rb"))
+    dir_producer_docid_map = pickle.load(open(pkl_dump_dir + "dir_producer_docid_map.pkl", "rb"))
+    dir_writer_docid_map = pickle.load(open(pkl_dump_dir + "dir_writer_docid_map.pkl", "rb"))
+    dir_composer_docid_map = pickle.load(open(pkl_dump_dir + "dir_composer_docid_map.pkl", "rb"))
+    dir_cinematographer_docid_map = pickle.load(open(pkl_dump_dir + "dir_cinematographer_docid_map.pkl", "rb"))
+    dir_editor_docid_map = pickle.load(open(pkl_dump_dir + "dir_editor_docid_map.pkl", "rb"))
+    dir_prod_designer_docid_map = pickle.load(open(pkl_dump_dir + "dir_prod_designer_docid_map.pkl", "rb"))
+    actor_actress_docid_map = pickle.load(open(pkl_dump_dir + "actor_actress_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
-    label_author_dict = {}
-    label_pub_dict = {}
-    label_author_pub_dict = {}
-    label_pub_year_dict = {}
+    label_adult_dict = {}
+    label_actor_dict = {}
+    label_actress_dict = {}
+    label_producer_dict = {}
+    label_writer_dict = {}
+    label_director_dict = {}
+    label_composer_dict = {}
+    label_cinematographer_dict = {}
+    label_editor_dict = {}
+    label_prod_designer_dict = {}
+    label_dir_adult_dict = {}
+    label_dir_actor_dict = {}
+    label_dir_actress_dict = {}
+    label_dir_producer_dict = {}
+    label_dir_writer_dict = {}
+    label_dir_composer_dict = {}
+    label_dir_cinematographer_dict = {}
+    label_dir_editor_dict = {}
+    label_dir_prod_designer_dict = {}
+    label_actor_actress_dict = {}
 
     t = 9
     pre_train = 0
     plot = False
     should_print = True
     algo = int(sys.argv[1])
-
-    phrase_count = {}
-    author_count = {}
-    phrase_ppr_cutoff = {}
-    author_ppr_cutoff = {}
 
     for i in range(t):
         print("ITERATION ", i)
@@ -95,184 +191,200 @@ if __name__ == "__main__":
         #     pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_conf_dict,
         #                                           label_to_index, index_to_label, model_name, old=True)
         else:
-            pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_pub_dict,
-                                                  label_author_pub_dict, label_pub_year_dict, label_to_index,
-                                                  index_to_label, model_name, old=True, soft=is_soft)
-
-        phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
-        auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"
-
-        if plot:
-            os.makedirs(phrase_plot_dump_dir, exist_ok=True)
-            os.makedirs(auth_plot_dump_dir, exist_ok=True)
+            pred_labels, probs = train_classifier(df, labels, label_phrase_dict,
+                                                  label_adult_dict,
+                                                  label_actor_dict,
+                                                  label_actress_dict,
+                                                  label_producer_dict,
+                                                  label_writer_dict,
+                                                  label_director_dict,
+                                                  label_composer_dict,
+                                                  label_cinematographer_dict,
+                                                  label_editor_dict,
+                                                  label_prod_designer_dict,
+                                                  label_dir_adult_dict,
+                                                  label_dir_actor_dict,
+                                                  label_dir_actress_dict,
+                                                  label_dir_producer_dict,
+                                                  label_dir_writer_dict,
+                                                  label_dir_composer_dict,
+                                                  label_dir_cinematographer_dict,
+                                                  label_dir_editor_dict,
+                                                  label_dir_prod_designer_dict,
+                                                  label_actor_actress_dict, label_to_index, index_to_label, model_name,
+                                                  soft=is_soft)
 
         # RANKING PHRASE ONLY
         if algo == 1:
             label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
+                                             None,
                                              plot=plot)
             label_phrase_dict = rank_phrase_only(label_phrase_dict, phrase_docid_map, df, labels, i)
 
-        # RANKING AUTHOR ONLY
-        elif algo == 2:
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_author_dict = rank_author_only(label_author_dict, author_docid_map, df, labels, i)
-
         # RANKING PHRASE, METADATA TOGETHER
-        elif algo == 3:
+        elif algo == 2:
             label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
+                                             None,
                                              plot=plot)
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
-                                                                               phrase_docid_map, author_docid_map, df,
-                                                                               labels, i)
-
-        # RANKING PHRASE, METADATA TOGETHER ITERATIVE COVERAGE
-        elif algo == 4:
-            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
-                                             plot=plot)
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_phrase_dict, label_author_dict = rank_phrase_author_together(label_phrase_dict, label_author_dict,
-                                                                               phrase_docid_map, author_docid_map, df,
-                                                                               labels, i, cov="iterative")
-
-        # RANKING INDEPENDENTLY
-        elif algo == 5:
-            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
-                                             plot=plot)
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_phrase_dict, label_author_dict = rank_phrase_author_independently(label_phrase_dict,
-                                                                                    label_author_dict, phrase_docid_map,
-                                                                                    author_docid_map, df, i)
-
-
-        # RANKING PHRASE, AUTHOR, PUBLISHER TOGETHER
-        elif algo == 6:
-            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
-                                             plot=plot)
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_pub_dict = run_pagerank(probs, df, G_pub, pub_id, id_pub, label_to_index,
-                                          auth_plot_dump_dir,
-                                          plot=plot)
-            label_phrase_dict, label_author_dict, label_pub_dict = rank_phrase_author_attr_together(label_phrase_dict,
-                                                                                                    label_author_dict,
-                                                                                                    label_pub_dict,
-                                                                                                    phrase_docid_map,
-                                                                                                    author_docid_map,
-                                                                                                    pub_docid_map, df,
-                                                                                                    labels, i)
-
-        # RANKING PHRASE, AUTHOR, PUBLISHER, AUTHOR_PUBLISHER TOGETHER
-        elif algo == 7:
-            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
-                                             plot=plot)
-            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
-                                             auth_plot_dump_dir,
-                                             plot=plot)
-            label_pub_dict = run_pagerank(probs, df, G_pub, pub_id, id_pub, label_to_index,
-                                          auth_plot_dump_dir,
-                                          plot=plot)
-            label_author_pub_dict = run_pagerank(probs, df, G_auth_pub, author_pub_id, id_author_pub,
-                                                 label_to_index,
-                                                 auth_plot_dump_dir,
-                                                 plot=plot)
-            label_phrase_dict, label_author_dict, label_pub_dict, label_author_pub_dict = rank_phrase_author_attr_author_attr_together(
-                label_phrase_dict,
-                label_author_dict,
-                label_pub_dict,
-                label_author_pub_dict,
-                phrase_docid_map,
-                author_docid_map,
-                pub_docid_map,
-                author_pub_docid_map,
-                df,
-                labels, i)
-
-        # RANKING PHRASE, PUBLISHER, PUBLISHER_YEAR TOGETHER
-        elif algo == 8:
-            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
-                                             phrase_plot_dump_dir,
-                                             plot=plot)
-            label_pub_dict = run_pagerank(probs, df, G_pub, pub_id, id_pub, label_to_index,
-                                          auth_plot_dump_dir,
-                                          plot=plot)
-            label_pub_year_dict = run_pagerank(probs, df, G_pub_year, pub_year_id, id_pub_year, label_to_index,
-                                               auth_plot_dump_dir,
+            label_adult_dict = run_pagerank(probs, df, G_adult, adult_id, id_adult, label_to_index,
+                                            None,
+                                            plot=plot)
+            label_actor_dict = run_pagerank(probs, df, G_actor, actor_id, id_actor, label_to_index,
+                                            None,
+                                            plot=plot)
+            label_actress_dict = run_pagerank(probs, df, G_actress, actress_id, id_actress, label_to_index,
+                                              None,
+                                              plot=plot)
+            label_producer_dict = run_pagerank(probs, df, G_producer, producer_id, id_producer, label_to_index,
+                                               None,
                                                plot=plot)
-            label_phrase_dict, label_pub_dict, label_pub_year_dict = rank_phrase_author_attr_together(label_phrase_dict,
-                                                                                                      label_pub_dict,
-                                                                                                      label_pub_year_dict,
-                                                                                                      phrase_docid_map,
-                                                                                                      pub_docid_map,
-                                                                                                      pub_year_docid_map,
-                                                                                                      df, labels, i)
+            label_writer_dict = run_pagerank(probs, df, G_writer, writer_id, id_writer, label_to_index,
+                                             None,
+                                             plot=plot)
+            label_director_dict = run_pagerank(probs, df, G_director, director_id, id_director, label_to_index,
+                                               None,
+                                               plot=plot)
+            label_composer_dict = run_pagerank(probs, df, G_composer, composer_id, id_composer, label_to_index,
+                                               None,
+                                               plot=plot)
+            label_cinematographer_dict = run_pagerank(probs, df, G_cinematographer, cinematographer_id,
+                                                      id_cinematographer, label_to_index,
+                                                      None,
+                                                      plot=plot)
+            label_editor_dict = run_pagerank(probs, df, G_editor, editor_id, id_editor, label_to_index,
+                                             None,
+                                             plot=plot)
+            label_prod_designer_dict = run_pagerank(probs, df, G_prod_designer, prod_designer_id, id_prod_designer,
+                                                    label_to_index,
+                                                    None,
+                                                    plot=plot)
+            label_dir_adult_dict = run_pagerank(probs, df, G_dir_adult, dir_adult_id, id_dir_adult, label_to_index,
+                                                None,
+                                                plot=plot)
+            label_dir_actor_dict = run_pagerank(probs, df, G_dir_actor, dir_actor_id, id_dir_actor, label_to_index,
+                                                None,
+                                                plot=plot)
+            label_dir_actress_dict = run_pagerank(probs, df, G_dir_actress, dir_actress_id, id_dir_actress,
+                                                  label_to_index,
+                                                  None,
+                                                  plot=plot)
+            label_dir_producer_dict = run_pagerank(probs, df, G_dir_producer, dir_producer_id, id_dir_producer,
+                                                   label_to_index,
+                                                   None,
+                                                   plot=plot)
+            label_dir_writer_dict = run_pagerank(probs, df, G_dir_writer, dir_writer_id, id_dir_writer, label_to_index,
+                                                 None,
+                                                 plot=plot)
+            label_dir_composer_dict = run_pagerank(probs, df, G_dir_composer, dir_composer_id, id_dir_composer,
+                                                   label_to_index,
+                                                   None,
+                                                   plot=plot)
+            label_dir_cinematographer_dict = run_pagerank(probs, df, G_dir_cinematographer, dir_cinematographer_id,
+                                                          id_dir_cinematographer, label_to_index,
+                                                          None,
+                                                          plot=plot)
+            label_dir_editor_dict = run_pagerank(probs, df, G_dir_editor, dir_editor_id, id_dir_editor, label_to_index,
+                                                 None,
+                                                 plot=plot)
+            label_dir_prod_designer_dict = run_pagerank(probs, df, G_dir_prod_designer, dir_prod_designer_id,
+                                                        id_dir_prod_designer, label_to_index,
+                                                        None,
+                                                        plot=plot)
+            label_actor_actress_dict = run_pagerank(probs, df, G_actor_actress, actor_actress_id, id_actor_actress,
+                                                    label_to_index,
+                                                    None,
+                                                    plot=plot)
+
+            label_entity_dict_list = [label_phrase_dict,
+                                      label_adult_dict,
+                                      label_actor_dict,
+                                      label_actress_dict,
+                                      label_producer_dict,
+                                      label_writer_dict,
+                                      label_director_dict,
+                                      label_composer_dict,
+                                      label_cinematographer_dict,
+                                      label_editor_dict,
+                                      label_prod_designer_dict,
+                                      label_dir_adult_dict,
+                                      label_dir_actor_dict,
+                                      label_dir_actress_dict,
+                                      label_dir_producer_dict,
+                                      label_dir_writer_dict,
+                                      label_dir_composer_dict,
+                                      label_dir_cinematographer_dict,
+                                      label_dir_editor_dict,
+                                      label_dir_prod_designer_dict,
+                                      label_actor_actress_dict]
+
+            entity_docid_map_list = [phrase_docid_map,
+                                     adult_docid_map,
+                                     actor_docid_map,
+                                     actress_docid_map,
+                                     producer_docid_map,
+                                     writer_docid_map,
+                                     director_docid_map,
+                                     composer_docid_map,
+                                     cinematographer_docid_map,
+                                     editor_docid_map,
+                                     prod_designer_docid_map,
+                                     dir_adult_docid_map,
+                                     dir_actor_docid_map,
+                                     dir_actress_docid_map,
+                                     dir_producer_docid_map,
+                                     dir_writer_docid_map,
+                                     dir_composer_docid_map,
+                                     dir_cinematographer_docid_map,
+                                     dir_editor_docid_map,
+                                     dir_prod_designer_docid_map,
+                                     actor_actress_docid_map]
+            label_phrase_dict,
+            label_adult_dict,
+            label_actor_dict,
+            label_actress_dict,
+            label_producer_dict,
+            label_writer_dict,
+            label_director_dict,
+            label_composer_dict,
+            label_cinematographer_dict,
+            label_editor_dict,
+            label_prod_designer_dict,
+            label_dir_adult_dict,
+            label_dir_actor_dict,
+            label_dir_actress_dict,
+            label_dir_producer_dict,
+            label_dir_writer_dict,
+            label_dir_composer_dict,
+            label_dir_cinematographer_dict,
+            label_dir_editor_dict,
+            label_dir_prod_designer_dict,
+            label_actor_actress_dict = rank_phrase_metadata_together(label_entity_dict_list, entity_docid_map_list, df,
+                                                                     labels, i)
 
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)
 
-        if plot:
-            phrase_count = get_entity_count(label_phrase_dict, phrase_count)
-            author_count = get_entity_count(label_author_dict, author_count)
-            phrase_ppr_cutoff = get_cut_off(label_phrase_dict, phrase_ppr_cutoff)
-            author_ppr_cutoff = get_cut_off(label_author_dict, author_ppr_cutoff)
-
         if should_print:
             print_label_phrase_dict(label_phrase_dict, id_phrase_map)
-            print_label_entity_dict(label_author_dict)
-            print_label_entity_dict(label_pub_dict)
-            print_label_entity_dict(label_author_pub_dict)
+            print(label_adult_dict)
+            print(label_actor_dict)
+            print(label_actress_dict)
+            print(label_producer_dict)
+            print(label_writer_dict)
+            print(label_director_dict)
+            print(label_composer_dict)
+            print(label_cinematographer_dict)
+            print(label_editor_dict)
+            print(label_prod_designer_dict)
+            print(label_dir_adult_dict)
+            print(label_dir_actor_dict)
+            print(label_dir_actress_dict)
+            print(label_dir_producer_dict)
+            print(label_dir_writer_dict)
+            print(label_dir_composer_dict)
+            print(label_dir_cinematographer_dict)
+            print(label_dir_editor_dict)
+            print(label_dir_prod_designer_dict)
+            print(label_actor_actress_dict)
         print("#" * 80)
-
-    if plot:
-        phrase_count_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/count_cutoff/"
-        auth_count_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/count_cutoff/"
-        os.makedirs(phrase_count_plot_dump_dir, exist_ok=True)
-        os.makedirs(auth_count_plot_dump_dir, exist_ok=True)
-
-        for l in phrase_count:
-            y_values = phrase_count[l]
-            x_values = range(1, t + 1)
-            path = phrase_count_plot_dump_dir + l + "_phrase_count_iterations.png"
-            x_label = "Iteration"
-            y_label = "Number of Phrases"
-            plot_entity_count(y_values, x_values, path, x_label, y_label)
-
-        for l in author_count:
-            y_values = author_count[l]
-            x_values = range(1, t + 1)
-            path = auth_count_plot_dump_dir + l + "_author_count_iterations.png"
-            x_label = "Iteration"
-            y_label = "Number of Authors"
-            plot_entity_count(y_values, x_values, path, x_label, y_label)
-
-        for l in phrase_ppr_cutoff:
-            y_values = phrase_ppr_cutoff[l]
-            x_values = range(1, t + 1)
-            path = phrase_count_plot_dump_dir + l + "_phrase_ppr_cutoff_iterations.png"
-            x_label = "Iteration"
-            y_label = "PPR Cutoff"
-            plot_entity_count(y_values, x_values, path, x_label, y_label)
-
-        for l in author_ppr_cutoff:
-            y_values = author_ppr_cutoff[l]
-            x_values = range(1, t + 1)
-            path = auth_count_plot_dump_dir + l + "_author_ppr_cutoff_iterations.png"
-            x_label = "Iteration"
-            y_label = "PPR Cutoff"
-            plot_entity_count(y_values, x_values, path, x_label, y_label)

@@ -150,7 +150,7 @@ def get_train_data(df, labels,
             count_dict, flag = get_int_bigram(flag, count_dict, l, label_dir_editor_dict, row, "director", "editor")
             count_dict, flag = get_int_bigram(flag, count_dict, l, label_dir_prod_designer_dict, row, "director",
                                               "prod_designer")
-            count_dict = get_int_bigram(flag, count_dict, l, label_actor_actress_dict, row, "actor", "actress")
+            count_dict, flag = get_int_bigram(flag, count_dict, l, label_actor_actress_dict, row, "actor", "actress")
 
         if flag:
             if not soft:

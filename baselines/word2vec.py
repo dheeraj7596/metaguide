@@ -5,6 +5,17 @@ from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
 import pickle
 import numpy as np
+import tensorflow as tf
+import os
+
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+
+from keras.backend.tensorflow_backend import set_session
+
+config = tf.ConfigProto()
+config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
+sess = tf.Session(config=config)
+set_session(sess)
 
 
 def get_label_w2v_dict(label_term_dict):
@@ -21,7 +32,7 @@ def get_label_w2v_dict(label_term_dict):
 
 
 if __name__ == "__main__":
-    basepath = "../data/"
+    basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
 

@@ -37,18 +37,18 @@ def get_label_w2v_dict(label_term_dict):
 
 if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
-    dataset = "dblp/"
+    dataset = "books/"
     pkl_dump_dir = basepath + dataset
 
-    with open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb") as handler:
+    with open(pkl_dump_dir + "df_phrase_removed_stopwords.pkl", "rb") as handler:
         df = pickle.load(handler)
 
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
 
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_run3.json")
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords.json")
     label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
 
-    tagged_data = [word_tokenize(_d) for i, _d in enumerate(df["abstract"])]
+    tagged_data = [word_tokenize(_d) for i, _d in enumerate(df["text"])]
     max_epochs = 20
     vec_size = 100
     alpha = 0.025
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     pred = []
 
     for i, row in df.iterrows():
-        words = word_tokenize(row["abstract"].lower())
+        words = word_tokenize(row["text"].lower())
         temp = np.zeros((100,))
         for w in words:
             try:

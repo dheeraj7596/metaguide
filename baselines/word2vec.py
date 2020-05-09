@@ -1,3 +1,8 @@
+import sys
+
+sys.path.append("./")
+from coc_data_utils import get_label_term_json
+from cocube_beta import modify_phrases
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.metrics import classification_report
 from nltk.tokenize import word_tokenize
@@ -30,12 +35,6 @@ def get_label_w2v_dict(label_term_dict):
     return label_w2v_dict
 
 
-def get_label_term_json(path):
-    import json
-    dic = json.load(open(path, "r"))
-    return dic
-
-
 if __name__ == "__main__":
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
@@ -44,9 +43,12 @@ if __name__ == "__main__":
     with open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords.pkl", "rb") as handler:
         df = pickle.load(handler)
 
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_run3.json")
+    phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
 
-    tagged_data = [word_tokenize(_d) for i, _d in enumerate(df["sentence"])]
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_run3.json")
+    label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
+
+    tagged_data = [word_tokenize(_d) for i, _d in enumerate(df["abstract"])]
     max_epochs = 20
     vec_size = 100
     alpha = 0.025
@@ -62,7 +64,7 @@ if __name__ == "__main__":
     pred = []
 
     for i, row in df.iterrows():
-        words = word_tokenize(row["sentence"].lower())
+        words = word_tokenize(row["abstract"].lower())
         temp = np.zeros((100,))
         for w in words:
             try:

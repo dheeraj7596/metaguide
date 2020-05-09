@@ -1,5 +1,4 @@
 from sklearn.metrics.pairwise import cosine_similarity
-from coc_data_utils import get_label_term_json
 from sklearn.metrics import classification_report
 from nltk.tokenize import word_tokenize
 from gensim.models import Word2Vec
@@ -29,6 +28,12 @@ def get_label_w2v_dict(label_term_dict):
                 print("Word ", w, e)
         label_w2v_dict[l] = temp
     return label_w2v_dict
+
+
+def get_label_term_json(path):
+    import json
+    dic = json.load(open(path, "r"))
+    return dic
 
 
 if __name__ == "__main__":

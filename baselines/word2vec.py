@@ -31,7 +31,7 @@ def get_label_w2v_dict(label_term_dict):
                 temp += model[w]
             except Exception as e:
                 print("Word ", w, e)
-        label_w2v_dict[l] = temp
+        label_w2v_dict[l] = temp / label_term_dict[l]
     return label_w2v_dict
 
 

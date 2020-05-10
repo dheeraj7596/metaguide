@@ -5,7 +5,7 @@ if __name__ == "__main__":
     dataset = "books/"
     pkl_dump_dir = basepath + dataset
 
-    with open(pkl_dump_dir + "df_phrase_removed_stopwords.pkl", "rb") as handler:
+    with open(pkl_dump_dir + "df.pkl", "rb") as handler:
         df = pickle.load(handler)
 
     texts = []
@@ -34,4 +34,4 @@ if __name__ == "__main__":
 
     df["text"] = texts
 
-    pickle.dump(df, open(pkl_dump_dir + "df_phrase_removed_stopwords_baseline_metadata.pkl", "wb"))
+    pickle.dump(df, open(pkl_dump_dir + "df_baseline_metadata.pkl", "wb"))

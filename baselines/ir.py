@@ -6,21 +6,21 @@ from cocube_beta import modify_phrases
 
 if __name__ == "__main__":
     basepath = "../data/"
-    dataset = "books/"
+    dataset = "dblp/"
     pkl_dump_dir = basepath + dataset
 
-    with open(pkl_dump_dir + "df_phrase_removed_stopwords_baseline_metadata.pkl", "rb") as handler:
+    with open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_baseline_metadata.pkl", "rb") as handler:
         df = pickle.load(handler)
 
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
 
-    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords.json")
+    label_term_dict = get_label_term_json(pkl_dump_dir + "seedwords_run3.json")
     label_term_dict = modify_phrases(label_term_dict, phrase_id_map)
 
     print(label_term_dict)
 
     vectorizer = TfidfVectorizer()
-    X = vectorizer.fit_transform(df["text"])
+    X = vectorizer.fit_transform(df["abstract"])
     X_arr = X.toarray()
     names = vectorizer.get_feature_names()
 

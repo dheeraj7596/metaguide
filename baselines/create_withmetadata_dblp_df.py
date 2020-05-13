@@ -24,13 +24,13 @@ if __name__ == "__main__":
 
         metadata = []
         for aut in auths:
-            metadata.append(auth_pre + str(aut))
-            metadata.append(auth_year_pre + str(aut) + str(year))
+            metadata.append((auth_pre + str(aut)).replace(" ", ""))
+            metadata.append((auth_year_pre + str(aut) + str(year)).replace(" ", ""))
 
         metadata.append(pub_year_pre + str(year))
 
         for p in author_pairs:
-            metadata.append(auth_pairs_pre + str(p))
+            metadata.append((auth_pairs_pre + p[0] + p[1]).replace(" ", ""))
 
         line = line + " " + " ".join(metadata)
         texts.append(line)

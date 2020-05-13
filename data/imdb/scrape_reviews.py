@@ -38,7 +38,10 @@ def getReviews(soup):
                            soup.find_all('span', attrs={'class': 'point-scale'})]
 
     # find the index of negative and positive review
-    n_index, p_index = minMax(list(map(int, user_review_ratings)))
+    temp = list(map(int, user_review_ratings))
+    if len(temp) == 0:
+        return ""
+    n_index, p_index = minMax(temp)
 
     # get the review tags
     user_review_list = soup.find_all('a', attrs={'class': 'title'})
@@ -49,6 +52,32 @@ def getReviews(soup):
 
     # return the negative and positive review link
     n_review_link = "https://www.imdb.com" + n_review_tag['href']
+    p_review_link = "https://www.imdb.com" + p_review_tag['href']
+
+    return p_review_link
+
+
+def getOneReview(soup):
+    '''Function returns a positive review for each movie.'''
+
+    # get a list of user ratings
+    user_review_ratings = [tag.previous_element for tag in
+                           soup.find_all('span', attrs={'class': 'point-scale'})]
+
+    # find the index of negative and positive review
+    temp = list(map(int, user_review_ratings))
+    if len(temp) == 0:
+        return ""
+
+    p_index = numpy.argsort(temp)[-1]
+
+    # get the review tags
+    user_review_list = soup.find_all('a', attrs={'class': 'title'})
+
+    # get the positive review tags
+    p_review_tag = user_review_list[p_index]
+
+    # return the positive review link
     p_review_link = "https://www.imdb.com" + p_review_tag['href']
 
     return p_review_link
@@ -68,7 +97,9 @@ def getReviewText(review_url):
 
 def get_imd_review(url):
     movie_soups = getSoup(url)
-    movie_review_list = getReviews(movie_soups)
+    movie_review_list = getOneReview(movie_soups)
+    if len(movie_review_list) == 0:
+        return ""
     review_texts = getReviewText(movie_review_list)
     return review_texts
 

@@ -59,6 +59,48 @@ def run_pagerank(probs, df, G, entity_id, id_entity, label_to_index, dump_dir, p
     return label_entity_dict
 
 
+def run_pagerank_single_graph(probs, df, G, entity_id_list, id_entity_list, label_to_index, dump_dir, plot=False):
+    label_all_entity_dict = {}
+    start = len(df)
+    count = len(df)
+    for entity_id in entity_id_list:
+        count += len(entity_id)
+    for l in label_to_index:
+        print("Pagerank running for: ", l)
+        personalized = np.zeros((count,))
+        personalized[:len(df)] = probs[:, label_to_index[l]]
+        pr = pagerank(G, p=0.85, personalize=personalized)
+        temp_list = list(pr)[start:]
+        args = np.argsort(temp_list)[::-1]
+        top_auths = {}
+        for i in args:
+            for id_entity in id_entity_list:
+                try:
+                    top_auths[id_entity[start + i]] = temp_list[i]
+                except:
+                    pass
+        label_all_entity_dict[l] = top_auths
+    label_all_entity_dict = scale(label_all_entity_dict)
+
+    label_entity_dict_list = []
+    for entity_id in entity_id_list:
+        label_entity_dict_list.append({})
+
+    for l in label_all_entity_dict:
+        for key in label_all_entity_dict[l]:
+            for i, entity_id in enumerate(entity_id_list):
+                try:
+                    temp = entity_id[key]
+                    try:
+                        label_entity_dict_list[i][l][key] = label_all_entity_dict[l][key]
+                    except:
+                        label_entity_dict_list[i][l] = {}
+                        label_entity_dict_list[i][l][key] = label_all_entity_dict[l][key]
+                except:
+                    pass
+    return label_entity_dict_list
+
+
 def make_auth_pair_map(df):
     start = len(df)
     auth_num_map = {}

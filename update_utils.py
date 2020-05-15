@@ -163,8 +163,8 @@ def update_by_percent(label_phrase_dict, phrase_docid_map, df, i):
 
 def update_by_percent_together(label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full"):
     filtered_label_entity_dict_list = []
-    thresh = 0.8
-    # thresh = 1 / len(labels)
+    # thresh = 0.8
+    thresh = 1 / len(labels)
     for label_entity_dict in label_entity_dict_list:
         filtered_dict = {}
         for l in label_entity_dict:

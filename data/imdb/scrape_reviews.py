@@ -83,6 +83,31 @@ def getOneReview(soup):
     return p_review_link
 
 
+def getAllReviews(soup):
+    '''Function returns all reviews for a movie.'''
+
+    # get a list of user ratings
+    user_review_ratings = [tag.previous_element for tag in
+                           soup.find_all('span', attrs={'class': 'point-scale'})]
+
+    # find the index of negative and positive review
+    temp = list(map(int, user_review_ratings))
+    if len(temp) == 0:
+        return []
+
+    # get the review tagsr
+    user_review_list = soup.find_all('a', attrs={'class': 'title'})
+
+    p_review_links = []
+
+    for p_index in range(len(user_review_list)):
+        p_review_tag = user_review_list[p_index]
+        p_review_link = "https://www.imdb.com" + p_review_tag['href']
+        p_review_links.append(p_review_link)
+
+    return p_review_links
+
+
 def getReviewText(review_url):
     '''Returns the user review text given the review url.'''
 
@@ -97,11 +122,20 @@ def getReviewText(review_url):
 
 def get_imd_review(url):
     movie_soups = getSoup(url)
-    movie_review_list = getOneReview(movie_soups)
+    movie_review_list = getAllReviews(movie_soups)
     if len(movie_review_list) == 0:
         return ""
-    review_texts = getReviewText(movie_review_list)
-    return review_texts
+
+    review_texts = []
+    for movie_review in movie_review_list:
+        if len(movie_review) == 0:
+            review_texts.append("")
+        else:
+            try:
+                review_texts.append(getReviewText(movie_review))
+            except:
+                review_texts.append("")
+    return " ".join(review_texts)
 
 
 if __name__ == '__main__':
@@ -121,5 +155,5 @@ if __name__ == '__main__':
         reviews.append(movie_review)
 
     df["review"] = reviews
-    pickle.dump(df, open(base_path + "df_summary_top6_reviews.pkl", "wb"))
+    pickle.dump(df, open(base_path + "df_summary_top6_all_reviews.pkl", "wb"))
     # imd_movie_picker()

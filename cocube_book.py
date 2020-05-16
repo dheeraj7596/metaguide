@@ -222,6 +222,31 @@ if __name__ == "__main__":
                                                                                                       pub_year_docid_map,
                                                                                                       df, labels, i)
 
+        elif algo == 9:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_pub_dict = run_pagerank(probs, df, G_pub, pub_id, id_pub, label_to_index,
+                                          auth_plot_dump_dir,
+                                          plot=plot)
+            label_author_pub_dict = run_pagerank(probs, df, G_auth_pub, author_pub_id, id_author_pub,
+                                                 label_to_index,
+                                                 auth_plot_dump_dir,
+                                                 plot=plot)
+            label_pub_year_dict = run_pagerank(probs, df, G_pub_year, pub_year_id, id_pub_year,
+                                               label_to_index,
+                                               auth_plot_dump_dir,
+                                               plot=plot)
+            label_entity_dict_list = [label_phrase_dict, label_author_dict, label_pub_dict, label_author_pub_dict,
+                                      label_pub_year_dict]
+            entity_docid_map_list = [phrase_docid_map, author_docid_map, pub_docid_map, author_pub_docid_map,
+                                     pub_year_docid_map]
+            label_phrase_dict, label_author_dict, label_pub_dict, label_author_pub_dict, label_pub_year_dict = rank_phrase_metadata_together(
+                label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full")
+
         # RANKING WITH ITERATION
         # label_phrase_dict, label_author_dict = rank_phrase_author_with_iteration(label_phrase_dict, label_author_dict,
         #                                                                          df, pred_labels, i)
@@ -237,6 +262,7 @@ if __name__ == "__main__":
             print_label_entity_dict(label_author_dict)
             print_label_entity_dict(label_pub_dict)
             print_label_entity_dict(label_author_pub_dict)
+            print_label_entity_dict(label_pub_year_dict)
         print("#" * 80)
 
     if plot:

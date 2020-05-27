@@ -74,7 +74,7 @@ if __name__ == "__main__":
     dataset = "imdb/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_summary_top6_phrase_removed_stopwords_metadata.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_summary_top6_title_summary_all_reviews_removed_stopwords_metadata.pkl", "rb"))
     dump = True
 
     corpus = create_corpus(df)

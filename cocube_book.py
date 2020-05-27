@@ -305,8 +305,10 @@ if __name__ == "__main__":
             print_label_phrase_dict(label_phrase_dict, id_phrase_map)
             print_label_entity_dict(label_author_dict)
             print_label_entity_dict(label_pub_dict)
+            print_label_entity_dict(label_year_dict)
             print_label_entity_dict(label_author_pub_dict)
             print_label_entity_dict(label_pub_year_dict)
+            print_label_entity_dict(label_author_year_dict)
         print("#" * 80)
 
     if plot:

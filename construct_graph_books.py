@@ -26,7 +26,7 @@ def make_years_map(df):
     year_id = {}
     id_year = {}
 
-    years_set = set(df.year)
+    years_set = set(df.publication_year)
 
     for i, year in enumerate(years_set):
         year_id[year] = count
@@ -131,6 +131,26 @@ def make_pub_year_map(df):
     return pub_year_id, id_pub_year, count
 
 
+def make_author_year_map(df):
+    count = len(df)
+    author_year_id = {}
+    id_author_year = {}
+
+    total_keys = set()
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        auth_set = row["authors"]
+        for aut in auth_set:
+            total_keys.add((aut, year))
+
+    for i, key in enumerate(total_keys):
+        author_year_id[key] = count
+        id_author_year[count] = key
+        count += 1
+
+    return author_year_id, id_author_year, count
+
+
 def make_author_pub_map(df):
     count = len(df)
     author_pub_id = {}
@@ -176,9 +196,13 @@ if __name__ == "__main__":
 
     pub_id, id_pub, pub_graph_node_count = make_pub_map(df)
 
+    year_id, id_year, year_graph_node_count = make_years_map(df)
+
     author_pub_id, id_author_pub, author_pub_graph_node_count = make_author_pub_map(df)
 
     pub_year_id, id_pub_year, pub_year_graph_node_count = make_pub_year_map(df)
+
+    author_year_id, id_author_year, author_year_graph_node_count = make_author_year_map(df)
 
     edges = []
     weights = []
@@ -202,6 +226,16 @@ if __name__ == "__main__":
     edges = np.array(edges)
     G_auth = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
                                shape=(auth_graph_node_count, auth_graph_node_count))
+
+    edges = []
+    weights = []
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        edges.append([i, year_id[year]])
+        weights.append(1)
+    edges = np.array(edges)
+    G_year = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
+                               shape=(year_graph_node_count, year_graph_node_count))
 
     edges = []
     weights = []
@@ -236,11 +270,25 @@ if __name__ == "__main__":
     G_pub_year = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
                                    shape=(pub_year_graph_node_count, pub_year_graph_node_count))
 
+    edges = []
+    weights = []
+    for i, row in df.iterrows():
+        year = row["publication_year"]
+        auth_set = row["authors"]
+        for aut in auth_set:
+            edges.append([i, author_year_id[(aut, year)]])
+            weights.append(1)
+    edges = np.array(edges)
+    G_auth_year = sparse.csr_matrix((weights, (edges[:, 0], edges[:, 1])),
+                                    shape=(author_year_graph_node_count, author_year_graph_node_count))
+
     sparse.save_npz(data_path + "G_pub_year.npz", G_pub_year)
     sparse.save_npz(data_path + "G_phrase.npz", G_phrase)
     sparse.save_npz(data_path + "G_auth.npz", G_auth)
     sparse.save_npz(data_path + "G_pub.npz", G_pub)
+    sparse.save_npz(data_path + "G_year.npz", G_year)
     sparse.save_npz(data_path + "G_auth_pub.npz", G_auth_pub)
+    sparse.save_npz(data_path + "G_auth_year.npz", G_auth_year)
 
     pickle.dump(fnust_id, open(data_path + "fnust_id.pkl", "wb"))
     pickle.dump(id_fnust, open(data_path + "id_fnust.pkl", "wb"))
@@ -251,8 +299,14 @@ if __name__ == "__main__":
     pickle.dump(pub_id, open(data_path + "pub_id.pkl", "wb"))
     pickle.dump(id_pub, open(data_path + "id_pub.pkl", "wb"))
 
+    pickle.dump(year_id, open(data_path + "year_id.pkl", "wb"))
+    pickle.dump(id_year, open(data_path + "id_year.pkl", "wb"))
+
     pickle.dump(author_pub_id, open(data_path + "author_pub_id.pkl", "wb"))
     pickle.dump(id_author_pub, open(data_path + "id_author_pub.pkl", "wb"))
 
     pickle.dump(pub_year_id, open(data_path + "pub_year_id.pkl", "wb"))
     pickle.dump(id_pub_year, open(data_path + "id_pub_year.pkl", "wb"))
+
+    pickle.dump(author_year_id, open(data_path + "author_year_id.pkl", "wb"))
+    pickle.dump(id_author_year, open(data_path + "id_author_year.pkl", "wb"))

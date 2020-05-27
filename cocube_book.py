@@ -46,8 +46,10 @@ if __name__ == "__main__":
     G_phrase = sparse.load_npz(pkl_dump_dir + "G_phrase.npz")
     G_auth = sparse.load_npz(pkl_dump_dir + "G_auth.npz")
     G_pub = sparse.load_npz(pkl_dump_dir + "G_pub.npz")
+    G_year = sparse.load_npz(pkl_dump_dir + "G_year.npz")
     G_auth_pub = sparse.load_npz(pkl_dump_dir + "G_auth_pub.npz")
     G_pub_year = sparse.load_npz(pkl_dump_dir + "G_pub_year.npz")
+    G_auth_year = sparse.load_npz(pkl_dump_dir + "G_auth_year.npz")
 
     fnust_id = pickle.load(open(pkl_dump_dir + "fnust_id.pkl", "rb"))
     id_fnust = pickle.load(open(pkl_dump_dir + "id_fnust.pkl", "rb"))
@@ -55,16 +57,22 @@ if __name__ == "__main__":
     id_author = pickle.load(open(pkl_dump_dir + "id_author.pkl", "rb"))
     pub_id = pickle.load(open(pkl_dump_dir + "pub_id.pkl", "rb"))
     id_pub = pickle.load(open(pkl_dump_dir + "id_pub.pkl", "rb"))
+    year_id = pickle.load(open(pkl_dump_dir + "year_id.pkl", "rb"))
+    id_year = pickle.load(open(pkl_dump_dir + "id_year.pkl", "rb"))
     author_pub_id = pickle.load(open(pkl_dump_dir + "author_pub_id.pkl", "rb"))
     id_author_pub = pickle.load(open(pkl_dump_dir + "id_author_pub.pkl", "rb"))
     pub_year_id = pickle.load(open(pkl_dump_dir + "pub_year_id.pkl", "rb"))
     id_pub_year = pickle.load(open(pkl_dump_dir + "id_pub_year.pkl", "rb"))
+    author_year_id = pickle.load(open(pkl_dump_dir + "author_year_id.pkl", "rb"))
+    id_author_year = pickle.load(open(pkl_dump_dir + "id_author_year.pkl", "rb"))
 
     phrase_docid_map = pickle.load(open(pkl_dump_dir + "phrase_docid_map.pkl", "rb"))
     author_docid_map = pickle.load(open(pkl_dump_dir + "author_docid_map.pkl", "rb"))
     pub_docid_map = pickle.load(open(pkl_dump_dir + "pub_docid_map.pkl", "rb"))
+    year_docid_map = pickle.load(open(pkl_dump_dir + "year_docid_map.pkl", "rb"))
     author_pub_docid_map = pickle.load(open(pkl_dump_dir + "author_pub_docid_map.pkl", "rb"))
     pub_year_docid_map = pickle.load(open(pkl_dump_dir + "pub_year_docid_map.pkl", "rb"))
+    author_year_docid_map = pickle.load(open(pkl_dump_dir + "author_year_docid_map.pkl", "rb"))
 
     label_phrase_dict = modify(label_term_dict)
     print_label_phrase_dict(label_phrase_dict, id_phrase_map)
@@ -72,6 +80,8 @@ if __name__ == "__main__":
     label_pub_dict = {}
     label_author_pub_dict = {}
     label_pub_year_dict = {}
+    label_year_dict = {}
+    label_author_year_dict = {}
 
     t = 9
     pre_train = 0
@@ -96,7 +106,8 @@ if __name__ == "__main__":
         #                                           label_to_index, index_to_label, model_name, old=True)
         else:
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_pub_dict,
-                                                  label_author_pub_dict, label_pub_year_dict, label_to_index,
+                                                  label_year_dict, label_author_pub_dict, label_pub_year_dict,
+                                                  label_author_year_dict, label_to_index,
                                                   index_to_label, model_name, old=True, soft=is_soft)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
@@ -245,6 +256,39 @@ if __name__ == "__main__":
             entity_docid_map_list = [phrase_docid_map, author_docid_map, pub_docid_map, author_pub_docid_map,
                                      pub_year_docid_map]
             label_phrase_dict, label_author_dict, label_pub_dict, label_author_pub_dict, label_pub_year_dict = rank_phrase_metadata_together(
+                label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full")
+
+        elif algo == 10:
+            label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
+                                             phrase_plot_dump_dir,
+                                             plot=plot)
+            label_author_dict = run_pagerank(probs, df, G_auth, author_id, id_author, label_to_index,
+                                             auth_plot_dump_dir,
+                                             plot=plot)
+            label_pub_dict = run_pagerank(probs, df, G_pub, pub_id, id_pub, label_to_index,
+                                          auth_plot_dump_dir,
+                                          plot=plot)
+            label_year_dict = run_pagerank(probs, df, G_year, year_id, id_year, label_to_index,
+                                           auth_plot_dump_dir,
+                                           plot=plot)
+            label_author_pub_dict = run_pagerank(probs, df, G_auth_pub, author_pub_id, id_author_pub,
+                                                 label_to_index,
+                                                 auth_plot_dump_dir,
+                                                 plot=plot)
+            label_pub_year_dict = run_pagerank(probs, df, G_pub_year, pub_year_id, id_pub_year,
+                                               label_to_index,
+                                               auth_plot_dump_dir,
+                                               plot=plot)
+            label_author_year_dict = run_pagerank(probs, df, G_auth_year, author_year_id, id_author_year,
+                                                  label_to_index,
+                                                  auth_plot_dump_dir,
+                                                  plot=plot)
+            label_entity_dict_list = [label_phrase_dict, label_author_dict, label_pub_dict, label_year_dict,
+                                      label_author_pub_dict, label_pub_year_dict, label_author_year_dict]
+            entity_docid_map_list = [phrase_docid_map, author_docid_map, pub_docid_map, year_docid_map,
+                                     author_pub_docid_map,
+                                     pub_year_docid_map, author_year_docid_map]
+            label_phrase_dict, label_author_dict, label_pub_dict, label_year_dict, label_author_pub_dict, label_pub_year_dict, label_author_year_dict = rank_phrase_metadata_together(
                 label_entity_dict_list, entity_docid_map_list, df, labels, i, cov="full")
 
         # RANKING WITH ITERATION

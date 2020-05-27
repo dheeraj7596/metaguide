@@ -84,8 +84,9 @@ def softmax_label(count_dict, label_to_index):
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_author_pub_dict,
-                   label_pub_year_dict, tokenizer, label_to_index, soft=False):
+def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
+                   label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer, label_to_index,
+                   soft=False):
     y = []
     X = []
     y_true = []
@@ -109,8 +110,8 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
         count_dict = {}
         flag = 0
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_author_pub_dict,
-                                        label_pub_year_dict, row, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict,
+                                        label_author_pub_dict, label_pub_year_dict, label_author_year_dict, row, labels)
         y_phrase.append(l_phrase)
         y_metadata.append(l_metadata)
         for l in labels:
@@ -133,6 +134,16 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
                     count_dict[l]["PUB_" + str(pub)] = label_pub_dict[l][pub]
                     flag = 1
 
+            if len(label_year_dict) and len(label_year_dict[l]) > 0:
+                seed_years = set(label_year_dict[l].keys())
+                if year in seed_years:
+                    try:
+                        temp = count_dict[l]
+                    except:
+                        count_dict[l] = {}
+                    count_dict[l]["YEAR_" + str(year)] = label_year_dict[l][year]
+                    flag = 1
+
             if len(label_pub_year_dict) and len(label_pub_year_dict[l]) > 0:
                 seed_pub_years = set(label_pub_year_dict[l].keys())
                 if (pub, year) in seed_pub_years:
@@ -151,6 +162,15 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
                 int_auth_pubs = row_auth_pubs.intersection(seed_author_pubs)
             else:
                 int_auth_pubs = []
+
+            if len(label_author_year_dict) > 0 and len(label_author_year_dict[l]):
+                seed_author_years = set(label_author_year_dict[l].keys())
+                row_auth_years = set()
+                for auth in authors_set:
+                    row_auth_years.add((auth, year))
+                int_auth_years = row_auth_years.intersection(seed_author_years)
+            else:
+                int_auth_years = []
 
             for word in words:
                 if word in int_labels:
@@ -178,6 +198,14 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
                 except:
                     count_dict[l] = {}
                 count_dict[l]["AUTH_PUB_" + str(auth_pub)] = label_author_pub_dict[l][auth_pub]
+                flag = 1
+
+            for auth_year in int_auth_years:
+                try:
+                    temp = count_dict[l]
+                except:
+                    count_dict[l] = {}
+                count_dict[l]["AUTH_YEAR_" + str(auth_year)] = label_author_year_dict[l][auth_year]
                 flag = 1
 
         if flag:
@@ -222,8 +250,8 @@ def get_phrase_label(words, label_term_dict, labels):
     return lbl
 
 
-def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_author_pub_dict, label_pub_year_dict, row,
-                       labels):
+def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict, label_author_pub_dict,
+                       label_pub_year_dict, label_author_year_dict, row, labels):
     count_dict = {}
     flag = 0
     pub = row["publisher"]
@@ -241,6 +269,12 @@ def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_aut
         else:
             int_pubs = []
 
+        if len(label_year_dict) > 0:
+            seed_years = set(label_year_dict[l].keys())
+            int_years = {year}.intersection(seed_years)
+        else:
+            int_years = []
+
         if len(label_pub_year_dict) > 0:
             seed_pub_years = set(label_pub_year_dict[l].keys())
             int_pub_years = {(pub, year)}.intersection(seed_pub_years)
@@ -255,6 +289,15 @@ def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_aut
             int_auth_pubs = row_auth_pubs.intersection(seed_author_pubs)
         else:
             int_auth_pubs = []
+
+        if len(label_author_year_dict) > 0:
+            seed_author_years = set(label_author_year_dict[l].keys())
+            row_auth_years = set()
+            for auth in authors_set:
+                row_auth_years.add((auth, year))
+            int_auth_years = row_auth_years.intersection(seed_author_years)
+        else:
+            int_auth_years = []
 
         for auth in int_authors:
             flag = 1
@@ -272,12 +315,28 @@ def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_aut
             count_dict[l]["PUB_" + str(pub)] = label_pub_dict[l][pub]
             flag = 1
 
+        for y in int_years:
+            try:
+                temp = count_dict[l]
+            except:
+                count_dict[l] = {}
+            count_dict[l]["YEAR_" + str(y)] = label_year_dict[l][y]
+            flag = 1
+
         for auth_pub in int_auth_pubs:
             try:
                 temp = count_dict[l]
             except:
                 count_dict[l] = {}
             count_dict[l]["AUTH_PUB_" + str(auth_pub)] = label_author_pub_dict[l][auth_pub]
+            flag = 1
+
+        for auth_year in int_auth_years:
+            try:
+                temp = count_dict[l]
+            except:
+                count_dict[l] = {}
+            count_dict[l]["AUTH_YEAR_" + str(auth_year)] = label_author_year_dict[l][auth_year]
             flag = 1
 
         for pub_year in int_pub_years:
@@ -294,8 +353,8 @@ def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_aut
     return lbl
 
 
-def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_author_pub_dict,
-                             label_pub_year_dict, tokenizer):
+def get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
+                             label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer):
     y = []
     y_phrase = []
     y_metadata = []
@@ -316,8 +375,8 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
             words.append(index_word[tok])
 
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_author_pub_dict,
-                                        label_pub_year_dict, row, labels)
+        l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict,
+                                        label_author_pub_dict, label_pub_year_dict, label_author_year_dict, row, labels)
 
         if l_phrase == l_metadata:
             y.append(l_phrase)
@@ -347,8 +406,9 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_author_pub_dict,
-                     label_pub_year_dict, label_to_index, index_to_label, model_name, old=True, soft=False):
+def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
+                     label_author_pub_dict, label_pub_year_dict, label_author_year_dict, label_to_index, index_to_label,
+                     model_name, old=True, soft=False):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "books/"
     # glove_dir = basepath + "glove.6B"
@@ -363,11 +423,13 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     if old:
-        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict,
-                                      label_author_pub_dict, label_pub_year_dict, tokenizer, label_to_index, soft=soft)
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
+                                      label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer,
+                                      label_to_index, soft=soft)
     else:
         X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict,
-                                                label_author_pub_dict, label_pub_year_dict, tokenizer)
+                                                label_year_dict, label_author_pub_dict, label_pub_year_dict,
+                                                label_author_year_dict, tokenizer)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     # df_train = create_training_df(X, y, y_true)
     # df_train.to_csv(basepath + dataset + "training_label.csv")

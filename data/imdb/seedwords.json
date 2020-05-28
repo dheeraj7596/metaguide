@@ -1,0 +1,35 @@
+{
+  "Drama": [
+    "drama",
+    "melodrama"
+  ],
+  "Comedy": [
+    "comedy",
+    "slapstick",
+    "romantic comedy",
+    "sex comedy"
+  ],
+  "Documentary": [
+    "documentary",
+    "documentaries",
+    "documentary film"
+  ],
+  "Horror": [
+    "horror",
+    "gore",
+    "vampire",
+    "zombie"
+  ],
+  "Thriller": [
+    "thriller",
+    "detective",
+    "psychological thriller",
+    "serial killer"
+  ],
+  "Western": [
+    "western",
+    "spaghetti western",
+    "spaghetti westerns",
+    "sheriff"
+  ]
+}

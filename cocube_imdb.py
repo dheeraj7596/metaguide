@@ -31,7 +31,7 @@ if __name__ == "__main__":
     model_name = sys.argv[2]
     is_soft = int(sys.argv[3])
 
-    df = pickle.load(open(pkl_dump_dir + "df_summary_top6_phrase_removed_stopwords_metadata.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_summary_top6_title_summary_all_reviews_removed_stopwords_metadata.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
     id_phrase_map = pickle.load(open(pkl_dump_dir + "id_phrase_map.pkl", "rb"))
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))

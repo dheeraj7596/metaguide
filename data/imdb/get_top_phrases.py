@@ -7,7 +7,7 @@ if __name__ == "__main__":
     lines = f.readlines()
     f.close()
 
-    df = pickle.load(open("df_summary_top6.pkl", "rb"))
+    df = pickle.load(open("df_summary_top6_title_summary_all_reviews.pkl", "rb"))
     label_phrases = {}
     labels = list(df["label"])
 
@@ -30,7 +30,7 @@ if __name__ == "__main__":
                 label_phrases[label][phrase] = 1
 
     for l in label_phrases:
-        label_phrases[l] = {k: v for k, v in sorted(label_phrases[l].items(), key=lambda item: -item[1])}
+        label_phrases[l] = {k: v for k, v in sorted(label_phrases[l].items(), key=lambda item: -item[1])[:500]}
 
     with open('./phrases.json', 'w') as fp:
         json.dump(label_phrases, fp)

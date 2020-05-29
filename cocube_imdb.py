@@ -346,51 +346,61 @@ if __name__ == "__main__":
             label_phrase_dict = run_pagerank(probs, df, G_phrase, fnust_id, id_fnust, label_to_index,
                                              None,
                                              plot=plot)
-            label_actor_dict = run_pagerank(probs, df, G_actor, actor_id, id_actor, label_to_index,
-                                            None,
-                                            plot=plot)
-            label_actress_dict = run_pagerank(probs, df, G_actress, actress_id, id_actress, label_to_index,
-                                              None,
-                                              plot=plot)
-            label_writer_dict = run_pagerank(probs, df, G_writer, writer_id, id_writer, label_to_index,
-                                             None,
-                                             plot=plot)
-            label_director_dict = run_pagerank(probs, df, G_director, director_id, id_director, label_to_index,
+
+            label_composer_dict = run_pagerank(probs, df, G_composer, composer_id, id_composer, label_to_index,
                                                None,
                                                plot=plot)
+
+            label_dir_adult_dict = run_pagerank(probs, df, G_dir_adult, dir_adult_id, id_dir_adult, label_to_index,
+                                                None,
+                                                plot=plot)
+
             label_dir_actor_dict = run_pagerank(probs, df, G_dir_actor, dir_actor_id, id_dir_actor, label_to_index,
                                                 None,
                                                 plot=plot)
-            label_dir_actress_dict = run_pagerank(probs, df, G_dir_actress, dir_actress_id, id_dir_actress,
-                                                  label_to_index,
-                                                  None,
-                                                  plot=plot)
-            label_dir_writer_dict = run_pagerank(probs, df, G_dir_writer, dir_writer_id, id_dir_writer, label_to_index,
+
+            label_dir_composer_dict = run_pagerank(probs, df, G_dir_composer, dir_composer_id, id_dir_composer,
+                                                   label_to_index,
+                                                   None,
+                                                   plot=plot)
+
+            label_dir_producer_dict = run_pagerank(probs, df, G_dir_producer, dir_producer_id, id_dir_producer,
+                                                   label_to_index,
+                                                   None,
+                                                   plot=plot)
+
+            label_dir_editor_dict = run_pagerank(probs, df, G_dir_editor, dir_editor_id, id_dir_editor, label_to_index,
                                                  None,
                                                  plot=plot)
+
+            label_dir_prod_designer_dict = run_pagerank(probs, df, G_dir_prod_designer, dir_prod_designer_id,
+                                                        id_dir_prod_designer, label_to_index,
+                                                        None,
+                                                        plot=plot)
+
             label_actor_actress_dict = run_pagerank(probs, df, G_actor_actress, actor_actress_id, id_actor_actress,
                                                     label_to_index,
                                                     None,
                                                     plot=plot)
 
             label_entity_dict_list = [label_phrase_dict,
-                                      label_actor_dict,
-                                      label_actress_dict,
-                                      label_writer_dict,
-                                      label_director_dict,
+                                      label_composer_dict,
+                                      label_dir_adult_dict,
                                       label_dir_actor_dict,
-                                      label_dir_actress_dict,
-                                      label_dir_writer_dict,
+                                      label_dir_composer_dict,
+                                      label_dir_producer_dict,
+                                      label_dir_editor_dict,
+                                      label_dir_prod_designer_dict,
                                       label_actor_actress_dict]
 
             entity_docid_map_list = [phrase_docid_map,
-                                     actor_docid_map,
-                                     actress_docid_map,
-                                     writer_docid_map,
-                                     director_docid_map,
+                                     composer_docid_map,
+                                     dir_adult_docid_map,
                                      dir_actor_docid_map,
-                                     dir_actress_docid_map,
-                                     dir_writer_docid_map,
+                                     dir_composer_docid_map,
+                                     dir_producer_docid_map,
+                                     dir_editor_docid_map,
+                                     dir_prod_designer_docid_map,
                                      actor_actress_docid_map]
             label_phrase_dict, label_actor_dict, label_actress_dict, label_writer_dict, label_director_dict, label_dir_actor_dict, label_dir_actress_dict, label_dir_writer_dict, label_actor_actress_dict = rank_phrase_metadata_together(
                 label_entity_dict_list, entity_docid_map_list, df, labels, i)

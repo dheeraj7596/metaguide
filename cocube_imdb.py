@@ -402,7 +402,7 @@ if __name__ == "__main__":
                                      dir_editor_docid_map,
                                      dir_prod_designer_docid_map,
                                      actor_actress_docid_map]
-            label_phrase_dict, label_actor_dict, label_actress_dict, label_writer_dict, label_director_dict, label_dir_actor_dict, label_dir_actress_dict, label_dir_writer_dict, label_actor_actress_dict = rank_phrase_metadata_together(
+            label_phrase_dict, label_composer_dict, label_dir_adult_dict, label_dir_actor_dict, label_dir_composer_dict, label_dir_producer_dict, label_dir_editor_dict, label_dir_prod_designer_dict, label_actor_actress_dict = rank_phrase_metadata_together(
                 label_entity_dict_list, entity_docid_map_list, df, labels, i)
 
         # RANKING WITH ITERATION

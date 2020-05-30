@@ -2,7 +2,10 @@ import pickle
 
 if __name__ == "__main__":
     base_path = "./"
-    df = pickle.load(open(base_path + "df_summary_top6_title_summary_all_reviews.pkl", "rb"))
+    df = pickle.load(open(base_path + "df_summary_top6_title_summary_all_reviews_modified.pkl", "rb"))
+    df2 = pickle.load(open(base_path + "df_summary_top6_title_summary_all_reviews_removed_stopwords_metadata.pkl", "rb"))
+
+
 
     reviews = list(df["text"])
     mod_reviews = []

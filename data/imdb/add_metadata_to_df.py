@@ -64,7 +64,7 @@ def get_from_principals(principals):
 
 if __name__ == "__main__":
     base_path = "./"
-    df = pickle.load(open(base_path + "df_summary_top6_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(base_path + "df_summary_top6_title_summary_all_reviews_removed_stopwords_metadata.pkl", "rb"))
 
     principals = pd.read_csv(base_path + "title.principals.tsv", sep='\t')
     crew = pd.read_csv(base_path + "title.crew.tsv", sep='\t')

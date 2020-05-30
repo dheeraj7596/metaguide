@@ -70,8 +70,7 @@ if __name__ == "__main__":
 
     # df = pickle.load(open(pkl_dump_dir + "df_mapped_labels_phrase_removed_stopwords_test.pkl", "rb"))
     # df = pickle.load(open(pkl_dump_dir + "business_1review_shortlisted_thresh_3.pkl", "rb"))
-    df = pickle.load(open(pkl_dump_dir + "df.pkl", "rb"))
-    df["text"] = df["summary"]
+    df = pickle.load(open(pkl_dump_dir + "df_summary_top6_title_summary_all_reviews_modified.pkl", "rb"))
     print("RUNNING MOVIES")
     run(df)
     print("*" * 80)

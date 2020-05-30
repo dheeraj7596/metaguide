@@ -5,31 +5,23 @@
   ],
   "Comedy": [
     "comedy",
-    "slapstick",
-    "romantic comedy",
-    "sex comedy"
+    "slapstick"
   ],
   "Documentary": [
     "documentary",
-    "documentaries",
     "documentary film"
   ],
   "Horror": [
     "horror",
-    "gore",
-    "vampire",
-    "zombie"
+    "gore"
   ],
   "Thriller": [
     "thriller",
     "detective",
-    "psychological thriller",
-    "serial killer"
+    "psychological thriller"
   ],
   "Western": [
     "western",
-    "spaghetti western",
-    "spaghetti westerns",
-    "sheriff"
+    "spaghetti western"
   ]
 }

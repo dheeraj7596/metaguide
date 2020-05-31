@@ -1,0 +1,33 @@
+{
+  "$SEQUENCE-ANALYSIS": [
+    "sequence"
+  ],
+  "$GENOME-ANALYSIS": [
+    "genome"
+  ],
+  "$GENE-EXPRESSION": [
+    "gene expression",
+    "transcriptome"
+  ],
+  "$SYSTEMS-BIOLOGY": [
+    "moccasin"
+  ],
+  "$GENETICS-AND-POPULATION-ANALYSIS": [
+    "population"
+  ],
+  "$STRUCTURAL-BIOINFORMATICS": [
+    "pdb"
+  ],
+  "$PHYLOGENETICS": [
+    "phylogenetic"
+  ],
+  "$TEXT-MINING": [
+    "pubmed"
+  ],
+  "$BIOIMAGING": [
+    "img src"
+  ],
+  "$DATABASE-AND-ONTOLOGIES": [
+    "database"
+  ]
+}

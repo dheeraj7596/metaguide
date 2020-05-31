@@ -84,8 +84,8 @@ def softmax_label(count_dict, label_to_index):
     return softmax(temp)
 
 
-def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
-                   label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer, label_to_index,
+def get_train_data(df, labels, label_term_dict, label_user_dict, label_tag_dict, label_user_tag_dict, tokenizer,
+                   label_to_index,
                    soft=False):
     y = []
     X = []
@@ -98,11 +98,10 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
     for index, row in df.iterrows():
-        authors_set = set(row["authors"])
-        pub = row["publisher"]
+        tags_set = set(row["tags"])
+        user = row["user"]
         line = row["text"]
         label = row["label"]
-        year = row["publication_year"]
         tokens = tokenizer.texts_to_sequences([line])[0]
         words = []
         for tok in tokens:
@@ -110,67 +109,38 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
         count_dict = {}
         flag = 0
         l_phrase = get_phrase_label(words, label_term_dict, labels)
-        l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict,
-                                        label_author_pub_dict, label_pub_year_dict, label_author_year_dict, row, labels)
+        l_metadata = get_metadata_label(tags_set, label_user_dict, label_tag_dict, label_user_tag_dict,
+                                        row, labels)
         y_phrase.append(l_phrase)
         y_metadata.append(l_metadata)
         for l in labels:
             seed_words = set(label_term_dict[l].keys())
             int_labels = list(set(words).intersection(seed_words))
 
-            if len(label_author_dict) > 0:
-                seed_authors = set(label_author_dict[l].keys())
-                int_authors = authors_set.intersection(seed_authors)
+            if len(label_tag_dict) > 0:
+                seed_tags = set(label_tag_dict[l].keys())
+                int_tags = tags_set.intersection(seed_tags)
             else:
-                int_authors = []
+                int_tags = []
 
-            if len(label_pub_dict) and len(label_pub_dict[l]) > 0:
-                seed_pubs = set(label_pub_dict[l].keys())
-                if pub in seed_pubs:
+            if len(label_user_dict) and len(label_user_dict[l]) > 0:
+                seed_users = set(label_user_dict[l].keys())
+                if user in seed_users:
                     try:
                         temp = count_dict[l]
                     except:
                         count_dict[l] = {}
-                    count_dict[l]["PUB_" + str(pub)] = label_pub_dict[l][pub]
+                    count_dict[l]["USER_" + str(user)] = label_user_dict[l][user]
                     flag = 1
 
-            if len(label_year_dict) and len(label_year_dict[l]) > 0:
-                seed_years = set(label_year_dict[l].keys())
-                if year in seed_years:
-                    try:
-                        temp = count_dict[l]
-                    except:
-                        count_dict[l] = {}
-                    count_dict[l]["YEAR_" + str(year)] = label_year_dict[l][year]
-                    flag = 1
-
-            if len(label_pub_year_dict) and len(label_pub_year_dict[l]) > 0:
-                seed_pub_years = set(label_pub_year_dict[l].keys())
-                if (pub, year) in seed_pub_years:
-                    try:
-                        temp = count_dict[l]
-                    except:
-                        count_dict[l] = {}
-                    count_dict[l]["PUB_YEAR_" + str((pub, year))] = label_pub_year_dict[l][(pub, year)]
-                    flag = 1
-
-            if len(label_author_pub_dict) > 0 and len(label_author_pub_dict[l]):
-                seed_author_pubs = set(label_author_pub_dict[l].keys())
-                row_auth_pubs = set()
-                for auth in authors_set:
-                    row_auth_pubs.add((auth, pub))
-                int_auth_pubs = row_auth_pubs.intersection(seed_author_pubs)
+            if len(label_user_tag_dict) > 0 and len(label_user_tag_dict[l]):
+                seed_user_tags = set(label_user_tag_dict[l].keys())
+                row_user_tags = set()
+                for tag in tags_set:
+                    row_user_tags.add((user, tag))
+                int_user_tags = row_user_tags.intersection(seed_user_tags)
             else:
-                int_auth_pubs = []
-
-            if len(label_author_year_dict) > 0 and len(label_author_year_dict[l]):
-                seed_author_years = set(label_author_year_dict[l].keys())
-                row_auth_years = set()
-                for auth in authors_set:
-                    row_auth_years.add((auth, year))
-                int_auth_years = row_auth_years.intersection(seed_author_years)
-            else:
-                int_auth_years = []
+                int_user_tags = []
 
             for word in words:
                 if word in int_labels:
@@ -184,28 +154,20 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
                     except:
                         count_dict[l][word] = label_term_dict[l][word]
 
-            for auth in int_authors:
+            for tag in int_tags:
                 try:
                     temp = count_dict[l]
                 except:
                     count_dict[l] = {}
-                count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
+                count_dict[l]["TAG_" + str(tag)] = label_tag_dict[l][tag]
                 flag = 1
 
-            for auth_pub in int_auth_pubs:
+            for user_tag in int_user_tags:
                 try:
                     temp = count_dict[l]
                 except:
                     count_dict[l] = {}
-                count_dict[l]["AUTH_PUB_" + str(auth_pub)] = label_author_pub_dict[l][auth_pub]
-                flag = 1
-
-            for auth_year in int_auth_years:
-                try:
-                    temp = count_dict[l]
-                except:
-                    count_dict[l] = {}
-                count_dict[l]["AUTH_YEAR_" + str(auth_year)] = label_author_year_dict[l][auth_year]
+                count_dict[l]["USER_TAG_" + str(user_tag)] = label_user_tag_dict[l][user_tag]
                 flag = 1
 
         if flag:
@@ -250,77 +212,46 @@ def get_phrase_label(words, label_term_dict, labels):
     return lbl
 
 
-def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict, label_author_pub_dict,
-                       label_pub_year_dict, label_author_year_dict, row, labels):
+def get_metadata_label(tags_set, label_user_dict, label_tag_dict, label_user_tag_dict, row, labels):
     count_dict = {}
     flag = 0
-    pub = row["publisher"]
-    year = row["publication_year"]
+    user = row["user"]
     for l in labels:
-        if len(label_author_dict) > 0:
-            seed_authors = set(label_author_dict[l].keys())
-            int_authors = authors_set.intersection(seed_authors)
+        if len(label_tag_dict) > 0:
+            seed_tags = set(label_tag_dict[l].keys())
+            int_tags = tags_set.intersection(seed_tags)
         else:
-            int_authors = []
+            int_tags = []
 
-        if len(label_pub_dict) > 0:
-            seed_pubs = set(label_pub_dict[l].keys())
-            int_pubs = {pub}.intersection(seed_pubs)
+        if len(label_user_dict) > 0:
+            seed_pubs = set(label_user_dict[l].keys())
+            int_users = {user}.intersection(seed_pubs)
         else:
-            int_pubs = []
+            int_users = []
 
-        if len(label_year_dict) > 0:
-            seed_years = set(label_year_dict[l].keys())
-            int_years = {year}.intersection(seed_years)
-        else:
-            int_years = []
-
-        if len(label_pub_year_dict) > 0:
-            seed_pub_years = set(label_pub_year_dict[l].keys())
-            int_pub_years = {(pub, year)}.intersection(seed_pub_years)
-        else:
-            int_pub_years = []
-
-        if len(label_author_pub_dict) > 0:
-            seed_author_pubs = set(label_author_pub_dict[l].keys())
-            row_auth_pubs = set()
-            for auth in authors_set:
-                row_auth_pubs.add((auth, pub))
-            int_auth_pubs = row_auth_pubs.intersection(seed_author_pubs)
+        if len(label_user_tag_dict) > 0:
+            seed_user_tags = set(label_user_tag_dict[l].keys())
+            row_user_tags = set()
+            for tag in tags_set:
+                row_user_tags.add((user, tag))
+            int_auth_pubs = row_user_tags.intersection(seed_user_tags)
         else:
             int_auth_pubs = []
 
-        if len(label_author_year_dict) > 0:
-            seed_author_years = set(label_author_year_dict[l].keys())
-            row_auth_years = set()
-            for auth in authors_set:
-                row_auth_years.add((auth, year))
-            int_auth_years = row_auth_years.intersection(seed_author_years)
-        else:
-            int_auth_years = []
-
-        for auth in int_authors:
+        for auth in int_tags:
             flag = 1
             try:
                 temp = count_dict[l]
             except:
                 count_dict[l] = {}
-            count_dict[l]["AUTH_" + str(auth)] = label_author_dict[l][auth]
+            count_dict[l]["TAG_" + str(auth)] = label_tag_dict[l][auth]
 
-        for pub in int_pubs:
+        for pub in int_users:
             try:
                 temp = count_dict[l]
             except:
                 count_dict[l] = {}
-            count_dict[l]["PUB_" + str(pub)] = label_pub_dict[l][pub]
-            flag = 1
-
-        for y in int_years:
-            try:
-                temp = count_dict[l]
-            except:
-                count_dict[l] = {}
-            count_dict[l]["YEAR_" + str(y)] = label_year_dict[l][y]
+            count_dict[l]["USER_" + str(pub)] = label_user_dict[l][pub]
             flag = 1
 
         for auth_pub in int_auth_pubs:
@@ -328,23 +259,7 @@ def get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_yea
                 temp = count_dict[l]
             except:
                 count_dict[l] = {}
-            count_dict[l]["AUTH_PUB_" + str(auth_pub)] = label_author_pub_dict[l][auth_pub]
-            flag = 1
-
-        for auth_year in int_auth_years:
-            try:
-                temp = count_dict[l]
-            except:
-                count_dict[l] = {}
-            count_dict[l]["AUTH_YEAR_" + str(auth_year)] = label_author_year_dict[l][auth_year]
-            flag = 1
-
-        for pub_year in int_pub_years:
-            try:
-                temp = count_dict[l]
-            except:
-                count_dict[l] = {}
-            count_dict[l]["PUB_YEAR_" + str(pub_year)] = label_pub_year_dict[l][pub_year]
+            count_dict[l]["USER_TAG" + str(auth_pub)] = label_user_tag_dict[l][auth_pub]
             flag = 1
 
     lbl = None
@@ -376,7 +291,7 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
 
         l_phrase = get_phrase_label(words, label_term_dict, labels)
         l_metadata = get_metadata_label(authors_set, label_author_dict, label_pub_dict, label_year_dict,
-                                        label_author_pub_dict, label_pub_year_dict, label_author_year_dict, row, labels)
+                                        label_author_pub_dict, label_pub_year_dict)
 
         if l_phrase == l_metadata:
             y.append(l_phrase)
@@ -406,11 +321,10 @@ def get_confident_train_data(df, labels, label_term_dict, label_author_dict, lab
     return X, y, y_true
 
 
-def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
-                     label_author_pub_dict, label_pub_year_dict, label_author_year_dict, label_to_index, index_to_label,
-                     model_name, old=True, soft=False):
+def train_classifier(df, labels, label_term_dict, label_user_dict, label_tag_dict, label_user_tag_dict, label_to_index,
+                     index_to_label, model_name, old=True, soft=False):
     basepath = "/data4/dheeraj/metaguide/"
-    dataset = "books/"
+    dataset = "github/"
     # glove_dir = basepath + "glove.6B"
     dump_dir = basepath + "models/" + dataset + model_name + "/"
     tmp_dir = basepath + "checkpoints/" + dataset + model_name + "/"
@@ -423,13 +337,12 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
     if old:
-        X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
-                                      label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer,
+        X, y, y_true = get_train_data(df, labels, label_term_dict, label_user_dict, label_tag_dict, label_user_tag_dict,
+                                      tokenizer,
                                       label_to_index, soft=soft)
     else:
-        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict,
-                                                label_year_dict, label_author_pub_dict, label_pub_year_dict,
-                                                label_author_year_dict, tokenizer)
+        X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_user_dict, label_tag_dict,
+                                                label_user_tag_dict, None, None, None, tokenizer)
     print("****************** CLASSIFICATION REPORT FOR TRAINING DATA ********************")
     # df_train = create_training_df(X, y, y_true)
     # df_train.to_csv(basepath + dataset + "training_label.csv")

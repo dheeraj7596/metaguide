@@ -33,5 +33,15 @@
   "$Machine-Translation": [
     "neural machine translation",
     "transformer"
+  ],
+  "$Language-Modelling": [
+    "lstm language models"
+  ],
+  "$Speech-Synthesis": [
+    "tacotron 2",
+    "speech synthesis"
+  ],
+  "$Speech-Recognition": [
+    "speech recognition"
   ]
 }

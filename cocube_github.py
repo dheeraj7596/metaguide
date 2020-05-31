@@ -32,9 +32,9 @@ if __name__ == "__main__":
     model_name = sys.argv[2]
     is_soft = int(sys.argv[3])
 
-    df = pickle.load(open(pkl_dump_dir + "df_bio_phrase_removed_stopwords.pkl", "rb"))
-    phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_bio_map.pkl", "rb"))
-    id_phrase_map = pickle.load(open(pkl_dump_dir + "id_phrase_bio_map.pkl", "rb"))
+    df = pickle.load(open(pkl_dump_dir + "df_ai_phrase_removed_stopwords.pkl", "rb"))
+    phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_ai_map.pkl", "rb"))
+    id_phrase_map = pickle.load(open(pkl_dump_dir + "id_phrase_ai_map.pkl", "rb"))
     tokenizer = pickle.load(open(pkl_dump_dir + "tokenizer.pkl", "rb"))
     word_to_index, index_to_word = create_index(tokenizer)
     labels, label_to_index, index_to_label = get_distinct_labels(df)

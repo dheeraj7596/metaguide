@@ -64,9 +64,9 @@ def create_user_tag_doc_id_map(df):
 if __name__ == "__main__":
     data_path = "./"
 
-    df = pickle.load(open(data_path + "df_bio_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_ai_phrase_removed_stopwords.pkl", "rb"))
     tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
-    phrase_id_map = pickle.load(open(data_path + "phrase_id_bio_map.pkl", "rb"))
+    phrase_id_map = pickle.load(open(data_path + "phrase_id_ai_map.pkl", "rb"))
 
     phrase_docid = create_phrase_doc_id_map(df, tokenizer, phrase_id_map)
     tag_docid_map = create_tag_doc_id_map(df)

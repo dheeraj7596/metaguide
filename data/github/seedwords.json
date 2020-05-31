@@ -1,33 +1,37 @@
 {
-  "$SEQUENCE-ANALYSIS": [
-    "sequence"
+  "$Image-Generation": [
+    "generative adversarial networks"
   ],
-  "$GENOME-ANALYSIS": [
-    "genome"
+  "$Object-Detection": [
+    "yolo"
   ],
-  "$GENE-EXPRESSION": [
-    "gene expression",
-    "transcriptome"
+  "$Image-Classification": [
+    "inception v3"
   ],
-  "$SYSTEMS-BIOLOGY": [
-    "moccasin"
+  "$Semantic-Segmentation": [
+    "image segmentation"
   ],
-  "$GENETICS-AND-POPULATION-ANALYSIS": [
-    "population"
+  "$Pose-Estimation": [
+    "pose estimation"
   ],
-  "$STRUCTURAL-BIOINFORMATICS": [
-    "pdb"
+  "$Super-Resolution": [
+    "super resolution"
   ],
-  "$PHYLOGENETICS": [
-    "phylogenetic"
+  "$Text-Generation": [
+    "text generation"
   ],
-  "$TEXT-MINING": [
-    "pubmed"
+  "$Text-Classification": [
+    "text classification"
   ],
-  "$BIOIMAGING": [
-    "img src"
+  "$Named-Entity-Recognition-(NER)": [
+    "named entity recognition",
+    "entity role detection"
   ],
-  "$DATABASE-AND-ONTOLOGIES": [
-    "database"
+  "$Question-Answering": [
+    "question answering"
+  ],
+  "$Machine-Translation": [
+    "neural machine translation",
+    "transformer"
   ]
 }

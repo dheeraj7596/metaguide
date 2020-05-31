@@ -109,10 +109,10 @@ if __name__ == "__main__":
     dataset = "github/"
 
     data_path = base_path + dataset
-    df = pickle.load(open(data_path + "df_bio_phrase_removed_stopwords.pkl", "rb"))
+    df = pickle.load(open(data_path + "df_ai_phrase_removed_stopwords.pkl", "rb"))
     tokenizer = pickle.load(open(data_path + "tokenizer.pkl", "rb"))
-    phrase_id_map = pickle.load(open(data_path + "phrase_id_bio_map.pkl", "rb"))
-    id_phrase_map = pickle.load(open(data_path + "id_phrase_bio_map.pkl", "rb"))
+    phrase_id_map = pickle.load(open(data_path + "phrase_id_ai_map.pkl", "rb"))
+    id_phrase_map = pickle.load(open(data_path + "id_phrase_ai_map.pkl", "rb"))
 
     index_word = {}
     for w in tokenizer.word_index:

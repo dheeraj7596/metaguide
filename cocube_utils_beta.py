@@ -4,6 +4,7 @@ from keras.callbacks import ModelCheckpoint
 from keras_han.model import HAN
 from scipy.special import softmax
 from keras.losses import kullback_leibler_divergence
+from bert_train import train_bert, test
 from model import *
 import matplotlib.pyplot as plt
 from data_utils import *
@@ -446,7 +447,7 @@ def train_weight_classifier(df, labels, label_term_dict, label_author_dict, labe
 
 
 def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_dict, label_to_index, index_to_label,
-                     model_name, old=True, soft=False):
+                     model_name, clf, use_gpu, old=True, soft=False):
     basepath = "/data4/dheeraj/metaguide/"
     dataset = "dblp/"
     # glove_dir = basepath + "glove.6B"
@@ -492,36 +493,59 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
                                                             max_words=max_words, val=False)
     # print("Creating Embedding matrix...")
     # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
-    print("Getting Embedding matrix...")
-    embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix.pkl", "rb"))
-    print("Initializing model...")
-    model = HAN(max_words=max_sentence_length, max_sentences=max_sentences, output_size=len(y_train[0]),
-                embedding_matrix=embedding_matrix)
-    print("Compiling model...")
-    model.summary()
-    if not soft:
-        model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
+    if clf == "HAN":
+        print("Getting Embedding matrix...")
+        embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix.pkl", "rb"))
+        print("Initializing model...")
+        model = HAN(max_words=max_sentence_length, max_sentences=max_sentences, output_size=len(y_train[0]),
+                    embedding_matrix=embedding_matrix)
+        print("Compiling model...")
+        model.summary()
+        if not soft:
+            model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=['acc'])
+        else:
+            model.compile(loss=kullback_leibler_divergence, optimizer='adam', metrics=['acc'])
+        print("model fitting - Hierachical attention network...")
+        es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
+        mc = ModelCheckpoint(filepath=tmp_dir + 'model.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_acc', mode='max',
+                             verbose=1, save_weights_only=True, save_best_only=True)
+        model.fit(X_train, y_train, validation_data=(X_val, y_val), nb_epoch=100, batch_size=256, callbacks=[es, mc])
+        # print("****************** CLASSIFICATION REPORT FOR DOCUMENTS WITH LABEL WORDS ********************")
+        # X_label_all = prep_data(texts=X, max_sentences=max_sentences, max_sentence_length=max_sentence_length,
+        #                         tokenizer=tokenizer)
+        # pred = model.predict(X_label_all)
+        # pred_labels = get_from_one_hot(pred, index_to_label)
+        # print(classification_report(y_true, pred_labels))
+        print("****************** CLASSIFICATION REPORT FOR All DOCUMENTS ********************")
+        X_all = prep_data(texts=df["abstract"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
+                          tokenizer=tokenizer)
+        y_true_all = df["label"]
+        pred = model.predict(X_all)
+        pred_labels = get_from_one_hot(pred, index_to_label)
+        print("Dumping the model...")
+        model.save_weights(dump_dir + "model_weights_" + model_name + ".h5")
+        model.save(dump_dir + "model_" + model_name + ".h5")
+    elif clf == "BERT":
+        y_vec = []
+        for lbl_ in y:
+            y_vec.append(label_to_index[lbl_])
+        model = train_bert(X, y_vec, use_gpu)
+
+        y_true_all = []
+        for lbl_ in df.label:
+            y_true_all.append(label_to_index[lbl_])
+
+        predictions = test(model, df["text"], y_true_all, use_gpu)
+        for i, p in enumerate(predictions):
+            if i == 0:
+                pred = p
+            else:
+                pred = np.concatenate((pred, p))
+
+        pred_labels = []
+        for p in pred:
+            pred_labels.append(index_to_label[p.argmax(axis=-1)])
     else:
-        model.compile(loss=kullback_leibler_divergence, optimizer='adam', metrics=['acc'])
-    print("model fitting - Hierachical attention network...")
-    es = EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=3)
-    mc = ModelCheckpoint(filepath=tmp_dir + 'model.{epoch:02d}-{val_loss:.2f}.hdf5', monitor='val_acc', mode='max',
-                         verbose=1, save_weights_only=True, save_best_only=True)
-    model.fit(X_train, y_train, validation_data=(X_val, y_val), nb_epoch=100, batch_size=256, callbacks=[es, mc])
-    # print("****************** CLASSIFICATION REPORT FOR DOCUMENTS WITH LABEL WORDS ********************")
-    # X_label_all = prep_data(texts=X, max_sentences=max_sentences, max_sentence_length=max_sentence_length,
-    #                         tokenizer=tokenizer)
-    # pred = model.predict(X_label_all)
-    # pred_labels = get_from_one_hot(pred, index_to_label)
-    # print(classification_report(y_true, pred_labels))
-    print("****************** CLASSIFICATION REPORT FOR All DOCUMENTS ********************")
-    X_all = prep_data(texts=df["abstract"], max_sentences=max_sentences, max_sentence_length=max_sentence_length,
-                      tokenizer=tokenizer)
-    y_true_all = df["label"]
-    pred = model.predict(X_all)
-    pred_labels = get_from_one_hot(pred, index_to_label)
-    print(classification_report(y_true_all, pred_labels))
-    print("Dumping the model...")
-    model.save_weights(dump_dir + "model_weights_" + model_name + ".h5")
-    model.save(dump_dir + "model_" + model_name + ".h5")
+        raise ValueError("clf can only be HAN or BERT")
+    print(classification_report(df["label"], pred_labels))
     return pred_labels, pred

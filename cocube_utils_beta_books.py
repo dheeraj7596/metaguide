@@ -498,7 +498,13 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         for lbl_ in df.label:
             y_true_all.append(label_to_index[lbl_])
 
-        pred = test(model, df["text"], y_true_all, use_gpu)
+        predictions = test(model, df["text"], y_true_all, use_gpu)
+        for i, p in enumerate(predictions):
+            if i == 0:
+                pred = p
+            else:
+                pred = np.concatenate((pred, p))
+
         pred_labels = []
         for p in pred:
             pred_labels.append(index_to_label[p.argmax(axis=-1)])

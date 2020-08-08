@@ -356,7 +356,7 @@ def evaluate(model, prediction_dataloader, device):
         logits = outputs[0]
 
         # Move logits and labels to CPU
-        logits = logits.detach().cpu().numpy()
+        logits = torch.softmax(logits, dim=-1).detach().cpu().numpy()
         label_ids = b_labels.to('cpu').numpy()
 
         # Store predictions and true labels

@@ -489,13 +489,20 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         model.save_weights(dump_dir + "model_weights_" + model_name + ".h5")
         model.save(dump_dir + "model_" + model_name + ".h5")
     elif clf == "BERT":
-        model = train_bert(X_train, y_train, X_val, y_val, use_gpu)
-        y_true_all = df["label"]
+        y_vec = []
+        for lbl_ in y:
+            y_vec.append(label_to_index[lbl_])
+        model = train_bert(X, y_vec, use_gpu)
+
+        y_true_all = []
+        for lbl_ in df.label:
+            y_true_all.append(label_to_index[lbl_])
+
         pred = test(model, df["text"], y_true_all, use_gpu)
         pred_labels = []
         for p in pred:
-            pred_labels = pred_labels + list(p.argmax(axis=-1))
+            pred_labels.append(index_to_label[p.argmax(axis=-1)])
     else:
         raise ValueError("clf can only be HAN or BERT")
-    print(classification_report(y_true_all, pred_labels))
+    print(classification_report(df["label"], pred_labels))
     return pred_labels, pred

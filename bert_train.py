@@ -1,6 +1,6 @@
 from transformers import BertForSequenceClassification, BertTokenizer, AdamW, BertConfig, \
     get_linear_schedule_with_warmup
-from torch.utils.data import TensorDataset
+from torch.utils.data import TensorDataset, random_split
 from torch.utils.data import DataLoader, RandomSampler, SequentialSampler
 import torch
 import numpy as np
@@ -30,6 +30,7 @@ def flat_accuracy(preds, labels):
 def bert_tokenize(tokenizer, sentences, labels):
     input_ids = []
     attention_masks = []
+    # For every sentence...
     for sent in sentences:
         # `encode_plus` will:
         #   (1) Tokenize the sentence.
@@ -62,15 +63,30 @@ def bert_tokenize(tokenizer, sentences, labels):
     return input_ids, attention_masks, labels
 
 
-def create_data_loaders(dataset, batch_size=256):
+def create_data_loaders(dataset):
+    # Calculate the number of samples to include in each set.
+    train_size = int(0.9 * len(dataset))
+    val_size = len(dataset) - train_size
+    # Divide the dataset by randomly selecting samples.
+    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+    # The DataLoader needs to know our batch size for training, so we specify it
+    # here. For fine-tuning BERT on a specific task, the authors recommend a batch
+    # size of 16 or 32.
+    batch_size = 32
     # Create the DataLoaders for our training and validation sets.
     # We'll take training samples in random order.
-    dataloader = DataLoader(
-        dataset,  # The training samples.
-        sampler=RandomSampler(dataset),  # Select batches randomly
+    train_dataloader = DataLoader(
+        train_dataset,  # The training samples.
+        sampler=RandomSampler(train_dataset),  # Select batches randomly
         batch_size=batch_size  # Trains with this batch size.
     )
-    return dataloader
+    # For validation the order doesn't matter, so we'll just read them sequentially.
+    validation_dataloader = DataLoader(
+        val_dataset,  # The validation samples.
+        sampler=SequentialSampler(val_dataset),  # Pull out batches sequentially.
+        batch_size=batch_size  # Evaluate with this batch size.
+    )
+    return train_dataloader, validation_dataloader
 
 
 def train(train_dataloader, validation_dataloader, device):
@@ -357,7 +373,7 @@ def test(model, X_test, y_test, use_gpu=False):
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")
-    batch_size = 256
+    batch_size = 32
     # Create the DataLoader.
     prediction_data = TensorDataset(input_ids, attention_masks, labels)
     prediction_sampler = SequentialSampler(prediction_data)
@@ -366,19 +382,21 @@ def test(model, X_test, y_test, use_gpu=False):
     return predictions
 
 
-def train_bert(X_train, y_train, X_val, y_val, use_gpu=False):
+def train_bert(X, y, use_gpu=False):
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased', do_lower_case=True)
-    train_input_ids, train_attention_masks, train_labels = bert_tokenize(tokenizer, X_train, y_train)
-    val_input_ids, val_attention_masks, val_labels = bert_tokenize(tokenizer, X_val, y_val)
+    input_ids, attention_masks, labels = bert_tokenize(tokenizer, X, y)
 
-    # Combine the inputs into a TensorDataset.
-    train_dataset = TensorDataset(train_input_ids, train_attention_masks, train_labels)
-    val_dataset = TensorDataset(val_input_ids, val_attention_masks, val_labels)
-    train_dataloader = create_data_loaders(train_dataset)
-    validation_dataloader = create_data_loaders(val_dataset)
+    # Combine the training inputs into a TensorDataset.
+    dataset = TensorDataset(input_ids, attention_masks, labels)
+
+    # Create a 90-10 train-validation split.
+    train_dataloader, validation_dataloader = create_data_loaders(dataset)
+
+    # Tell pytorch to run this model on the GPU.
     if use_gpu:
         device = torch.device("cuda")
     else:
         device = torch.device("cpu")
+
     model = train(train_dataloader, validation_dataloader, device)
     return model

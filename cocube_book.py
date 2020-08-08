@@ -10,9 +10,9 @@ import sys
 import tensorflow as tf
 from keras.backend.tensorflow_backend import set_session
 
-config = tf.ConfigProto()
+config = tf.compat.v1.ConfigProto()
 config.gpu_options.allow_growth = True  # dynamically grow the memory used on the GPU
-sess = tf.Session(config=config)
+sess = tf.compat.v1.Session(config=config)
 set_session(sess)
 
 
@@ -30,7 +30,9 @@ if __name__ == "__main__":
     dataset = "books/"
     pkl_dump_dir = basepath + dataset
     model_name = sys.argv[2]
-    is_soft = int(sys.argv[3])
+    clf = sys.argv[3]
+    use_gpu = int(sys.argv[4])
+    is_soft = 0
 
     df = pickle.load(open(pkl_dump_dir + "df_phrase_removed_stopwords.pkl", "rb"))
     phrase_id_map = pickle.load(open(pkl_dump_dir + "phrase_id_map.pkl", "rb"))
@@ -108,7 +110,7 @@ if __name__ == "__main__":
             pred_labels, probs = train_classifier(df, labels, label_phrase_dict, label_author_dict, label_pub_dict,
                                                   label_year_dict, label_author_pub_dict, label_pub_year_dict,
                                                   label_author_year_dict, label_to_index,
-                                                  index_to_label, model_name, old=True, soft=is_soft)
+                                                  index_to_label, model_name, clf, use_gpu, old=True, soft=is_soft)
 
         phrase_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/phrase/" + str(i) + "/"
         auth_plot_dump_dir = pkl_dump_dir + "images/" + model_name + "/author/" + str(i) + "/"

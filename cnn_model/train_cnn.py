@@ -95,7 +95,7 @@ def eval(data_iter, model, use_gpu):
     corrects, avg_loss = 0, 0
     for batch in data_iter:
         feature, target = batch.text, batch.label
-        feature.t_(), target.sub_(1)  # batch first, index align
+        feature.t_() # batch first, index align
         if use_gpu:
             feature, target = feature.cuda(), target.cuda()
 
@@ -122,7 +122,7 @@ def test_eval(data_iter, model, use_gpu):
     total_probs = []
     for batch in data_iter:
         feature, target = batch.text, batch.label
-        feature.t_(), target.sub_(1)  # batch first, index align
+        feature.t_() # batch first, index align
         if use_gpu:
             feature, target = feature.cuda(), target.cuda()
 

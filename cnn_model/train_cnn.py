@@ -73,15 +73,13 @@ def train_cnn(X, y, X_full, y_full, use_gpu):
     label_field.build_vocab(train_data, val_data, full_data)
 
     train_iter, dev_iter, full_data_iter = data.BucketIterator.splits((train_data, val_data, full_data),
-                                                                      batch_sizes=(64, 64, 64))
+                                                                      batch_sizes=(256, 256, 256))
     embed_num = len(text_field.vocab)
     class_num = len(label_field.vocab)
     kernel_sizes = [3, 4, 5]
     cnn = CNN_Text(
         embed_num=embed_num,
         class_num=class_num,
-        use_gpu=use_gpu,
-        batch_size=64,
         kernel_sizes=kernel_sizes)
     if use_gpu:
         cnn = cnn.cuda()

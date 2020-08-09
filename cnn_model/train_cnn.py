@@ -85,8 +85,8 @@ def train_cnn(X, y, X_full, y_full, use_gpu):
     if use_gpu:
         cnn = cnn.cuda()
     model = train(train_iter, dev_iter, cnn, use_gpu, lr=0.001, num_epochs=256)
-    pred_labels, pred_probs = test_eval(full_data_iter, model, use_gpu)
-    return pred_labels, pred_probs
+    pred_labels, pred_probs, true_labels = test_eval(full_data_iter, model, use_gpu)
+    return pred_labels, pred_probs, true_labels
 
 
 def eval(data_iter, model, use_gpu):
@@ -118,6 +118,7 @@ def eval(data_iter, model, use_gpu):
 def test_eval(data_iter, model, use_gpu):
     model.eval()
     pred_labels = []
+    true_labels = []
     total_probs = []
     for batch in data_iter:
         feature, target = batch.text, batch.label
@@ -129,10 +130,12 @@ def test_eval(data_iter, model, use_gpu):
         probs = F.softmax(logit, dim=-1)
         pred_labels.append(torch.max(logit, 1)[1].view(target.size()).data)
         total_probs.append(probs)
+        true_labels.append(target.data)
 
     pred_probs = torch.cat(total_probs).contiguous().detach().cpu().numpy()
     pred_labels = torch.cat(pred_labels).contiguous().detach().cpu().numpy()
-    return pred_labels, pred_probs
+    true_labels = torch.cat(true_labels).contiguous().detach().cpu().numpy()
+    return pred_labels, pred_probs, true_labels
 
 
 def predict(text, model, text_field, label_feild, cuda_flag):

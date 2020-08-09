@@ -509,6 +509,7 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         pred_labels = []
         for p in pred:
             pred_labels.append(index_to_label[p.argmax(axis=-1)])
+        y_true_all = df["label"]
     elif clf == "CNN":
         y_vec = []
         for lbl_ in y:
@@ -518,12 +519,16 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         for lbl_ in df.label:
             y_true_all.append(label_to_index[lbl_])
 
-        pred_idxs, pred = train_cnn(X, y_vec, df["text"], y_true_all, use_gpu)
+        pred_idxs, pred, true_idxs = train_cnn(X, y_vec, df["text"], y_true_all, use_gpu)
 
         pred_labels = []
         for p in pred_idxs:
             pred_labels.append(index_to_label[p])
+
+        y_true_all = []
+        for p in true_idxs:
+            y_true_all.append(index_to_label[p])
     else:
         raise ValueError("clf can only be HAN or BERT or CNN")
-    print(classification_report(df["label"], pred_labels))
+    print(classification_report(y_true_all, pred_labels))
     return pred_labels, pred

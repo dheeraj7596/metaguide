@@ -19,12 +19,12 @@ def train(train_iter, dev_iter, model, use_gpu, lr, num_epochs, early_stop=5, lo
     steps = 0
     best_epoch = 0
     best_model = None
-    best_acc = 0
+    best_loss = float("inf")
     model.train()
     for epoch in range(1, num_epochs + 1):
         for batch in train_iter:
             feature, target = batch.text, batch.label
-            feature.t_() # batch first, index align
+            feature.t_()  # batch first
             if use_gpu:
                 feature, target = feature.cuda(), target.cuda()
 
@@ -45,14 +45,14 @@ def train(train_iter, dev_iter, model, use_gpu, lr, num_epochs, early_stop=5, lo
                                                                              corrects.item(),
                                                                              batch.batch_size))
 
-        dev_acc = eval(dev_iter, model, use_gpu)
-        if dev_acc > best_acc:
-            best_acc = dev_acc
+        dev_loss = eval(dev_iter, model, use_gpu)
+        if dev_loss <= best_loss:
+            best_loss = dev_loss
             best_epoch = epoch
             best_model = model
         else:
             if epoch - best_epoch >= early_stop:
-                print('early stop by {} steps.'.format(early_stop))
+                print('early stop by {} epochs.'.format(early_stop))
                 break
     return best_model
 
@@ -95,7 +95,7 @@ def eval(data_iter, model, use_gpu):
     corrects, avg_loss = 0, 0
     for batch in data_iter:
         feature, target = batch.text, batch.label
-        feature.t_() # batch first, index align
+        feature.t_()  # batch first
         if use_gpu:
             feature, target = feature.cuda(), target.cuda()
 
@@ -113,7 +113,7 @@ def eval(data_iter, model, use_gpu):
                                                                        accuracy,
                                                                        corrects,
                                                                        size))
-    return accuracy
+    return avg_loss
 
 
 def test_eval(data_iter, model, use_gpu):
@@ -122,7 +122,7 @@ def test_eval(data_iter, model, use_gpu):
     total_probs = []
     for batch in data_iter:
         feature, target = batch.text, batch.label
-        feature.t_() # batch first, index align
+        feature.t_()  # batch first
         if use_gpu:
             feature, target = feature.cuda(), target.cuda()
 

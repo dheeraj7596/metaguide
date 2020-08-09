@@ -24,7 +24,7 @@ def train(train_iter, dev_iter, model, use_gpu, lr, num_epochs, early_stop=5, lo
     for epoch in range(1, num_epochs + 1):
         for batch in train_iter:
             feature, target = batch.text, batch.label
-            feature.t_(), target.sub_(1)  # batch first, index align
+            feature.t_() # batch first, index align
             if use_gpu:
                 feature, target = feature.cuda(), target.cuda()
 
@@ -73,7 +73,7 @@ def train_cnn(X, y, X_full, y_full, use_gpu):
     label_field.build_vocab(train_data, val_data, full_data)
 
     train_iter, dev_iter, full_data_iter = data.BucketIterator.splits((train_data, val_data, full_data),
-                                                                      batch_sizes=(3, len(val_data), 3))
+                                                                      batch_sizes=(64, 64, 64))
     embed_num = len(text_field.vocab)
     class_num = len(label_field.vocab)
     kernel_sizes = [3, 4, 5]
@@ -174,7 +174,7 @@ if __name__ == "__main__":
          "we fnust20, we laughed, we cried",
          "we did not always show the love"
          ]
-    y = [1, 2, 3, 4, 5, 6, 3, 4, 5, 3, 2, 1]
+    y = [0, 2, 0, 4, 5, 6, 0, 4, 5, 3, 2, 1]
     X_full = ["As kids, we lived together",
               "we fnust20, we laughed, we cried",
               "we did not always show the love",
@@ -188,7 +188,7 @@ if __name__ == "__main__":
               "we fnust20, we laughed, we cried",
               "we did not always show the love"
               ]
-    y_full = [1, 2, 3, 4, 5, 6, 3, 4, 5, 3, 2, 1]
+    y_full = [0, 2, 0, 4, 5, 6, 0, 4, 5, 3, 2, 1]
     use_gpu = False
     save_dir = "./data/"
-    train_cnn(X, y, X_full, y_full, save_dir, use_gpu)
+    train_cnn(X, y, X_full, y_full, use_gpu)

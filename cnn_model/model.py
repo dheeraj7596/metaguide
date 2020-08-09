@@ -5,7 +5,7 @@ import torch.nn.functional as F
 
 class CNN_Text(nn.Module):
 
-    def __init__(self, embed_num, class_num, kernel_sizes, dropout=0.2, embed_dim=128,
+    def __init__(self, embed_num, class_num, kernel_sizes, dropout=0.6, embed_dim=128,
                  kernel_num=100):
         # kernel_sizes = [3, 4, 5]
         super(CNN_Text, self).__init__()

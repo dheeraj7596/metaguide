@@ -53,6 +53,7 @@ def train(train_iter, dev_iter, model, use_gpu, lr, num_epochs, early_stop=5, lo
         else:
             if epoch - best_epoch >= early_stop:
                 print('early stop by {} epochs.'.format(early_stop))
+                print("Best epoch: ", best_epoch, "Current epoch: ", epoch)
                 break
     return best_model
 

@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from data_utils import *
 from analyze_utils import analyze
 from bert_train import train_bert, test
+from cnn_model.train_cnn import train_cnn
 import pickle
 import os
 
@@ -508,7 +509,21 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         pred_labels = []
         for p in pred:
             pred_labels.append(index_to_label[p.argmax(axis=-1)])
+    elif clf == "CNN":
+        y_vec = []
+        for lbl_ in y:
+            y_vec.append(label_to_index[lbl_])
+
+        y_true_all = []
+        for lbl_ in df.label:
+            y_true_all.append(label_to_index[lbl_])
+
+        pred_idxs, pred = train_cnn(X, y_vec, df["text"], y_true_all, use_gpu)
+
+        pred_labels = []
+        for p in pred_idxs:
+            pred_labels.append(index_to_label[p])
     else:
-        raise ValueError("clf can only be HAN or BERT")
+        raise ValueError("clf can only be HAN or BERT or CNN")
     print(classification_report(df["label"], pred_labels))
     return pred_labels, pred

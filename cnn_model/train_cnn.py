@@ -74,7 +74,8 @@ def train_cnn(X, y, X_full, y_full, use_gpu):
     label_field.build_vocab(train_data, val_data, full_data)
 
     train_iter, dev_iter, full_data_iter = data.BucketIterator.splits((train_data, val_data, full_data),
-                                                                      batch_sizes=(256, 256, 256))
+                                                                      batch_sizes=(256, 256, 256), sort=False,
+                                                                      sort_within_batch=False)
     embed_num = len(text_field.vocab)
     class_num = len(label_field.vocab)
     kernel_sizes = [3, 4, 5]

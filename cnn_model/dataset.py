@@ -3,10 +3,6 @@ import torchtext.data as data
 
 
 class TrainValFullDataset(Dataset):
-    @staticmethod
-    def sort_key(ex):
-        return len(ex.text)
-
     def __init__(self, lines, labels, text_field, label_field):
         fields = [('text', text_field), ('label', label_field)]
         examples = []

@@ -12,7 +12,7 @@ from cnn_model.train_cnn import train_cnn
 import pickle
 import os
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1"
+os.environ["CUDA_VISIBLE_DEVICES"] = "7"
 
 
 def create_training_df(X, y, y_true):
@@ -431,9 +431,9 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
                                       label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer,
                                       label_to_index, soft=soft, clf=clf)
-        if clf == X:
+        if clf == "BERT":
             df_orig = pickle.load(open(basepath + dataset + "df.pkl", "rb"))
-            X = df_orig.ix[X]
+            X = list(df_orig.iloc[X]["text"])
     else:
         X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict,
                                                 label_year_dict, label_author_pub_dict, label_pub_year_dict,
@@ -456,14 +456,14 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
     print("Getting tokenizer")
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
-    print("Splitting into train, dev...")
-    X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_vec, tokenizer=tokenizer,
-                                                            max_sentences=max_sentences,
-                                                            max_sentence_length=max_sentence_length,
-                                                            max_words=max_words, val=False)
     # print("Creating Embedding matrix...")
     # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
     if clf == "HAN":
+        print("Splitting into train, dev...")
+        X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_vec, tokenizer=tokenizer,
+                                                                max_sentences=max_sentences,
+                                                                max_sentence_length=max_sentence_length,
+                                                                max_words=max_words, val=False)
         print("Getting Embedding matrix...")
         embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix.pkl", "rb"))
         print("Initializing model...")

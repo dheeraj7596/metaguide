@@ -88,7 +88,7 @@ def softmax_label(count_dict, label_to_index):
 
 def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
                    label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer, label_to_index,
-                   soft=False):
+                   soft=False, clf="HAN"):
     y = []
     X = []
     y_true = []
@@ -218,7 +218,10 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dic
             else:
                 lbl = softmax_label(count_dict, label_to_index)
             y.append(lbl)
-            X.append(line)
+            if clf == "BERT":
+                X.append(index)
+            else:
+                X.append(line)
             y_true.append(label)
             y_pseudo_all.append(lbl)
             y_true_all.append(label)
@@ -427,7 +430,10 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
     if old:
         X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict, label_year_dict,
                                       label_author_pub_dict, label_pub_year_dict, label_author_year_dict, tokenizer,
-                                      label_to_index, soft=soft)
+                                      label_to_index, soft=soft, clf=clf)
+        if clf == X:
+            df_orig = pickle.load(open(basepath + dataset + "df.pkl", "rb"))
+            X = df_orig.ix[X]
     else:
         X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_pub_dict,
                                                 label_year_dict, label_author_pub_dict, label_pub_year_dict,

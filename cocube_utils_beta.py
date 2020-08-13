@@ -88,7 +88,7 @@ def softmax_label(count_dict, label_to_index):
 
 
 def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer, label_to_index,
-                   ignore_metadata=True, soft=False):
+                   ignore_metadata=True, soft=False, clf="HAN"):
     y = []
     X = []
     y_true = []
@@ -166,7 +166,10 @@ def get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_di
             else:
                 lbl = softmax_label(count_dict, label_to_index)
             y.append(lbl)
-            X.append(line)
+            if clf == "BERT":
+                X.append(index)
+            else:
+                X.append(line)
             y_true.append(label)
             y_pseudo_all.append(lbl)
             y_true_all.append(label)
@@ -464,7 +467,11 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
 
     if old:
         X, y, y_true = get_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict, tokenizer,
-                                      label_to_index, ignore_metadata=False, soft=soft)
+                                      label_to_index, ignore_metadata=False, soft=soft, clf=clf)
+        if clf == "BERT":
+            df_orig = pickle.load(open(basepath + dataset + "df_mapped_labels.pkl", "rb"))
+            df_orig["text"] = df_orig["abstract"]
+            X = list(df_orig.iloc[X]["text"])
     else:
         X, y, y_true = get_confident_train_data(df, labels, label_term_dict, label_author_dict, label_conf_dict,
                                                 label_to_index, tokenizer)
@@ -487,14 +494,14 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
     print("Getting tokenizer")
     tokenizer = pickle.load(open(basepath + dataset + "tokenizer.pkl", "rb"))
 
-    print("Splitting into train, dev...")
-    X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_vec, tokenizer=tokenizer,
-                                                            max_sentences=max_sentences,
-                                                            max_sentence_length=max_sentence_length,
-                                                            max_words=max_words, val=False)
     # print("Creating Embedding matrix...")
     # embedding_matrix = create_embedding_matrix(glove_dir, tokenizer, embedding_dim)
     if clf == "HAN":
+        print("Splitting into train, dev...")
+        X_train, y_train, X_val, y_val, _, _ = create_train_dev(X, labels=y_vec, tokenizer=tokenizer,
+                                                                max_sentences=max_sentences,
+                                                                max_sentence_length=max_sentence_length,
+                                                                max_words=max_words, val=False)
         print("Getting Embedding matrix...")
         embedding_matrix = pickle.load(open(basepath + dataset + "embedding_matrix.pkl", "rb"))
         print("Initializing model...")
@@ -536,7 +543,7 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_conf_
         for lbl_ in df.label:
             y_true_all.append(label_to_index[lbl_])
 
-        predictions = test(model, df["text"], y_true_all, use_gpu)
+        predictions = test(model, df_orig["text"], y_true_all, use_gpu)
         for i, p in enumerate(predictions):
             if i == 0:
                 pred = p

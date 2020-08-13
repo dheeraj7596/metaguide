@@ -505,7 +505,7 @@ def train_classifier(df, labels, label_term_dict, label_author_dict, label_pub_d
         for lbl_ in df.label:
             y_true_all.append(label_to_index[lbl_])
 
-        predictions = test(model, df["text"], y_true_all, use_gpu)
+        predictions = test(model, df_orig["text"], y_true_all, use_gpu)
         for i, p in enumerate(predictions):
             if i == 0:
                 pred = p

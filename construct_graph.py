@@ -5,8 +5,9 @@ from nltk import word_tokenize
 import numpy as np
 
 
-def make_authors_map(df):
-    count = len(df)
+def make_authors_map(df, count=None):
+    if count is None:
+        count = len(df)
     author_id = {}
     id_author = {}
 
@@ -24,8 +25,9 @@ def make_authors_map(df):
     return author_id, id_author, count
 
 
-def make_years_map(df):
-    count = len(df)
+def make_years_map(df, count=None):
+    if count is None:
+        count = len(df)
     year_id = {}
     id_year = {}
 

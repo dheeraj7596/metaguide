@@ -97,7 +97,7 @@ def generate_pseudo_labels(df, labels, label_term_dict, tokenizer):
     for w in tokenizer.word_index:
         index_word[tokenizer.word_index[w]] = w
     for index, row in df.iterrows():
-        line = row["sentence"]
+        line = row["text"]
         label = row["label"]
         tokens = tokenizer.texts_to_sequences([line])[0]
         words = []
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     )
     print("Number of random walks: {}".format(len(walks)))
 
-    model = Word2Vec(walks, size=128, window=5, min_count=0, sg=1, workers=2, iter=1)
+    model = Word2Vec(walks, size=128, window=5, min_count=0, sg=1, workers=2, iter=10)
     print("Embeddings shape: ", model.wv.vectors.shape)
 
     node_ids = model.wv.index2word  # list of node IDs

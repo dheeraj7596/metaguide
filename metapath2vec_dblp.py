@@ -194,6 +194,6 @@ if __name__ == "__main__":
     for i in X_inds:
         X.append(doc_embeddings[i])
 
-    clf = LogisticRegression(random_state=0).fit(X, y)
+    clf = LogisticRegression(random_state=0, max_iter=100000).fit(X, y)
     preds = clf.predict(doc_embeddings)
     print(classification_report(df["label"], preds))
